@@ -11,14 +11,14 @@ import { motion } from 'framer-motion';
 export function App() {
   const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   // Simulasi loading dengan timeout, ganti dengan logika loading yang sebenarnya jika diperlukan
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 2000); // Durasi loading dalam milidetik
+  useEffect(() => {
+    // Simulasi loading dengan timeout, ganti dengan logika loading yang sebenarnya jika diperlukan
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Durasi loading dalam milidetik
 
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
