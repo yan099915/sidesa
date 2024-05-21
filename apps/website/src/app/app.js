@@ -1,48 +1,63 @@
-import NxWelcome from './nx-welcome';
-
+import React, { useEffect, useState } from 'react';
 import { Route, Routes, Link } from 'react-router-dom';
-export function App() {
-  return (
-    <div>
-      <NxWelcome title="website" />
+import Home from './pages/Home';
+import About from './pages/About';
+import AboutDesa from './pages/AboutDesa';
+import Navbar from './components/Navbar';
+import Loading from './components/Loading';
+import Footer from './components/Footer';
+import { motion } from 'framer-motion';
 
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/page-2">Page 2</Link>
-          </li>
-        </ul>
-      </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              This is the generated root route.{' '}
-              <Link to="/page-2">Click here for page 2.</Link>
-            </div>
-          }
-        />
-        <Route
-          path="/page-2"
-          element={
-            <div>
-              <Link to="/">Click here to go back to root page.</Link>
-            </div>
-          }
-        />
-      </Routes>
-      {/* END: routes */}
-    </div>
+export function App() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  // useEffect(() => {
+  //   // Simulasi loading dengan timeout, ganti dengan logika loading yang sebenarnya jika diperlukan
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 2000); // Durasi loading dalam milidetik
+
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  return (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="relative flex flex-col h-screen h-min-screen  border-red-500 ">
+          <Navbar />
+          <div className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="about" element={<About />}>
+                <Route path="desa" element={<AboutDesa />} />
+              </Route>
+              <Route path="*" element={<div>404 Page Not Found</div>} />
+            </Routes>
+            {/* <div className="flex flex-col">
+              <button
+                data-tooltip-target="tooltip-default"
+                type="button"
+                class="h-screen text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Default tooltip
+              </button>
+              <button
+                data-tooltip-target="tooltip-default"
+                type="button"
+                class="h-screen text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Default tooltip
+              </button>
+            </div> */}
+          </div>
+          <Footer />
+        </div>
+      )}
+    </>
   );
 }
+
 export default App;
