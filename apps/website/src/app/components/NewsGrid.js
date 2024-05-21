@@ -68,7 +68,7 @@ const NewsCard = ({ title, image, description, index }) => {
       }}
       initial="hidden"
       animate={isInView ? 'visible' : 'hidden'}
-      transition={{ delay: 1, duration: 0.5 }}
+      transition={{ delay: 0.5, duration: 0.5 }}
     >
       <img className="w-full h-48 object-cover" src={image} alt={title} />
       <div className="p-4">

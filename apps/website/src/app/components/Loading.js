@@ -17,7 +17,7 @@ const Loading = () => {
   return (
     <div className="flex items-center justify-center h-screen">
       <Lottie
-        speed={2}
+        speed={2.5}
         animationData={animationData}
         height={100}
         width={100}
