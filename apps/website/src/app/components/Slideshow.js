@@ -42,7 +42,7 @@ export default function Slideshow() {
   }, []);
 
   return (
-    <div className="relative flex items-center justify-center w-full h-96 sm:min-h-screen overflow-hidden">
+    <div className="relative flex items-center justify-center w-full h-96 sm:min-h-screen overflow-hidden ">
       <AnimatePresence initial={false}>
         {images.map((image, index) => (
           <motion.div
@@ -62,13 +62,16 @@ export default function Slideshow() {
               alt={`Slideshow Image ${index}`}
             />
             {imageIndex === index && (
-              <div className="absolute bottom-48 sm:bottom-32 left-1/2 transform -translate-x-1/2 text-center text-white z-20 p-4">
+              <div
+                className="absolute left-1/2 transform -translate-x-1/2 text-center bg-zinc-900/40  w-full text-white z-20 p-4"
+                style={{ bottom: '30vh' }}
+              >
                 <h1 className="text-lg sm:text-3xl font-semibold mb-2">
                   {image.title}
                 </h1>
                 <button
                   onClick={(e) => console.log(e)}
-                  className=" text-xs border-2 text-white rounded-md px-3 py-1 sm:px-4 sm:py-2 hover:bg-gray-200/30"
+                  className="text-xs border-2 text-white rounded-md px-3 py-1 sm:px-4 sm:py-2 hover:bg-gray-200/30"
                 >
                   Baca Selengkapnya
                 </button>

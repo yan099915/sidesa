@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
-import About from './pages/About';
-import AboutDesa from './pages/AboutDesa';
+import About from './pages/About/AboutPage';
+import AboutDesa from './pages/About/AboutDesa';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
 import Footer from './components/Footer';
+import PageNotFound from './pages/PageNotFound';
+import News from './pages/News/NewsPage';
 
 export function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,6 +19,11 @@ export function App() {
     }, 2000); // Durasi loading dalam milidetik
 
     return () => clearTimeout(timer);
+  }, []);
+
+  // Scroll to top on initial render
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   return (
@@ -33,7 +40,8 @@ export function App() {
               <Route path="about" element={<About />}>
                 <Route path="desa" element={<AboutDesa />} />
               </Route>
-              <Route path="*" element={<div>404 Page Not Found</div>} />
+              <Route path="news" element={<News />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
             {/* <div className="flex flex-col">
               <button

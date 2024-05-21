@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { NavigateNext } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
 const newsData = [
   {
@@ -74,7 +75,7 @@ const NewsCard = ({ title, image, description, index }) => {
       <div className="p-4">
         <h2 className="font-bold text-lg mb-2">{title}</h2>
         <p className="text-gray-700 text-sm">{description}</p>
-        <button className="flex ring-1 ring-zinc-900 text-xs sm:text-md p-1 rounded-md leading-none">
+        <button className="flex   bg-zinc-900 text-white text-xs sm:text-md p-1 rounded-md leading-none">
           Selengkapnya
           <NavigateNext fontSize="xs" />
         </button>
@@ -83,29 +84,30 @@ const NewsCard = ({ title, image, description, index }) => {
   );
 };
 
-export default function NewsGrid() {
+export default function NewsGrid(option) {
   const [visibleNewsCount, setVisibleNewsCount] = useState(6);
 
   const handleShowMore = () => {
     setVisibleNewsCount((prevCount) => prevCount + 6);
   };
 
-  const handleShowAll = () => {
-    setVisibleNewsCount(newsData.length);
-  };
+  useEffect(() => {
+    setVisibleNewsCount(option.count);
+  }, [option.count]);
 
+  // console.log(option.count);
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Berita Terkini</h1>
-        {visibleNewsCount < newsData.length && (
-          <button
-            onClick={handleShowAll}
-            className=" text-xs sm:text-md ring-2 ring-zinc-900 rounded-md  py-1 px-4"
+        {visibleNewsCount < newsData.length && option.count <= 6 && (
+          <Link
+            to="/news"
+            className=" text-xs sm:text-md text-white bg-zinc-900 rounded-md  py-1 px-4"
           >
             Lihat Semua Berita
             <NavigateNext fontSize="xs" />
-          </button>
+          </Link>
         )}
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -119,16 +121,16 @@ export default function NewsGrid() {
           />
         ))}
       </div>
-      {/* {visibleNewsCount < newsData.length && (
+      {visibleNewsCount < newsData.length && option.count > 6 && (
         <div className="flex justify-center mt-6">
           <button
             onClick={handleShowMore}
-            className="bg-blue-500 text-white py-2 px-4 rounded-full"
+            className="bg-zinc-900 text-white py-2 px-4 rounded-full"
           >
             Lihat Berita Lain
           </button>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

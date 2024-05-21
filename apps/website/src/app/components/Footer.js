@@ -1,17 +1,43 @@
-import React, { useEffect, useRef } from 'react';
-import { Instagram, YouTube, Facebook } from '@mui/icons-material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Instagram, YouTube, Facebook, North } from '@mui/icons-material';
 import { motion, useInView } from 'framer-motion';
+import { Link } from 'react-router-dom';
 export default function Footer() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
+  const handleScroll = () => {
+    setLastScrollY(window.scrollY);
+    if (typeof window !== 'undefined') {
+      if (window.scrollY > 100) {
+        // if scrolling down, hide the navbar
+        setIsVisible(true);
+      } else {
+        // if scrolling up, show the navbar
+        setIsVisible(false);
+      }
+
+      // remember the current page location for the next move
+      setLastScrollY(window.scrollY);
+    }
+  };
+
+  const backToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    console.log(isInView, 'view');
-  }, [isInView]);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <>
-      <div className="flex overlow-hidden flex sm:flex-row flex-col content-center justify-center justify-self-end sm:gap-20 w-full bottom-0 border-t border-zinc-900/10 p-6">
+      <div className="relative flex overlow-hidden flex sm:flex-row flex-col content-center justify-center justify-self-end sm:gap-20 w-full bottom-0 border-t border-zinc-900/10 p-6">
         <motion.div
           ref={ref}
           variants={{
@@ -50,16 +76,16 @@ export default function Footer() {
             <h2 className="font-bold ">Tautan</h2>
             <ul className="text-xs space-y-2 text-black/80">
               <li>
-                <a href="/#">Beranda</a>
+                <Link to="/">Beranda</Link>
               </li>
               <li>
-                <a>Profil Desa</a>
+                <Link to="/about">Profil Desa</Link>
               </li>
               <li>
-                <a>Layanan</a>
+                <Link to="/services">Layanan</Link>
               </li>
               <li>
-                <a>Informasi</a>
+                <Link to="/news">Informasi</Link>
               </li>
             </ul>
           </div>
@@ -115,6 +141,14 @@ export default function Footer() {
             <YouTube />
           </a>
         </motion.div>
+        <button
+          onClick={backToTop}
+          className={`fixed  right-6 bottom-20 ring ring-zinc-900/60 text-zinc-900/60 font-bold h-10 rounded-full animate-bounce ${
+            isVisible ? 'block' : 'hidden'
+          }`}
+        >
+          <North fontSize="lg" className="stroke-black stoke-2" />
+        </button>
       </div>
     </>
   );
