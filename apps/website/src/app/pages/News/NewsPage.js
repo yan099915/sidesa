@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import NewsGrid from '../../components/NewsGrid';
+import { Outlet } from 'react-router-dom';
 
 export default function News() {
   // Scroll to top on initial render

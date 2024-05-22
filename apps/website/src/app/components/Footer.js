@@ -37,7 +37,7 @@ export default function Footer() {
 
   return (
     <>
-      <div className="relative flex overlow-hidden flex sm:flex-row flex-col content-center justify-center justify-self-end sm:gap-20 w-full bottom-0 border-t border-zinc-900/10 p-6">
+      <div className="relative flex overlow-hidden flex sm:flex-row flex-col content-center justify-center justify-self-end sm:gap-20 w-full bottom-0 border-t border-zinc-900/10 p-2">
         <motion.div
           ref={ref}
           variants={{

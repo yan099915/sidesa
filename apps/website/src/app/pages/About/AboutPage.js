@@ -1,43 +1,16 @@
 import {
-  EmojiEvents,
+  AccountTreeSharp,
   EmojiEventsSharp,
-  HistoryEdu,
   HistoryEduSharp,
 } from '@mui/icons-material';
 import React, { useEffect } from 'react';
-import {
-  Link,
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-  useMatch,
-} from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 const About = () => {
   // Scroll to top on initial render
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
-  const timelineItems = [
-    {
-      title: 'Event 1',
-      date: 'May 2020',
-      description: 'Description of event 1...',
-    },
-    {
-      title: 'Event 2',
-      date: 'June 2020',
-      description: 'Description of event 2...',
-    },
-    {
-      title: 'Event 3',
-      date: 'July 2020',
-      description: 'Description of event 3...',
-    },
-  ];
-
-  const location = useLocation();
 
   return (
     <div className="container mx-auto p-6 ">
@@ -62,17 +35,24 @@ const About = () => {
       <div className="flex gap-x-10 justify-center my-10">
         <Link
           className="flex flex-col justify-center items-center text-zinc-700"
-          to="/about/desa"
+          to="/about/history"
         >
           <HistoryEduSharp />
           <span className="text-sm font-bold">Sejarah</span>
         </Link>
         <Link
           className="flex flex-col justify-center items-center text-zinc-700 "
-          to="/about/desa"
+          to="/about/visi-misi"
         >
           <EmojiEventsSharp />
           <span className="text-sm font-bold">Visi & Misi</span>
+        </Link>
+        <Link
+          className="flex flex-col justify-center items-center text-zinc-700 "
+          to="/about/struktur-organisasi"
+        >
+          <AccountTreeSharp />
+          <span className="text-sm font-bold">Struktur</span>
         </Link>
       </div>
       <Outlet />

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Slideshow from '../components/Slideshow';
 import NewsGrid from '../components/NewsGrid';
+import Information from '../components/Information';
 
 const Home = () => {
   const [count, setCount] = useState(4);
@@ -23,6 +24,7 @@ const Home = () => {
   return (
     <div className="flex relative flex-col">
       <Slideshow />
+      <Information />
       <NewsGrid count={count} />
     </div>
   );

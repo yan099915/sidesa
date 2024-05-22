@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About/AboutPage';
-import AboutDesa from './pages/About/AboutDesa';
+import AboutDesa from './pages/About/SejarahDesa';
 import Navbar from './components/Navbar';
 import Loading from './components/Loading';
 import Footer from './components/Footer';
 import PageNotFound from './pages/PageNotFound';
 import News from './pages/News/NewsPage';
+import NewsDetails from './pages/News/NewsDetails';
+import VisiMisiDesa from './pages/About/VisiMisiDesa';
+import StrukturDesa from './pages/About/StrukturDesa';
 
 export function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,27 +41,14 @@ export function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="about" element={<About />}>
-                <Route path="desa" element={<AboutDesa />} />
+                <Route path="history" element={<AboutDesa />} />
+                <Route path="visi-misi" element={<VisiMisiDesa />} />
+                <Route path="struktur-organisasi" element={<StrukturDesa />} />
               </Route>
               <Route path="news" element={<News />} />
+              <Route path="news/:id" element={<NewsDetails />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
-            {/* <div className="flex flex-col">
-              <button
-                data-tooltip-target="tooltip-default"
-                type="button"
-                class="h-screen text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Default tooltip
-              </button>
-              <button
-                data-tooltip-target="tooltip-default"
-                type="button"
-                class="h-screen text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Default tooltip
-              </button>
-            </div> */}
           </div>
           <Footer />
         </div>
