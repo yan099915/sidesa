@@ -88,12 +88,12 @@ export default function NewsDetails() {
   // Scroll to top on initial render
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [param]);
   return (
     <div className="flex flex-col px-4 py-8 ">
       {/* news title */}
       <div className="w-full border border-b-0  border-zinc-900/5 px-4 py-8">
-        <h1 className="text-2xl font-bold">{newsData[param.id].title}</h1>
+        <h1 className="text-2xl font-bold">{newsData[param.id - 1].title}</h1>
         <div className="flex items-center ">
           <CalendarMonthSharp fontSize="sm" />
           <p className="text-xs leading-none align-middle">{date.toString()}</p>
@@ -101,19 +101,19 @@ export default function NewsDetails() {
         <div className="flex items-center">
           <Person fontSize="sm" />
           <p className="text-xs leading-none align-middle">
-            {newsData[param.id].author}
+            {newsData[param.id - 1].author}
           </p>
         </div>
       </div>
       {/* news body */}
       <div className="px-4 border border-t-0  border-zinc-900/5">
         <img
-          src={newsData[param.id].image}
-          alt={newsData[param.id].title}
+          src={newsData[param.id - 1].image}
+          alt={newsData[param.id - 1].title}
           className="w-full h-96 object-cover"
         />
         <p className="text-sm leading-relaxed mt-4 text-justify">
-          {newsData[param.id].content}
+          {newsData[param.id - 1].content}
         </p>
       </div>
       {/* news footer */}

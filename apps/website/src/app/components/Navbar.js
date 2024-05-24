@@ -122,7 +122,7 @@ const Navbar = () => {
                 : ''
             }
           >
-            Informasi
+            Berita
           </Link>
         </div>
       </div>
@@ -179,16 +179,16 @@ const Navbar = () => {
                     to="/news"
                   >
                     <InfoOutlined fontSize="small" />
-                    Informasi
+                    Berita
                   </Link>
                 </MenuItem>
               </MenuItems>
             </Transition>
           </Menu>
         </div>
-        <div className="text-center my-auto">
+        <div className="text-center  text-red-500 hover:animate-pulse ">
           <p className="text-[9px]">Tombol</p>
-          <button className="flex shadow-lg bg-white shadow-zinc-800/5 mx-auto text-red-400 ring-1 ring-zinc-900/5  w-7 h-7 rounded-full justify-center items-center">
+          <button className="flex shadow-lg bg-white shadow-zinc-800/5 mx-auto text-red-400 ring-2 ring-red-500  w-7 h-7 rounded-full justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="18px"

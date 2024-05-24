@@ -11,9 +11,12 @@ import News from './pages/News/NewsPage';
 import NewsDetails from './pages/News/NewsDetails';
 import VisiMisiDesa from './pages/About/VisiMisiDesa';
 import StrukturDesa from './pages/About/StrukturDesa';
+import Services from './pages/Services';
+import AnnouncementDetails from './pages/Announcement/AnnouncementDetails';
+import AnnouncementPage from './pages/Announcement/AnnouncementPage';
 
 export function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Simulasi loading dengan timeout, ganti dengan logika loading yang sebenarnya jika diperlukan
@@ -45,8 +48,14 @@ export function App() {
                 <Route path="visi-misi" element={<VisiMisiDesa />} />
                 <Route path="struktur-organisasi" element={<StrukturDesa />} />
               </Route>
+              <Route path="services" element={<Services />} />
               <Route path="news" element={<News />} />
               <Route path="news/:id" element={<NewsDetails />} />
+              <Route path="announcement" element={<AnnouncementPage />} />
+              <Route
+                path="announcement/:id"
+                element={<AnnouncementDetails />}
+              />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </div>
