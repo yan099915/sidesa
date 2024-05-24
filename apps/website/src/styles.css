@@ -1,4 +1,52 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap'); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 /* You can add global styles to this file, and also import other style files */
+
+/* font settings */
+/* * {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+} */
+
+.bg-blue-rawang {
+  background-color: #161d28;
+}
+
+.vertical-line {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: gray;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  transform: translateY(-50%);
+}
+
+.next,
+.prev {
+  top: calc(50% - 20px);
+  position: absolute;
+  background: white;
+  border-radius: 30px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  z-index: 2;
+}
+
+.next {
+  right: 10px;
+}
+
+.prev {
+  left: 10px;
+}
