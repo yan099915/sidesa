@@ -16,7 +16,7 @@ import AnnouncementDetails from './pages/Announcement/AnnouncementDetails';
 import AnnouncementPage from './pages/Announcement/AnnouncementPage';
 
 export function App() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simulasi loading dengan timeout, ganti dengan logika loading yang sebenarnya jika diperlukan
