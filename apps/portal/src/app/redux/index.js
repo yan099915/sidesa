@@ -1,7 +1,11 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { thunk } from 'redux-thunk';
-import UsersReducers from './UsersReducers';
 import ReduxState from './ReduxState';
+import UsersReducers from './UsersReducers';
+import VerificationReducers from './VerificationReducers';
+import ResidentReducers from './ResidentReducers';
+import FamilyReducers from './FamilyReducers';
+import RequestReducers from './RequestReducers';
 
 // Middleware
 const middleware = [thunk];
@@ -10,6 +14,10 @@ const middleware = [thunk];
 const rootReducer = combineReducers({
   UsersReducers: UsersReducers,
   ReduxState: ReduxState,
+  VerificationReducers: VerificationReducers,
+  ResidentReducers: ResidentReducers,
+  FamilyReducers: FamilyReducers,
+  RequestReducers: RequestReducers,
 });
 
 // Enhancers (jika diperlukan)

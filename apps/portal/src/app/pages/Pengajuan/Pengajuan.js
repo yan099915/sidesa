@@ -1,10 +1,11 @@
 import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import DefaultLayout from '../../layout/defaultLayout';
+import { useSelector } from 'react-redux';
 
 const Pengajuan = () => {
   const location = useLocation();
-  const isAdmin = true; // Gantilah dengan logika sesungguhnya untuk mengecek apakah user adalah admin
+  const isAdmin = useSelector((state) => state.ReduxState.IsAdmin);
 
   const menuItems = [
     {
@@ -16,9 +17,9 @@ const Pengajuan = () => {
 
   if (isAdmin) {
     menuItems.unshift({
-      key: 'daftar',
+      key: 'list',
       label: 'Daftar Pengajuan',
-      path: 'daftar',
+      path: 'list',
     });
   }
 
@@ -31,11 +32,13 @@ const Pengajuan = () => {
 
   // Pengecekan apakah child route === 'form'
   const isFormRoute = location.pathname.includes('form');
+  const isProcessRoute = location.pathname.includes('process');
+  const isDetailsRoute = location.pathname.includes('details');
 
   return (
     <DefaultLayout>
       <div className="p-6">
-        {!isFormRoute && (
+        {!isFormRoute && !isProcessRoute && !isDetailsRoute && (
           <div className="ring-1 ring-zinc-900/5 mb-4 bg-white shadow-sm">
             <nav className="flex space-x-4">
               {menuItems.map((item) => (

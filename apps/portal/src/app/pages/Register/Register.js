@@ -1,7 +1,7 @@
 import { Button, Field, Input, Label } from '@headlessui/react';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { registerUser } from '../../api/actions';
 
@@ -118,6 +118,14 @@ const Register = () => {
           >
             {registering ? 'Registering...' : 'Register'}
           </Button>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-700">
+              Sudah punya akun?{' '}
+              <Link to="/login" className="text-blue-500 hover:underline">
+                Login
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

@@ -19,7 +19,6 @@ export default function DropDownUser() {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    console.log('Logging out');
     setDisabled(true);
     dispatch(logoutUser());
   };

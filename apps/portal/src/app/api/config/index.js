@@ -1,4 +1,5 @@
 import axios from 'axios';
+import errorHandler from './errorHandler';
 
 // Fungsi untuk menentukan baseURL
 const getBaseURL = () => {
@@ -16,5 +17,7 @@ const axiosInstance = axios.create({
   },
   withCredentials: true,
 });
+
+axiosInstance.interceptors.response.use((response) => response, errorHandler);
 
 export default axiosInstance;

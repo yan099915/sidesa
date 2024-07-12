@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Logo from '../../../assets/images/logo_sidera_large.png';
@@ -10,13 +10,20 @@ import {
   AssessmentOutlined,
   PersonOutlineOutlined,
   HomeOutlined,
+  ArticleOutlined,
 } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const trigger = useRef(null);
   const sidebar = useRef(null);
+  const [loading, setLoading] = useState(true);
+
   const UserMenu = useSelector((state) => state.UsersReducers.UserMenu);
+  const DoGetVerificationData = useSelector(
+    (state) => state.ReduxState.DoGetVerificationData
+  );
+  const dispatch = useDispatch();
 
   const menuMap = {
     home: { path: '/', icon: <HomeOutlined className="h-5 w-5" /> },
@@ -40,6 +47,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       path: '/resident',
       icon: <Groups2Outlined className="h-5 w-5" />,
     },
+    article: {
+      path: '/article',
+      icon: <ArticleOutlined className="h-5 w-5" />,
+    },
   };
 
   const menuItems =
@@ -49,6 +60,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: menuMap[item.name]?.icon,
     })) || [];
 
+  useEffect(() => {
+    if (UserMenu) {
+      setLoading(false);
+    }
+  }, [UserMenu]);
   return (
     <aside
       ref={sidebar}
@@ -77,22 +93,32 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
-            {menuItems.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                className={({ isActive }) =>
-                  `flex gap-3 block py-2.5 pl-4 pr-12 rounded-md transition-colors font-medium ${
-                    isActive
-                      ? 'bg-black text-white'
-                      : 'text-zinc-900/80 hover:bg-gray-200'
-                  }`
-                }
-              >
-                {item.icon}
-                {item.name}
-              </NavLink>
-            ))}
+            {loading
+              ? Array.from({ length: 5 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-3 block my-2 py-2.5 pl-4 pr-12 rounded-md transition-colors font-medium bg-zinc-200 animate-pulse"
+                  >
+                    <div className="h-5 w-5 bg-zinc-300 rounded"></div>
+                    <div className="h-5 w-[80px] bg-zinc-300 rounded"></div>
+                  </div>
+                ))
+              : menuItems.map((item) => (
+                  <NavLink
+                    key={item.name}
+                    to={item.path}
+                    className={({ isActive }) =>
+                      `flex gap-3 block py-2.5 pl-4 pr-12 rounded-md transition-colors font-medium ${
+                        isActive
+                          ? 'bg-black text-white'
+                          : 'text-zinc-900/80 hover:bg-gray-200'
+                      }`
+                    }
+                  >
+                    {item.icon}
+                    {item.name}
+                  </NavLink>
+                ))}
           </div>
         </nav>
       </div>

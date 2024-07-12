@@ -40,6 +40,12 @@ export default function Login() {
     dispatch(loginUser(loginData));
   };
 
+  const handleEnterLogin = (e) => {
+    if (e.key === 'Enter' && isFormValid) {
+      handleLogin();
+    }
+  };
+
   // if login was successful, store the email in local storage and navigate to email confirmation page
   useEffect(() => {
     if (UserLogin) {
@@ -59,12 +65,19 @@ export default function Login() {
     if (errorUserLogin) {
       if (errorUserLogin.data && !errorUserLogin.data.active) {
         const encryptedEmail = encryptData(email);
-        localStorage.setItem('unauth', encryptedEmail);
-        setTimeout(() => {
-          navigate('/email-confirmation');
-        }, 1000);
+
+        if (errorUserLogin.message === 'Invalid email or password') {
+          setError('Email atau password salah');
+        }
+
+        if (errorUserLogin.message === 'Email not verified') {
+          localStorage.setItem('unauth', encryptedEmail);
+          setTimeout(() => {
+            navigate('/email-confirmation');
+          }, 1000);
+        }
       }
-      setError(errorUserLogin.message || errorUserLogin);
+
       setLogining(false);
     }
   }, [errorUserLogin]);
@@ -92,6 +105,7 @@ export default function Login() {
             <Input
               id={emailId}
               value={email}
+              onKeyDown={handleEnterLogin}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               className="mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
@@ -108,6 +122,7 @@ export default function Login() {
             <Input
               id={passwordId}
               value={password}
+              onKeyDown={handleEnterLogin}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               className="mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6

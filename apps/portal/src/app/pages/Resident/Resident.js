@@ -4,7 +4,6 @@ import DefaultLayout from '../../layout/defaultLayout';
 
 const Resident = () => {
   const location = useLocation();
-  const isAdmin = true; // Gantilah dengan logika sesungguhnya untuk mengecek apakah user adalah admin
 
   const menuItems = [
     {
@@ -27,14 +26,16 @@ const Resident = () => {
   };
 
   // Pengecekan apakah child route === 'form'
-  const isFormRoute = location.pathname.includes('form');
+  const isFormRoute = location.pathname.includes('add');
+  const isConfirmRoute = location.pathname.includes('confirm');
+  const isDetailsRoute = location.pathname.includes('details');
 
   return (
     <DefaultLayout>
       <div className="p-6">
-        {!isFormRoute && (
+        {!isFormRoute && !isConfirmRoute && !isDetailsRoute && (
           <div className="ring-1 ring-zinc-900/5 mb-4 bg-white shadow-sm">
-            <nav className="flex space-x-4">
+            <nav className="flex">
               {menuItems.map((item) => (
                 <NavLink
                   key={item.key}

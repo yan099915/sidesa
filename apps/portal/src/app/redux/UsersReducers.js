@@ -45,14 +45,12 @@ const UsersReducers = (state = initialState, action) => {
         UserLogin: action.payload.data,
         errorUserLogin: action.payload.errorMessage,
       };
-
     case 'VERIFY_SESSION':
       return {
         ...state,
         UserSession: action.payload.data,
         errorUserSession: action.payload.errorMessage,
       };
-
     case 'USER_LOGOUT':
       return {
         ...state,
@@ -64,18 +62,6 @@ const UsersReducers = (state = initialState, action) => {
         ...state,
         UserMenu: action.payload.data,
         errorUserMenu: action.payload.errorMessage,
-      };
-    case 'REQUEST_VERIFICATION':
-      return {
-        ...state,
-        RequestVerification: action.payload.data,
-        errorRequestVerification: action.payload.errorMessage,
-      };
-    case 'VERIFICATION_REQUEST_STATUS':
-      return {
-        ...state,
-        RequestVerificationStatus: action.payload.data,
-        errorRequestVerificationStatus: action.payload.errorMessage,
       };
     default:
       return state;

@@ -3,12 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { verifyEmail } from '../../api/actions';
 import Lottie from 'lottie-react';
+import { verifySession } from '../../api/actions/UsersActions';
 const VerifySuccess = require('../../../assets/animation/Verified.json');
 const VerifyFailed = require('../../../assets/animation/Failed.json');
 
 export default function VerifyEmail() {
   const [isLoading, setIsLoading] = useState(true);
   const DoDispatch = useSelector((state) => state.ReduxState.DoDispatch);
+  const errorUserSession = useSelector(
+    (state) => state.UsersReducers.errorUserSession
+  );
+  const UserSession = useSelector((state) => state.UsersReducers.UserSession);
   const { token } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,12 +35,13 @@ export default function VerifyEmail() {
       if (token) {
         try {
           if (DoDispatch) {
-            console.log(DoDispatch, 'DoDispatch');
+            // console.log(DoDispatch, 'DoDispatch');
             await dispatch(verifyEmail(token));
             dispatch({ type: 'set', DoDispatch: false });
           }
         } catch (error) {
-          console.error('Error verifying email:', error);
+          setIsLoading(false);
+          // console.error('Error verifying email:', error);
         } finally {
           setIsLoading(false);
         }
@@ -48,19 +54,28 @@ export default function VerifyEmail() {
   }, [dispatch, token, DoDispatch]);
 
   useEffect(() => {
-    localStorage.removeItem('unauth');
-    if (!DoDispatch) {
-      dispatch({ type: 'set', DoDispatch: true });
+    if (errorUserSession) {
+      if (!DoDispatch) {
+        dispatch({ type: 'set', DoDispatch: true });
+      }
     }
+
+    if (UserSession) {
+      navigate('/');
+    }
+  }, [errorUserSession, UserSession]);
+
+  useEffect(() => {
+    dispatch(verifySession);
+    dispatch({ type: 'set', isLoggedIn: false });
+    localStorage.removeItem('unauth');
   }, []);
+
   if (isLoading) {
     return (
       <div className="flex flex-col relative h-full p-8 bg-gray-100/50 items-center">
         <div className="flex flex-col h-full w-full py-24 sm:w-3/4 lg:w-2/5 gap-y-10 border bg-white items-center border-zinc-400/20">
-          <svg
-            className="animate-spin h-5 w-5 mr-3 ..."
-            viewBox="0 0 24 24"
-          ></svg>
+          <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"></svg>
           <h2 className="text-4xl font-semibold">Loading...</h2>
         </div>
       </div>
@@ -105,12 +120,6 @@ export default function VerifyEmail() {
               Link verifikasi tidak valid atau sudah kadaluarsa. Silahkan coba
               lagi atau hubungi admin.
             </p>
-            {/* <button
-              onClick={handleResendEmailRedirect}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
-            >
-              Resend Email
-            </button> */}
           </div>
         )}
       </div>

@@ -1,14 +1,35 @@
 const initialState = {
-  ResidentRegister: false,
-  errorResidentRegister: false,
-  ResidentLogin: false,
-  errorResidentLogin: false,
-  ResidentSession: false,
-  errorResidentSession: false,
-  ResidentLogout: false,
-  errorResidentLogout: false,
-  ResidentMenu: false,
-  errorResidentMenu: false,
-  RequestVerification: false,
-  errorRequestVerification: false,
+  ResidentsData: false,
+  errorResidentsData: false,
+  ResidentDetails: false,
+  errorResidentDetails: false,
+  AddResident: false,
+  errorAddResident: false,
 };
+
+const ResidentReducers = (state = initialState, action) => {
+  switch (action.type) {
+    case 'GET_RESIDENTS':
+      return {
+        ...state,
+        ResidentsData: action.payload.data,
+        errorResidentsData: action.payload.errorMessage,
+      };
+    case 'GET_RESIDENT_DETAILS':
+      return {
+        ...state,
+        ResidentDetails: action.payload.data,
+        errorResidentDetails: action.payload.errorMessage,
+      };
+    case 'ADD_RESIDENT':
+      return {
+        ...state,
+        AddResident: action.payload.data,
+        errorAddResident: action.payload.errorMessage,
+      };
+    default:
+      return state;
+  }
+};
+
+export default ResidentReducers;

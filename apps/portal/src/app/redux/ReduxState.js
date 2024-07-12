@@ -5,6 +5,15 @@ const initialState = {
   DoCheckSession: false,
   DoVerifySession: false,
   DoCheckVerificationStatus: false,
+  IsAdmin: true,
+  DoGetVerificationData: false,
+  DoGetVerificationDetails: false,
+  DoGetResidents: false,
+  Loading: false,
+  DoGetRequestRequiredData: false,
+  DoGetRequestHistory: false,
+  DoGetRequestList: false,
+  DoGetRequestDetails: false,
 };
 
 const ReduxState = (state = initialState, { type, ...rest }) => {

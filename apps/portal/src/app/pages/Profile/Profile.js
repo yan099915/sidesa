@@ -4,18 +4,27 @@ import { CheckCircleSharp, CancelSharp } from '@mui/icons-material';
 import DefaultLayout from '../../layout/defaultLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { Label, Input, Field, Select } from '@headlessui/react';
+import toast, { Toaster } from 'react-hot-toast';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
 import jobOptions from '../../js/jobOptions'; // Impor daftar pekerjaan
 import {
   checkVerificationStatus,
   requestDataVerification,
-} from '../../api/actions/UsersActions';
+} from '../../api/actions/VerificationsActions';
+import { verifySession } from '../../api/actions/UsersActions';
+import { getResidentDetails } from '../../api/actions/ResidentActions';
 
 const Profile = () => {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
   const RequestVerificationStatus = useSelector(
-    (state) => state.UsersReducers.RequestVerificationStatus
+    (state) => state.VerificationReducers.RequestVerificationStatus
+  );
+  const RequestVerification = useSelector(
+    (state) => state.VerificationReducers.RequestVerification
+  );
+  const ResidentDetails = useSelector(
+    (state) => state.ResidentReducers.ResidentDetails
   );
   const DoCheckVerificationStatus = useSelector(
     (state) => state.ReduxState.DoCheckVerificationStatus
@@ -30,17 +39,26 @@ const Profile = () => {
     ktpNumber: '',
     kkNumber: '',
     name: '',
+    jenis_kelamin: '',
     birthDate: '',
     birthPlace: '',
     address: '',
     religion: '',
-    maritalStatus: 'belum kawin',
+    maritalStatus: { value: 'belum kawin', label: 'Belum Kawin' },
+    gdarah: '',
     job: '',
     rt: '',
     rw: '',
   });
 
+  const jenis_kelamin = [
+    { value: '', label: 'Pilih Jenis Kelamin' },
+    { value: 'PEREMPUAN', label: 'Perempuan' },
+    { value: 'LAKI-LAKI', label: 'Laki-laki' },
+  ];
+
   const maritalStatusOptions = [
+    { value: '', label: 'Pilih Status Perkawinan' },
     { value: 'belum kawin', label: 'Belum Kawin' },
     { value: 'kawin', label: 'Kawin' },
     { value: 'cerai hidup', label: 'Cerai Hidup' },
@@ -80,8 +98,6 @@ const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('submit');
-
     // Create FormData instance
     const dataForm = new FormData();
     let hasEmptyField = false;
@@ -98,46 +114,181 @@ const Profile = () => {
 
     if (hasEmptyField) {
       setError(true); // Set error state if any field is empty
+
+      console.log(formData, 'formData');
     } else {
       setError(false); // Clear error state
-      console.log(...dataForm.entries()); // Log to check if data is correctly added
+      setDisabled(true); // Disable submit button
+      toast.loading('Submitting data...', {
+        id: 'submitting-data',
+      });
       dispatch(requestDataVerification(dataForm));
     }
   };
 
   useEffect(() => {
-    if (UserSession && !UserSession.data.verified) {
+    if (RequestVerification && RequestVerification.data) {
+      toast.success('Data submitted!', {
+        id: 'submitting-data',
+      });
+      dispatch(checkVerificationStatus());
+      setShowForm(false);
+      dispatch({
+        type: 'REQUEST_VERIFICATION',
+        payload: { data: false, errorMessage: false },
+      });
+      // setDisabled(false);
+    }
+  }, [RequestVerification]);
+
+  useEffect(() => {
+    if (UserSession) {
       if (DoCheckVerificationStatus) {
         dispatch(checkVerificationStatus());
+        dispatch(verifySession());
         dispatch({ type: 'set', DoCheckVerificationStatus: false });
+        if (UserSession.data.verified) {
+          dispatch(getResidentDetails(UserSession.data.nik));
+        }
       }
     }
   }, [DoCheckVerificationStatus, UserSession, dispatch]);
 
   useEffect(() => {
-    if (UserSession && !UserSession.data.verified) {
+    if (
+      ResidentDetails &&
+      ResidentDetails.data &&
+      RequestVerificationStatus.data &&
+      !RequestVerificationStatus.data.verifiedStatus
+    ) {
+      const updatedFormData = { ...formData };
+      delete updatedFormData.foto_ktp;
+      delete updatedFormData.foto_kk;
+      setFormData(updatedFormData);
+
+      setFormData((prevData) => ({
+        ...prevData,
+        ktpNumber: ResidentDetails.data.nomor_ktp || '',
+        kkNumber: ResidentDetails.data.nomor_kk || '',
+        name: ResidentDetails.data.nama || '',
+        birthDate: ResidentDetails.data.tanggal_lahir || '',
+        birthPlace: ResidentDetails.data.tempat_lahir || '',
+        address: ResidentDetails.data.alamat || '',
+        religion: ResidentDetails.data.agama || '',
+        maritalStatus: ResidentDetails.data.status_perkawinan || 'belum kawin',
+        gdarah: ResidentDetails.data.golongan_darah || '',
+        job: ResidentDetails.data.pekerjaan || '',
+        rt: ResidentDetails.data.rt || '',
+        rw: ResidentDetails.data.rw || '',
+      }));
+    }
+  }, [ResidentDetails]);
+
+  useEffect(() => {
+    if (UserSession) {
       dispatch({ type: 'set', DoCheckVerificationStatus: true });
     }
   }, []);
 
+  const fields = [
+    {
+      label: 'Foto Diri',
+      name: 'foto_diri',
+      type: 'file',
+      handleChange: handleFileChange,
+    },
+    {
+      label: 'Foto KTP',
+      name: 'foto_ktp',
+      type: 'file',
+      handleChange: handleFileChange,
+    },
+    {
+      label: 'Foto Kartu Keluarga',
+      name: 'foto_kk',
+      type: 'file',
+      handleChange: handleFileChange,
+    },
+    {
+      label: 'Nomor KTP',
+      name: 'ktpNumber',
+      type: 'text',
+      handleChange: handleNumberChange,
+    },
+    {
+      label: 'Nomor KK',
+      name: 'kkNumber',
+      type: 'text',
+      handleChange: handleNumberChange,
+    },
+    { label: 'Nama', name: 'name', type: 'text' },
+    { label: 'Golongan Darah', name: 'gdarah', type: 'text' },
+    { label: 'Tanggal Lahir', name: 'birthDate', type: 'date' },
+    { label: 'Tempat Lahir', name: 'birthPlace', type: 'text' },
+    { label: 'Alamat', name: 'address', type: 'textarea' },
+    { label: 'Agama', name: 'religion', type: 'text' },
+    {
+      label: 'RT',
+      name: 'rt',
+      type: 'text',
+      handleChange: handleNumberChange,
+    },
+    {
+      label: 'RW',
+      name: 'rw',
+      type: 'text',
+      handleChange: handleNumberChange,
+    },
+  ];
+
+  const filteredFields =
+    ResidentDetails &&
+    ResidentDetails.data &&
+    RequestVerificationStatus.data &&
+    !RequestVerificationStatus.data.verifiedStatus
+      ? fields.filter((field) => !['foto_ktp', 'foto_kk'].includes(field.name))
+      : fields;
+
   return (
     <DefaultLayout>
-      <div className="flex flex-col items-center bg-gray-100 min-h-screen p-6">
+      <div className="flex flex-col items-center bg-gray-100 p-6">
         <div className="relative w-full bg-white shadow-md rounded-lg">
           {/* Cover Photo */}
           <div className="w-full h-56 bg-cover bg-center rounded-t-lg bg-zinc-300">
-            {UserSession && !UserSession.data.verified && (
+            {RequestVerificationStatus && RequestVerificationStatus.data && (
+              <span
+                className={`absolute top-4 left-4 bg-red-900 text-white  px-2 py-1 rounded-md `}
+              >
+                {RequestVerificationStatus &&
+                !RequestVerificationStatus.data.verificationStatus &&
+                !RequestVerificationStatus.data.notes
+                  ? 'Revisi sedang di proses.'
+                  : `Notes: ${RequestVerificationStatus.data.notes}`}
+              </span>
+            )}
+            {RequestVerificationStatus && RequestVerificationStatus.data ? (
               <button
-                className={
+                className={`absolute top-4 right-4 bg-zinc-900 text-white px-2 py-1 rounded-md ${
                   RequestVerificationStatus &&
-                  RequestVerificationStatus.data.verificationStatus === 0
+                  !RequestVerificationStatus.data.verificationStatus &&
+                  !RequestVerificationStatus.data.notes
                     ? 'hidden'
-                    : '' +
-                      ' absolute top-4 right-4 bg-zinc-900 text-white px-2 py-1 rounded-md'
-                }
+                    : ''
+                }`}
                 onClick={handleCompleteClick}
               >
-                Lengkapi
+                {UserSession && UserSession.data.verified
+                  ? 'Revisi'
+                  : 'Lengkapi'}
+              </button>
+            ) : (
+              <button
+                className={`absolute top-4 right-4 bg-zinc-900 text-white px-2 py-1 rounded-md `}
+                onClick={handleCompleteClick}
+              >
+                {UserSession && UserSession.data.verified
+                  ? 'Revisi'
+                  : 'Lengkapi'}
               </button>
             )}
           </div>
@@ -167,19 +318,68 @@ const Profile = () => {
           {/* Profile Details */}
           {UserSession && !UserSession.data.verified ? (
             <div className="mt-20 p-4 mb-4 text-sm rounded-lg " role="alert">
-              <span className="flex  font-medium text-yellow-700 bg-yellow-100 p-4 rounded-md">
-                {RequestVerificationStatus &&
-                RequestVerificationStatus.data.verificationStatus === 0
-                  ? 'Data sedang diverifikasi.'
-                  : RequestVerificationStatus &&
-                    RequestVerificationStatus.data.verificationStatus === 1
-                  ? 'Data perlu diperbaiki! Silakan lengkapi data pribadi Anda.'
-                  : 'Akun Anda belum terverifikasi! Silakan lengkapi data pribadi Anda.'}
-              </span>
+              {RequestVerificationStatus && RequestVerificationStatus.data ? (
+                <span className="flex font-medium text-yellow-700 bg-yellow-100 p-4 rounded-md">
+                  {!RequestVerificationStatus.data.verificationStatus &&
+                  RequestVerificationStatus.data.notes
+                    ? `Permohonan ditolak: ${RequestVerificationStatus.data.notes}`
+                    : !RequestVerificationStatus.data.verificationStatus &&
+                      !RequestVerificationStatus.data.notes
+                    ? 'Data Sedang Diverifikasi'
+                    : 'Anda belum melengkapi data pribadi. Silahkan lengkapi data pribadi Anda.'}
+                </span>
+              ) : (
+                <span className="flex font-medium text-yellow-700 bg-yellow-100 p-4 rounded-md">
+                  Anda belum melengkapi data pribadi. Silahkan lengkapi data
+                  pribadi Anda.
+                </span>
+              )}
             </div>
           ) : (
-            <div className="mt-20 text-center">
-              <h1 className="text-2xl font-semibold">Danish Heilium</h1>
+            <div className="p-10 mt-10">
+              <h1 className="text-2xl font-semibold text-center">
+                {ResidentDetails &&
+                  ResidentDetails.data &&
+                  ResidentDetails.data.nama}
+              </h1>
+              <div className="text-center overflow-x-auto">
+                {/* Tabel Data */}
+                {ResidentDetails && ResidentDetails.data && (
+                  <table
+                    className={
+                      showForm
+                        ? 'hidden'
+                        : '' + ' table-auto mt-6 min-w-full bg-white'
+                    }
+                  >
+                    <tbody>
+                      {Object.entries(ResidentDetails.data).map(
+                        ([key, value]) =>
+                          key !== 'id' &&
+                          key !== 'nama' &&
+                          key !== 'foto_diri' &&
+                          key !== 'foto_ktp' &&
+                          key !== 'foto_kk' && (
+                            <tr key={key} className="">
+                              <td className="px-4 py-2 text-left font-medium">
+                                {key.replace(/_/g, ' ')}
+                              </td>
+                              <td className="px-4 py-2 text-left">
+                                {typeof value === 'string'
+                                  ? value
+                                  : typeof value === 'object' &&
+                                    value !== null &&
+                                    value.nomor_kk
+                                  ? value.nomor_kk
+                                  : 'Error Showing Data'}
+                              </td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -188,56 +388,8 @@ const Profile = () => {
             <h2 className="text-xl font-semibold mb-4">
               Lengkapi Data Pribadi
             </h2>
-            <form onSubmit={handleSubmit}>
-              {[
-                {
-                  label: 'Foto Diri',
-                  name: 'foto_diri',
-                  type: 'file',
-                  handleChange: handleFileChange,
-                },
-                {
-                  label: 'Foto KTP',
-                  name: 'foto_ktp',
-                  type: 'file',
-                  handleChange: handleFileChange,
-                },
-                {
-                  label: 'Foto Kartu Keluarga',
-                  name: 'foto_kk',
-                  type: 'file',
-                  handleChange: handleFileChange,
-                },
-                {
-                  label: 'Nomor KTP',
-                  name: 'ktpNumber',
-                  type: 'text',
-                  handleChange: handleNumberChange,
-                },
-                {
-                  label: 'Nomor KK',
-                  name: 'kkNumber',
-                  type: 'text',
-                  handleChange: handleNumberChange,
-                },
-                { label: 'Nama', name: 'name', type: 'text' },
-                { label: 'Tanggal Lahir', name: 'birthDate', type: 'date' },
-                { label: 'Tempat Lahir', name: 'birthPlace', type: 'text' },
-                { label: 'Alamat', name: 'address', type: 'textarea' },
-                { label: 'Agama', name: 'religion', type: 'text' },
-                {
-                  label: 'RT',
-                  name: 'rt',
-                  type: 'text',
-                  handleChange: handleNumberChange,
-                },
-                {
-                  label: 'RW',
-                  name: 'rw',
-                  type: 'text',
-                  handleChange: handleNumberChange,
-                },
-              ].map((field) => (
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredFields.map((field) => (
                 <Field key={field.name} className="mb-4">
                   <Label
                     htmlFor={field.name}
@@ -252,23 +404,65 @@ const Profile = () => {
                       value={formData[field.name]}
                       onChange={field.handleChange || handleChange}
                       className="mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
-                    focus:ring-0  data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900 outline-zinc-900"
+                  focus:ring-0  data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900 outline-zinc-900"
                     />
                   ) : (
                     <Input
                       id={field.name}
                       name={field.name}
                       type={field.type}
+                      disabled={
+                        ResidentDetails &&
+                        ResidentDetails.data &&
+                        [
+                          'ktpNumber',
+                          'kkNumber',
+                          'name',
+                          'birthDate',
+                          'birthPlace',
+                        ].includes(field.name)
+                      }
                       value={
                         field.type === 'file' ? undefined : formData[field.name]
                       }
                       onChange={field.handleChange || handleChange}
-                      className="mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
-                    focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
+                      className="disabled:bg-zinc-900/20 mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6 focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
                     />
                   )}
                 </Field>
               ))}
+              <Field className="mb-4">
+                <Label
+                  htmlFor="jenis_kelamin"
+                  className="text-sm font-medium leading-normal text-gray-900"
+                >
+                  Jenis Kelamin
+                </Label>
+                <div className="relative">
+                  <Select
+                    id="jenis_kelamin"
+                    name="jenis_kelamin"
+                    value={formData.jenis_kelamin}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        jenis_kelamin: e.target.value,
+                      })
+                    }
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+                  >
+                    {jenis_kelamin.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+                    aria-hidden="true"
+                  />
+                </div>
+              </Field>
               <Field className="mb-4">
                 <Label
                   htmlFor="maritalStatus"
@@ -287,11 +481,7 @@ const Profile = () => {
                         maritalStatus: e.target.value,
                       })
                     }
-                    className={clsx(
-                      'mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900',
-                      'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900',
-                      '*:text-black'
-                    )}
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
                   >
                     {maritalStatusOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -320,12 +510,11 @@ const Profile = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, job: e.target.value })
                     }
-                    className={clsx(
-                      'mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900',
-                      'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900',
-                      '*:text-black'
-                    )}
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
                   >
+                    <option key="" value="">
+                      Pilih pekerjaan
+                    </option>
                     {jobOptions.map((option) => (
                       <option key={option} value={option}>
                         {option}
@@ -339,13 +528,15 @@ const Profile = () => {
                 </div>
               </Field>
               {error && <p style={{ color: 'red' }}>Harap isi semua field</p>}
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Submit
-              </button>
             </form>
+            <button
+              disabled={disabled}
+              type="button"
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Submit
+            </button>
           </div>
         )}
       </div>

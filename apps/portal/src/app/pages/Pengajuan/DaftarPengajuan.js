@@ -1,44 +1,172 @@
-import React, { useState } from 'react';
-import { Select, Listbox } from '@headlessui/react';
+import React, { useEffect, useState } from 'react';
+import {
+  Select,
+  Listbox,
+  Field,
+  Button,
+  Input,
+  Label,
+} from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import {
+  ChevronLeftOutlined,
+  ChevronRightOutlined,
+  Cancel,
+} from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import clsx from 'clsx';
-
-const dataPengajuan = [
-  { id: 1, jenis: 'Type A', tanggal: '2024-06-18', status: 'Pending' },
-  { id: 2, jenis: 'Type B', tanggal: '2024-06-19', status: 'Approved' },
-  { id: 3, jenis: 'Type C', tanggal: '2024-06-20', status: 'Rejected' },
-  // Tambahkan data lainnya
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { getRequestList } from '../../api/actions/RequestActions';
+import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const jenisOptions = [
   { value: '', label: 'Semua' },
-  { value: 'Type A', label: 'Type A' },
-  { value: 'Type B', label: 'Type B' },
-  { value: 'Type C', label: 'Type C' },
+  { value: '1', label: 'Keterangan Domisili' },
+  { value: '2', label: 'Surat Kelahiran' },
+  { value: '3', label: 'Surat Kematian' },
 ];
 
 const statusOptions = [
   { value: '', label: 'Semua' },
-  { value: 'Pending', label: 'Pending' },
-  { value: 'Approved', label: 'Approved' },
-  { value: 'Rejected', label: 'Rejected' },
+  { value: '1', label: 'Menunggu' },
+  { value: '2', label: 'Diproses' },
+  { value: '3', label: 'Selesai' },
+  { value: '4', label: 'Ditolak' },
 ];
 
 export default function DaftarPengajuan() {
   const [jenisFilter, setJenisFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [prevSearch, setPrevSearch] = useState('');
 
-  const filteredData = dataPengajuan.filter((pengajuan) => {
-    return (
-      (jenisFilter === '' || pengajuan.jenis === jenisFilter) &&
-      (statusFilter === '' || pengajuan.status === statusFilter)
-    );
-  });
+  const RequestList = useSelector((state) => state.RequestReducers.RequestList);
+  const DoGetRequestList = useSelector(
+    (state) => state.ReduxState.DoGetRequestList
+  );
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const totalPages = RequestList ? RequestList.data.totalPages : 1;
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    handleFetchData(pageSize, newPage);
+  };
+
+  const handlePageSizeChange = (event) => {
+    const newSize = Number(event.target.value);
+    setPageSize(newSize);
+    setPage(1);
+    handleFetchData(newSize, 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      handlePageChange(page - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      handlePageChange(page + 1);
+    }
+  };
+
+  const handleRowClick = (id) => {
+    navigate(`/request/process/${id}`);
+  };
+
+  const handleSearchEnter = (e) => {
+    if (e.key === 'Enter') {
+      if (search !== prevSearch) {
+        setPrevSearch(search);
+        handleFetchData(pageSize, page, jenisFilter, statusFilter, search);
+      }
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearch('');
+    setPrevSearch('');
+    handleFetchData(pageSize, page, jenisFilter, statusFilter, '');
+  };
+
+  const handleFetchData = (
+    paginationSize = pageSize,
+    paginationPage = page,
+    typeFilter = jenisFilter,
+    statsFilter = statusFilter,
+    searchFilter = search
+  ) => {
+    const params = {
+      limit: paginationSize,
+      page: paginationPage,
+    };
+
+    if (searchFilter) {
+      params.search = searchFilter;
+    }
+
+    if (typeFilter) {
+      params.jenis_pengajuan = typeFilter;
+    }
+
+    if (statsFilter) {
+      params.status_pengajuan = statsFilter;
+    }
+
+    dispatch(getRequestList(params));
+  };
+
+  useEffect(() => {
+    handleFetchData(pageSize, page, jenisFilter, statusFilter);
+  }, [jenisFilter, statusFilter, pageSize, page]);
+
+  useEffect(() => {
+    if (DoGetRequestList) {
+      handleFetchData();
+      dispatch({ type: 'set', DoGetRequestList: false });
+    }
+  }, [DoGetRequestList]);
+
+  useEffect(() => {
+    if (!DoGetRequestList) {
+      dispatch({ type: 'set', DoGetRequestList: true });
+    }
+  }, []);
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Daftar Pengajuan</h2>
-      <div className="mb-4 flex space-x-4">
+      <div className="mb-4 flex flex-row justify-end space-x-4">
+        <div className="flex items-center mb-4">
+          <Field className="relative flex justify-center content-center items-center">
+            <Button
+              onClick={(e) => handleClearSearch()}
+              className={
+                (search === '' ? 'hidden' : 'block') +
+                ' absolute flex right-2 w-5  hover:ring-zinc-900/50 rounded-full justify-center cont items-center'
+              }
+            >
+              <Cancel className="w-3 text-zinc-900/20 hover:text-zinc-900/40 active:text-zinc-900/20" />
+            </Button>
+            <Input
+              placeholder="Cari Kode"
+              onKeyDown={(e) => handleSearchEnter(e)}
+              onChange={(e) => setSearch(e.target.value)}
+              value={search}
+              className="p-2 ring-1 ring-zinc-900/20 rounded-md"
+            ></Input>
+          </Field>
+        </div>
+      </div>
+      <div className="mb-4 flex flex-row space-x-4">
         <div className="w-1/2">
           <Listbox value={jenisFilter} onChange={setJenisFilter}>
             <Listbox.Label className="text-sm font-medium text-gray-700">
@@ -59,7 +187,7 @@ export default function DaftarPengajuan() {
                   />
                 </span>
               </Listbox.Button>
-              <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Listbox.Options className="absolute z-99 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {jenisOptions.map((option) => (
                   <Listbox.Option
                     key={option.value}
@@ -95,7 +223,6 @@ export default function DaftarPengajuan() {
             </div>
           </Listbox>
         </div>
-
         <div className="w-1/2">
           <Listbox value={statusFilter} onChange={setStatusFilter}>
             <Listbox.Label className="text-sm font-medium text-gray-700">
@@ -117,7 +244,7 @@ export default function DaftarPengajuan() {
                   />
                 </span>
               </Listbox.Button>
-              <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Listbox.Options className="absolute z-99 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {statusOptions.map((option) => (
                   <Listbox.Option
                     key={option.value}
@@ -154,30 +281,99 @@ export default function DaftarPengajuan() {
           </Listbox>
         </div>
       </div>
-
       <table className="min-w-full bg-white">
         <thead>
           <tr className="border-t border-b border-zinc-200">
-            <th className="py-2">ID</th>
+            <th className="py-2">Kode</th>
             <th className="py-2">Jenis Pengajuan</th>
             <th className="py-2">Tanggal</th>
             <th className="py-2">Status</th>
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((pengajuan) => (
-            <tr
-              key={pengajuan.id}
-              className="border-b border-zinc-200 text-center"
-            >
-              <td className="py-2">{pengajuan.id}</td>
-              <td className="py-2">{pengajuan.jenis}</td>
-              <td className="py-2">{pengajuan.tanggal}</td>
-              <td className="py-2">{pengajuan.status}</td>
+          {RequestList &&
+          RequestList.data &&
+          RequestList.data.requests &&
+          RequestList.data.requests.length > 0 ? (
+            RequestList.data.requests.map((pengajuan) => (
+              <tr
+                key={pengajuan.id}
+                onClick={() => handleRowClick(pengajuan.id)}
+                className="border-b border-zinc-200 hover:bg-zinc-100 cursor-pointer text-xs sm:text-base text-center"
+              >
+                <td className="py-2">{pengajuan.id}</td>
+                <td className="py-2">{pengajuan.type.nama}</td>
+                <td className="py-2">
+                  {moment(pengajuan.created_at).format('YYYY-MM-DD HH:mm')}
+                </td>
+                <td
+                  className={
+                    (pengajuan.status_pengajuan === 1
+                      ? 'text-yellow-600'
+                      : pengajuan.status_pengajuan === 2
+                      ? 'text-blue-600'
+                      : pengajuan.status_pengajuan === 3
+                      ? 'text-green-600'
+                      : 'text-red-600') + ' py-2'
+                  }
+                >
+                  {pengajuan.status.nama}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan="4"
+                className="py-2 text-center border-b border-zinc-200"
+              >
+                Tidak ada data
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+      <div className="flex flex-row justify-between">
+        <div className="flex flex-col content-center justify-center text-center">
+          <div className="flex gap-x-4 items-center">
+            <span className="text-sm/6 font-medium">Page Size</span>
+            <div className="relative flex items-center ">
+              <select
+                className={clsx(
+                  'mt-3 block w-[70px] appearance-none rounded-lg ring-1 ring-zinc-900/20 bg-white/5 py-1.5 px-3 text-sm/6',
+                  'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
+                  '*:text-black'
+                )}
+                value={pageSize}
+                onChange={handlePageSizeChange}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={30}>30</option>
+                <option value={40}>40</option>
+              </select>
+              <ChevronDownIcon
+                className="group pointer-events-none absolute top-1/2 right-2 w-4 fill-black/60"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-center mt-4">
+          <IconButton onClick={handlePrevious} disabled={currentPage === 1}>
+            <ChevronLeftOutlined />
+          </IconButton>
+          <span className="mx-2">
+            {currentPage} of {totalPages}
+          </span>
+          <IconButton
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRightOutlined />
+          </IconButton>
+        </div>
+      </div>
     </div>
   );
 }
