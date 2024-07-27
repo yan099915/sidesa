@@ -1,15 +1,11 @@
 function getCookie(name) {
-  const cookieString = document.cookie;
-  const cookies = cookieString.split('; ');
-
-  console.log(cookieString, cookies, 'cookieString');
-  for (let cookie of cookies) {
-    const [cookieName, cookieValue] = cookie.split('=');
-    if (cookieName === name) {
-      return cookieValue;
+  const cookieArray = document.cookie.split('').map((cookie) => cookie.trim());
+  console.log(cookieArray, 'cookieArray');
+  for (const cookie of cookieArray) {
+    if (cookie.startsWith(name + '=')) {
+      return decodeURIComponent(cookie.substring(name.length + 1));
     }
   }
-
   return null;
 }
 

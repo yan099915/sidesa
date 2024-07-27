@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import DropdownNotification from './DropDownNotification';
 import EmergencyButton from './EmergencyButton';
+
 export default function Header({ sidebarOpen, setSidebarOpen }) {
   return (
     <header className="sticky top-0 z-999  flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none shadow-md">

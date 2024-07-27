@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ProfilePic from '../../../assets/images/users.jpeg'; // Ganti dengan path gambar profil Anda
+import BatikImage from '../../../assets/images/batik.jpg'; // Ganti dengan path gambar batik
 import { CheckCircleSharp, CancelSharp } from '@mui/icons-material';
 import DefaultLayout from '../../layout/defaultLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { Label, Input, Field, Select } from '@headlessui/react';
 import toast, { Toaster } from 'react-hot-toast';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import clsx from 'clsx';
 import jobOptions from '../../js/jobOptions'; // Impor daftar pekerjaan
 import {
   checkVerificationStatus,
@@ -14,6 +14,11 @@ import {
 } from '../../api/actions/VerificationsActions';
 import { verifySession } from '../../api/actions/UsersActions';
 import { getResidentDetails } from '../../api/actions/ResidentActions';
+import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
+
+const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
+const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
+const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 
 const Profile = () => {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
@@ -23,15 +28,23 @@ const Profile = () => {
   const RequestVerification = useSelector(
     (state) => state.VerificationReducers.RequestVerification
   );
+  const errorRequestVerification = useSelector(
+    (state) => state.VerificationReducers.errorRequestVerification
+  );
   const ResidentDetails = useSelector(
     (state) => state.ResidentReducers.ResidentDetails
   );
   const DoCheckVerificationStatus = useSelector(
     (state) => state.ReduxState.DoCheckVerificationStatus
   );
+  const DataGeolocation = useSelector(
+    (state) => state.ReduxState.DataGeolocation
+  );
   const [showForm, setShowForm] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState(false);
+
+  const [emptyField, setEmptyField] = useState('');
   const [formData, setFormData] = useState({
     foto_diri: '',
     foto_ktp: '',
@@ -44,11 +57,15 @@ const Profile = () => {
     birthPlace: '',
     address: '',
     religion: '',
-    maritalStatus: { value: 'belum kawin', label: 'Belum Kawin' },
+    maritalStatus: '',
     gdarah: '',
     job: '',
     rt: '',
     rw: '',
+    lat: '',
+    lng: '',
+    hubungan: '',
+    pendidikan: '',
   });
 
   const jenis_kelamin = [
@@ -63,6 +80,57 @@ const Profile = () => {
     { value: 'kawin', label: 'Kawin' },
     { value: 'cerai hidup', label: 'Cerai Hidup' },
     { value: 'cerai mati', label: 'Cerai Mati' },
+  ];
+
+  const hubunganKeluarga = [
+    { value: '', label: 'Pilih Hubungan' },
+    { value: 'kepala', label: 'Kepala Keluarga' },
+    { value: 'isteri', label: 'isteri' },
+    { value: 'anak', label: 'Anak' },
+  ];
+
+  const golonganDarah = [
+    { value: '', label: 'Pilih Golongan Darah' },
+    { value: 'A', label: 'A' },
+    { value: 'B', label: 'B' },
+    { value: 'AB', label: 'AB' },
+    { value: 'O', label: 'O' },
+    { value: 'tidak tahu', label: 'Tidak Tahu' },
+  ];
+
+  const agama = [
+    { value: '', label: 'Pilih Agama' },
+    { value: 'islam', label: 'Islam' },
+    { value: 'protestan', label: 'Protestan' },
+    { value: 'katolik', label: 'Katolik' },
+    { value: 'budha', label: 'Budha' },
+    { value: 'hindu', label: 'Hindu' },
+    { value: 'khonghucu', label: 'Khonghucu' },
+  ];
+
+  const jenisPendidikan = [
+    { value: '', label: 'Pilih Pendidikan' },
+    { value: 'tidak_tamat_sd', label: 'Tidak tamat SD/sederajat' },
+    { value: 'tidak_pernah_sekolah', label: 'Tidak pernah sekolah' },
+    { value: 'tamat_sltp', label: 'Tamat SLTP/sederajat' },
+    { value: 'tamat_slta', label: 'Tamat SLTA/sederajat' },
+    { value: 'tamat_slb_a', label: 'Tamat SLB A/sederajat' },
+    { value: 'tamat_sd', label: 'Tamat SD/sederajat' },
+    { value: 'tamat_s3', label: 'Tamat S-3/sederajat' },
+    { value: 'tamat_s2', label: 'Tamat S-2/sederajat' },
+    { value: 'tamat_s1', label: 'Tamat S-1/sederajat' },
+    { value: 'tamat_d3', label: 'Tamat D-3/sederajat' },
+    { value: 'tamat_d2', label: 'Tamat D-2/sederajat' },
+    { value: 'tamat_d1', label: 'Tamat D-1/sederajat' },
+    { value: 'sedang_tk', label: 'Sedang TK/Kelompok Bermain' },
+    { value: 'sedang_sltp', label: 'Sedang SLTP/sederajat' },
+    { value: 'sedang_slta', label: 'Sedang SLTA/sederajat' },
+    { value: 'sedang_sd', label: 'Sedang SD/sederajat' },
+    { value: 'sedang_s2', label: 'Sedang S-2/sederajat' },
+    { value: 'sedang_s1', label: 'Sedang S-1/sederajat' },
+    { value: 'sedang_d3', label: 'Sedang D-3/sederajat' },
+    { value: 'sedang_d2', label: 'Sedang D-2/sederajat' },
+    { value: 'belum_tk', label: 'Belum TK/Kelompok Bermain' },
   ];
 
   const dispatch = useDispatch();
@@ -96,6 +164,19 @@ const Profile = () => {
     }
   };
 
+  const handleChangeLocation = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
+    }));
+  };
+
+  const handleDoubleClickMap = (e) => {
+    const { lat, lng } = e.detail.latLng;
+    setFormData((prevData) => ({ ...prevData, lat: lat, lng: lng }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Create FormData instance
@@ -108,6 +189,7 @@ const Profile = () => {
         dataForm.append(key, formData[key]);
       } else {
         hasEmptyField = true;
+        setEmptyField(key);
         break; // Exit loop if any field is empty
       }
     }
@@ -139,7 +221,20 @@ const Profile = () => {
       });
       // setDisabled(false);
     }
-  }, [RequestVerification]);
+  }, [RequestVerification, dispatch]);
+
+  useEffect(() => {
+    if (errorRequestVerification) {
+      toast.error(errorRequestVerification, {
+        id: 'submitting-data',
+      });
+      dispatch({
+        type: 'REQUEST_VERIFICATION',
+        payload: { data: false, errorMessage: false },
+      });
+      setDisabled(false);
+    }
+  }, [errorRequestVerification]);
 
   useEffect(() => {
     if (UserSession) {
@@ -178,17 +273,25 @@ const Profile = () => {
         maritalStatus: ResidentDetails.data.status_perkawinan || 'belum kawin',
         gdarah: ResidentDetails.data.golongan_darah || '',
         job: ResidentDetails.data.pekerjaan || '',
-        rt: ResidentDetails.data.rt || '',
-        rw: ResidentDetails.data.rw || '',
+        rt: ResidentDetails.data.rt || '0',
+        rw: ResidentDetails.data.rw || '0',
       }));
     }
   }, [ResidentDetails]);
 
   useEffect(() => {
-    if (UserSession) {
-      dispatch({ type: 'set', DoCheckVerificationStatus: true });
-    }
+    dispatch({ type: 'set', DoCheckVerificationStatus: true });
   }, []);
+
+  useEffect(() => {
+    if (DataGeolocation) {
+      setFormData((prevData) => ({
+        ...prevData,
+        lat: DataGeolocation.lat,
+        lng: DataGeolocation.lng,
+      }));
+    }
+  }, [DataGeolocation]);
 
   const fields = [
     {
@@ -222,11 +325,9 @@ const Profile = () => {
       handleChange: handleNumberChange,
     },
     { label: 'Nama', name: 'name', type: 'text' },
-    { label: 'Golongan Darah', name: 'gdarah', type: 'text' },
     { label: 'Tanggal Lahir', name: 'birthDate', type: 'date' },
     { label: 'Tempat Lahir', name: 'birthPlace', type: 'text' },
     { label: 'Alamat', name: 'address', type: 'textarea' },
-    { label: 'Agama', name: 'religion', type: 'text' },
     {
       label: 'RT',
       name: 'rt',
@@ -249,29 +350,21 @@ const Profile = () => {
       ? fields.filter((field) => !['foto_ktp', 'foto_kk'].includes(field.name))
       : fields;
 
+  console.log(RequestVerificationStatus, 'RequestVerificationStatus');
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center bg-gray-100 p-6">
         <div className="relative w-full bg-white shadow-md rounded-lg">
           {/* Cover Photo */}
-          <div className="w-full h-56 bg-cover bg-center rounded-t-lg bg-zinc-300">
-            {RequestVerificationStatus && RequestVerificationStatus.data && (
-              <span
-                className={`absolute top-4 left-4 bg-red-900 text-white  px-2 py-1 rounded-md `}
-              >
-                {RequestVerificationStatus &&
-                !RequestVerificationStatus.data.verificationStatus &&
-                !RequestVerificationStatus.data.notes
-                  ? 'Revisi sedang di proses.'
-                  : `Notes: ${RequestVerificationStatus.data.notes}`}
-              </span>
-            )}
+          <div
+            className="w-full h-56 bg-cover bg-center rounded-t-lg"
+            style={{ backgroundImage: `url(${BatikImage})` }}
+          >
             {RequestVerificationStatus && RequestVerificationStatus.data ? (
               <button
-                className={`absolute top-4 right-4 bg-zinc-900 text-white px-2 py-1 rounded-md ${
+                className={`absolute top-4 right-4 bg-blue-500 text-white px-2 py-1 rounded-md ${
                   RequestVerificationStatus &&
-                  !RequestVerificationStatus.data.verificationStatus &&
-                  !RequestVerificationStatus.data.notes
+                  RequestVerificationStatus.data.status === 1
                     ? 'hidden'
                     : ''
                 }`}
@@ -281,25 +374,34 @@ const Profile = () => {
                   ? 'Revisi'
                   : 'Lengkapi'}
               </button>
-            ) : (
+            ) : RequestVerificationStatus && !RequestVerificationStatus.data ? (
               <button
-                className={`absolute top-4 right-4 bg-zinc-900 text-white px-2 py-1 rounded-md `}
+                className={`absolute top-4 right-4 bg-blue-500 text-white px-2 py-1 rounded-md`}
                 onClick={handleCompleteClick}
               >
-                {UserSession && UserSession.data.verified
-                  ? 'Revisi'
-                  : 'Lengkapi'}
+                Lengkapi
               </button>
+            ) : (
+              ''
             )}
           </div>
           {/* Profile Photo */}
           <div className="relative flex justify-center">
-            <div className="absolute -top-16 w-32 h-32 rounded-full border-4 border-white">
-              <img
-                src={ProfilePic}
-                alt="Profile"
-                className="rounded-full w-full h-full object-cover"
-              />
+            <div className="absolute -top-16 w-32 h-32 rounded-full border-2 bg-white border-blue-500">
+              {ResidentDetails.data && ResidentDetails.data.foto_diri ? (
+                <img
+                  src={`${DOMAIN}/assets/files/foto_diri/${ResidentDetails.data.foto_diri}`}
+                  alt="Profile"
+                  className="rounded-full w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src={ProfilePic}
+                  alt="Profile"
+                  className="rounded-full w-full h-full object-cover"
+                />
+              )}
+
               <div className="absolute flex bottom-1 right-1 bg-white items-center rounded-full w-[25px] h-[25px] text-center">
                 {UserSession && UserSession.data.verified ? (
                   <CheckCircleSharp
@@ -320,13 +422,11 @@ const Profile = () => {
             <div className="mt-20 p-4 mb-4 text-sm rounded-lg " role="alert">
               {RequestVerificationStatus && RequestVerificationStatus.data ? (
                 <span className="flex font-medium text-yellow-700 bg-yellow-100 p-4 rounded-md">
-                  {!RequestVerificationStatus.data.verificationStatus &&
-                  RequestVerificationStatus.data.notes
-                    ? `Permohonan ditolak: ${RequestVerificationStatus.data.notes}`
-                    : !RequestVerificationStatus.data.verificationStatus &&
-                      !RequestVerificationStatus.data.notes
+                  {RequestVerificationStatus.data.status === 1
                     ? 'Data Sedang Diverifikasi'
-                    : 'Anda belum melengkapi data pribadi. Silahkan lengkapi data pribadi Anda.'}
+                    : RequestVerificationStatus.data.status === 3
+                    ? `Permohonan ditolak: ${RequestVerificationStatus.data.notes}`
+                    : ''}
                 </span>
               ) : (
                 <span className="flex font-medium text-yellow-700 bg-yellow-100 p-4 rounded-md">
@@ -357,15 +457,19 @@ const Profile = () => {
                         ([key, value]) =>
                           key !== 'id' &&
                           key !== 'nama' &&
+                          key !== 'keluarga' &&
                           key !== 'foto_diri' &&
                           key !== 'foto_ktp' &&
-                          key !== 'foto_kk' && (
+                          key !== 'foto_kk' &&
+                          key !== 'createdAt' &&
+                          key !== 'updatedAt' && (
                             <tr key={key} className="">
                               <td className="px-4 py-2 text-left font-medium">
                                 {key.replace(/_/g, ' ')}
                               </td>
                               <td className="px-4 py-2 text-left">
-                                {typeof value === 'string'
+                                {typeof value === 'string' ||
+                                typeof value === 'number'
                                   ? value
                                   : typeof value === 'object' &&
                                     value !== null &&
@@ -432,6 +536,33 @@ const Profile = () => {
                 </Field>
               ))}
               <Field className="mb-4">
+                <Label className="text-sm font-medium leading-normal text-gray-900">
+                  Agama
+                </Label>
+                <div className="relative">
+                  <Select
+                    value={formData.religion}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        religion: e.target.value,
+                      })
+                    }
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+                  >
+                    {agama.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+                    aria-hidden="true"
+                  />
+                </div>
+              </Field>
+              <Field className="mb-4">
                 <Label
                   htmlFor="jenis_kelamin"
                   className="text-sm font-medium leading-normal text-gray-900"
@@ -452,6 +583,30 @@ const Profile = () => {
                     className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
                   >
                     {jenis_kelamin.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+                    aria-hidden="true"
+                  />
+                </div>
+              </Field>
+              <Field className="mb-4">
+                <Label className="text-sm font-medium leading-normal text-gray-900">
+                  Golongan darah
+                </Label>
+                <div className="relative">
+                  <Select
+                    value={formData.gdarah}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gdarah: e.target.value })
+                    }
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+                  >
+                    {golonganDarah.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
@@ -527,8 +682,90 @@ const Profile = () => {
                   />
                 </div>
               </Field>
-              {error && <p style={{ color: 'red' }}>Harap isi semua field</p>}
+              <Field className="mb-4">
+                <Label className="text-sm font-medium leading-normal text-gray-900">
+                  Pendidikan
+                </Label>
+                <div className="relative">
+                  <Select
+                    id="job"
+                    name="job"
+                    value={formData.pendidikan}
+                    onChange={(e) =>
+                      setFormData({ ...formData, pendidikan: e.target.value })
+                    }
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+                  >
+                    {jenisPendidikan.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+                    aria-hidden="true"
+                  />
+                </div>
+              </Field>
+              <Field className="mb-4">
+                <Label
+                  htmlFor="job"
+                  className="text-sm font-medium leading-normal text-gray-900"
+                >
+                  Hubungan Dalam Keluarga
+                </Label>
+                <div className="relative">
+                  <Select
+                    id="job"
+                    name="job"
+                    value={formData.hubungan}
+                    onChange={(e) =>
+                      setFormData({ ...formData, hubungan: e.target.value })
+                    }
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+                  >
+                    {hubunganKeluarga.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+                    aria-hidden="true"
+                  />
+                </div>
+              </Field>
             </form>
+            <Field className="flex flex-col gap-4 mb-6 w-full">
+              <Label className="text-sm  font-medium leading-normal text-gray-900">
+                Pin Lokasi Rumah
+              </Label>
+              <APIProvider apiKey={GMAPS_APIKEY} libraries={['marker']}>
+                <div className="flex w-full h-[300px]">
+                  <Map
+                    mapId={GMAPS_ID}
+                    defaultZoom={18}
+                    defaultCenter={DataGeolocation}
+                    gestureHandling={'greedy'}
+                    onDblclick={(e) => handleDoubleClickMap(e)}
+                  >
+                    {/* advanced marker with html-content */}
+                    <AdvancedMarker
+                      position={{ lat: formData.lat, lng: formData.lng }}
+                      onDragEnd={(e) => handleChangeLocation(e)}
+                      draggable={true}
+                    ></AdvancedMarker>
+                  </Map>
+                </div>
+              </APIProvider>
+            </Field>
+            {error && (
+              <p style={{ color: 'red' }}>
+                Harap isi semua field, {emptyField} tidak boleh kosong.
+              </p>
+            )}
             <button
               disabled={disabled}
               type="button"

@@ -7,6 +7,8 @@ const initialState = {
   errorCreateRequest: false,
   RequestDetails: false,
   errorRequestDetails: false,
+  UpdateRequest: false,
+  errorUpdateRequest: false,
 };
 
 const RequestReducers = (state = initialState, action) => {
@@ -34,6 +36,12 @@ const RequestReducers = (state = initialState, action) => {
         ...state,
         RequestDetails: action.payload.data,
         errorRequestDetails: action.payload.errorMessage,
+      };
+    case 'UPDATE_REQUEST':
+      return {
+        ...state,
+        UpdateRequest: action.payload.data,
+        errorUpdateRequest: action.payload.errorMessage,
       };
     default:
       return state;

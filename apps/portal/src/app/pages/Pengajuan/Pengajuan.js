@@ -46,10 +46,10 @@ const Pengajuan = () => {
                   key={item.key}
                   to={item.path}
                   className={() =>
-                    `relative py-4 px-4 font-semibold ${
+                    `relative py-4 px-4 font-semibold text-xs sm:text-base ${
                       isPathActive(item.path)
                         ? 'text-zinc-900 border-b-2 border-zinc-500 pb-[calc(0.5rem-2px)]'
-                        : 'text-gray-700 pb-2 hover:bg-zinc-100'
+                        : 'text-gray-700 pb-2 hover:bg-zinc-100 '
                     }`
                   }
                 >

@@ -106,61 +106,67 @@ export default function RiwayatPengajuan() {
           </Link>
         </div>
       </div>
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr className="border-t border-b border-zinc-200">
-            <th className="py-2">Kode</th>
-            <th className="py-2">Jenis Pengajuan</th>
-            <th className="py-2">Tanggal</th>
-            <th className="py-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {RequestHistoryData &&
-          RequestHistoryData.data &&
-          RequestHistoryData.data.requests &&
-          RequestHistoryData.data.requests.length > 0 ? (
-            RequestHistoryData.data.requests.map((pengajuan) => (
-              <tr
-                key={pengajuan.id}
-                onClick={() => handleRowClick(pengajuan.id)}
-                className="border-b border-zinc-200 hover:bg-zinc-100 cursor-pointer text-xs sm:text-base text-center"
-              >
-                <td className="py-2">{pengajuan.id}</td>
-                <td className="py-2">{pengajuan.type.nama}</td>
-                <td className="py-2">
-                  {moment(pengajuan.created_at).format('YYYY-MM-DD HH:mm')}
-                </td>
-                <td
-                  className={
-                    (pengajuan.status_pengajuan === 1
-                      ? 'text-yellow-600'
-                      : pengajuan.status_pengajuan === 2
-                      ? 'text-blue-600'
-                      : pengajuan.status_pengajuan === 3
-                      ? 'text-green-600'
-                      : 'text-red-600') + ' py-2'
-                  }
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full bg-white ">
+          <thead>
+            <tr className="border-t border-b border-zinc-200 text-xs sm:text-base">
+              <th className="py-2">Kode</th>
+              <th className="py-2">Jenis Pengajuan</th>
+              <th className="py-2">Jenis TTD</th>
+              <th className="py-2">Tanggal</th>
+              <th className="py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RequestHistoryData &&
+            RequestHistoryData.data &&
+            RequestHistoryData.data.requests &&
+            RequestHistoryData.data.requests.length > 0 ? (
+              RequestHistoryData.data.requests.map((pengajuan) => (
+                <tr
+                  key={pengajuan.id}
+                  onClick={() => handleRowClick(pengajuan.id)}
+                  className="border-b border-zinc-200 hover:bg-zinc-100 cursor-pointer text-xs sm:text-base text-center"
                 >
-                  {pengajuan.status.nama}
+                  <td className="py-2">{pengajuan.id}</td>
+                  <td className="py-2">{pengajuan.type.nama}</td>
+                  <td className="py-2">
+                    {pengajuan.jenis_ttd === 2 ? 'Basah' : 'Digital'}
+                  </td>
+                  <td className="py-2">
+                    {moment(pengajuan.created_at).format('YYYY-MM-DD HH:mm')}
+                  </td>
+                  <td
+                    className={
+                      (pengajuan.status_pengajuan === 1
+                        ? 'text-yellow-600'
+                        : pengajuan.status_pengajuan === 2
+                        ? 'text-blue-600'
+                        : pengajuan.status_pengajuan === 3
+                        ? 'text-green-600'
+                        : 'text-red-600') + ' py-2'
+                    }
+                  >
+                    {pengajuan.status.nama}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="4"
+                  className="py-2 text-center border-b border-zinc-200"
+                >
+                  Tidak ada data
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                colSpan="4"
-                className="py-2 text-center border-b border-zinc-200"
-              >
-                Tidak ada data
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
       <div className="flex flex-row justify-between">
         <div className="flex flex-col content-center justify-center text-center">
-          <div className="flex gap-x-4 items-center">
+          <div className="flex gap-x-4 items-center text-xs sm:text-base">
             <span className="text-sm/6 font-medium">Page Size</span>
             <div className="relative flex items-center ">
               <select
@@ -184,11 +190,11 @@ export default function RiwayatPengajuan() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-4 text-xs sm:text-base">
           <IconButton onClick={handlePrevious} disabled={currentPage === 1}>
             <ChevronLeftOutlined />
           </IconButton>
-          <span className="mx-2">
+          <span className="sm:mx-2">
             {currentPage} of {totalPages}
           </span>
           <IconButton

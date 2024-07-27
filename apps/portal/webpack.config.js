@@ -1,5 +1,6 @@
 const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
 const { NxReactWebpackPlugin } = require('@nx/react/webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { join } = require('path');
 
 module.exports = {
@@ -8,6 +9,18 @@ module.exports = {
   },
   devServer: {
     port: 4200,
+  },
+  resolve: {
+    extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx|js|jsx)$/,
+        exclude: /node_modules/,
+        use: { loader: 'babel-loader' },
+      },
+    ],
   },
   plugins: [
     new NxAppWebpackPlugin({
@@ -26,5 +39,6 @@ module.exports = {
       // See: https://react-svgr.com/
       // svgr: false
     }),
+    new NodePolyfillPlugin(),
   ],
 };

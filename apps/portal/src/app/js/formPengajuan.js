@@ -18,6 +18,24 @@ export const formKematian = [
     disabled: false,
   },
   {
+    label: 'Tempat Kematian',
+    name: 'tempat_kematian',
+    type: 'textarea',
+    disabled: false,
+  },
+  {
+    label: 'Tanggal Pemakaman',
+    name: 'tanggal_pemakaman',
+    type: 'date',
+    disabled: false,
+  },
+  {
+    label: 'Tempat Pemakaman',
+    name: 'tempat_pemakaman',
+    type: 'textarea',
+    disabled: false,
+  },
+  {
     label: 'Anggota Keluarga yang menggingal',
     name: 'anggota_keluarga',
     type: 'select',
@@ -25,6 +43,15 @@ export const formKematian = [
     disabled: false,
   },
   { label: 'Keterangan Tambahan', name: 'keterangan', type: 'textarea' },
+  {
+    label: 'Jenis Tanda Tangan',
+    name: 'jenis_ttd',
+    type: 'select',
+    options: [
+      { label: 'Digital', value: 1 },
+      { label: 'Basah', value: 2 },
+    ],
+  },
 ];
 
 export const formKelahiran = [
@@ -102,10 +129,26 @@ export const formDomisili = [
   { label: 'RT', name: 'rt', type: 'text', disabled: true },
   { label: 'RW', name: 'rw', type: 'text', disabled: true },
   {
+    label: 'Surat dibuat untuk',
+    name: 'anggota_keluarga',
+    type: 'select',
+    options: [],
+    disabled: false,
+  },
+  {
     label: 'Keterangan Keperluan Surat',
     name: 'keterangan',
     type: 'textarea',
     disabled: false,
+  },
+  {
+    label: 'Jenis Tanda Tangan',
+    name: 'jenis_ttd',
+    type: 'select',
+    options: [
+      { label: 'Digital', value: 1 },
+      { label: 'Basah', value: 2 },
+    ],
   },
 ];
 
@@ -116,12 +159,12 @@ export const jenisPengajuan = [
     value: 3,
     form: formKematian,
   },
-  {
-    label: 'Surat Kelahiran',
-    name: 'surat_kelahiran',
-    value: 2,
-    form: formKelahiran,
-  },
+  // {
+  //   label: 'Surat Kelahiran',
+  //   name: 'surat_kelahiran',
+  //   value: 2,
+  //   form: formKelahiran,
+  // },
   {
     label: 'Keterangan Domisili ',
     name: 'keterangan_domisili',

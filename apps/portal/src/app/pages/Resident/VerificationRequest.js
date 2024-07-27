@@ -7,6 +7,7 @@ import { ChevronLeftOutlined, ChevronRightOutlined } from '@mui/icons-material';
 import clsx from 'clsx';
 import { IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { verifySession } from '../../api/actions/UsersActions';
 
 export default function VerificationRequest() {
   const [page, setPage] = useState(1);
@@ -66,6 +67,7 @@ export default function VerificationRequest() {
 
   useEffect(() => {
     if (DoGetVerificationData) {
+      dispatch(verifySession());
       const params = {
         limit: pageSize,
         page: page,
@@ -96,7 +98,8 @@ export default function VerificationRequest() {
         </thead>
         <tbody>
           {VerificationRequestData &&
-          VerificationRequestData.data.verifications ? (
+          VerificationRequestData.data.verifications &&
+          VerificationRequestData.data.verifications.length > 0 ? (
             VerificationRequestData.data.verifications.map((data) => (
               <tr
                 key={data.id}
@@ -107,13 +110,19 @@ export default function VerificationRequest() {
                 <td className="py-2">{data.nama}</td>
                 <td className="py-2">
                   <p
-                    className={data.status ? 'text-green-500' : 'text-red-500'}
+                    className={
+                      data.verification_status.id === 1
+                        ? 'text-blue-500'
+                        : data.verification_status.id === 2
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                    }
                   >
-                    {data.status
+                    {data.verification_status.id === 1
+                      ? 'Pending'
+                      : data.verification_status.id === 2
                       ? 'Approved'
-                      : !data.status && data.notes
-                      ? 'Need to revise'
-                      : 'Pending'}
+                      : 'Rejected'}
                   </p>
                 </td>
                 <td className="py-2">
@@ -126,7 +135,12 @@ export default function VerificationRequest() {
             ))
           ) : (
             <tr>
-              <td className="col-span-5 text-center">No Data Found</td>
+              <td
+                colSpan="5"
+                className="py-2 text-center border-b border-zinc-200"
+              >
+                Tidak ada data
+              </td>
             </tr>
           )}
         </tbody>

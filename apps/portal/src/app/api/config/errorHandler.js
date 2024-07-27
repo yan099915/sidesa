@@ -3,19 +3,18 @@
 
 export default function errorHandler(error) {
   // console.log(error.message);
-  const navigate = useNavigate();
   if (error) {
     let message;
     if (error.response) {
       // console.log(error, "Error response")
       console.log(error?.response?.data?.message, 'Error response');
       if (
-        error?.response?.data?.message === 'Unauthorized' ||
-        error?.response?.data?.message === 'Token expired'
+        error?.response?.data?.message === 'Unauthorized' &&
+        error?.response?.config?.url !== '/session'
       ) {
-        // localStorage.clear();
-        // navigate('/login');
-        // window.location.reload();
+        localStorage.clear();
+        // window.location.replace('/#/login');
+        // window.location.origin.reload();
       }
       if (error.response.status === 500) {
         message = 'Something went terribly wrong';

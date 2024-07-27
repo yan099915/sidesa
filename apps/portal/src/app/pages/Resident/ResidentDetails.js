@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getResidentDetails } from '../../api/actions/ResidentActions';
-import { Cancel, CheckCircle, OpenInNew, Close } from '@mui/icons-material';
+import { OpenInNew, Close } from '@mui/icons-material';
 
+const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 export default function ResidentDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -61,7 +62,18 @@ export default function ResidentDetails() {
     <div>
       <div>
         {/* Form Pengajuan */}
-        <h2 className="text-xl font-semibold pb-4">Details Penduduk</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold pb-4">Details Penduduk</h2>
+          <div className="my-4">
+            <button
+              type="button"
+              onClick={() => navigate('/resident')}
+              className="px-4 py-2 bg-zinc-900 text-white rounded"
+            >
+              Back
+            </button>
+          </div>
+        </div>
         <div>
           {ResidentDetails && ResidentDetails.data ? (
             <div className="overflow-x-auto">
@@ -89,7 +101,7 @@ export default function ResidentDetails() {
                               className="text-blue-500 hover:underline"
                               onClick={() =>
                                 handleViewImage(
-                                  `https://sidera.my.id/assets/files/${key}/${ResidentDetails.data[key]}`
+                                  `${DOMAIN}/assets/files/${key}/${ResidentDetails.data[key]}`
                                 )
                               }
                             >
@@ -114,15 +126,6 @@ export default function ResidentDetails() {
           ) : (
             ''
           )}
-        </div>
-        <div className="my-4">
-          <button
-            type="button"
-            onClick={() => navigate('/resident')}
-            className="px-4 py-2 bg-zinc-900 text-white rounded"
-          >
-            Kembali
-          </button>
         </div>
       </div>
       {selectedImage && (

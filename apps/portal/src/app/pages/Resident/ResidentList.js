@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { getResidents } from '../../api/actions/ResidentActions';
 import { Button, Field, Input, Label } from '@headlessui/react';
+import { verifySession } from '../../api/actions/UsersActions';
 
 export default function ResidentList() {
   const [page, setPage] = useState(1);
@@ -91,6 +92,7 @@ export default function ResidentList() {
 
   useEffect(() => {
     if (DoGetResidents) {
+      dispatch(verifySession());
       const param = {
         page: 1,
         limit: 10,
@@ -106,7 +108,7 @@ export default function ResidentList() {
     }
   }, []);
 
-  console.log(Residents, 'Residents');
+  // console.log(Residents, 'Residents');
   // Jika ada riwayat pengajuan, tampilkan tabel
   return (
     <div>

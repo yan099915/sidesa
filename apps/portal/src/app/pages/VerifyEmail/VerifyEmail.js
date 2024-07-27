@@ -26,10 +26,6 @@ export default function VerifyEmail() {
     navigate('/login');
   };
 
-  const handleResendEmailRedirect = () => {
-    navigate('/resend-email');
-  };
-
   useEffect(() => {
     const verifyToken = async () => {
       if (token) {

@@ -11,19 +11,17 @@ import {
   PersonOutlineOutlined,
   HomeOutlined,
   ArticleOutlined,
+  HistoryEduOutlined,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
+
+const version = process.env.NX_PUBLIC_APP_VERSION;
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const trigger = useRef(null);
   const sidebar = useRef(null);
   const [loading, setLoading] = useState(true);
-
   const UserMenu = useSelector((state) => state.UsersReducers.UserMenu);
-  const DoGetVerificationData = useSelector(
-    (state) => state.ReduxState.DoGetVerificationData
-  );
-  const dispatch = useDispatch();
 
   const menuMap = {
     home: { path: '/', icon: <HomeOutlined className="h-5 w-5" /> },
@@ -51,6 +49,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       path: '/article',
       icon: <ArticleOutlined className="h-5 w-5" />,
     },
+    sign: {
+      path: '/sign',
+      icon: <HistoryEduOutlined className="h-5 w-5" />,
+    },
   };
 
   const menuItems =
@@ -62,9 +64,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   useEffect(() => {
     if (UserMenu) {
+      console.log('wakwoak');
       setLoading(false);
     }
   }, [UserMenu]);
+
   return (
     <aside
       ref={sidebar}
@@ -121,6 +125,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 ))}
           </div>
         </nav>
+      </div>
+      <div className=" px-4 absolute z-99999 bottom-2">
+        <p>Dev v{version}</p>
       </div>
     </aside>
   );

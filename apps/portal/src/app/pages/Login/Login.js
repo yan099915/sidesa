@@ -19,6 +19,7 @@ export default function Login() {
   const isFormValid = email !== '' && password !== '';
 
   const UserLogin = useSelector((state) => state.UsersReducers.UserLogin);
+  const DoSetLogin = useSelector((state) => state.ReduxState.DoSetLogin);
   const errorUserLogin = useSelector(
     (state) => state.UsersReducers.errorUserLogin
   );
@@ -48,11 +49,12 @@ export default function Login() {
 
   // if login was successful, store the email in local storage and navigate to email confirmation page
   useEffect(() => {
-    if (UserLogin) {
+    if (UserLogin && DoSetLogin) {
       setTimeout(() => {
         dispatch({
           type: 'set',
           LoginStatus: true,
+          DoSetLogin: false,
         });
         dispatch(verifySession());
         dispatch(getMenu());
@@ -81,6 +83,15 @@ export default function Login() {
       setLogining(false);
     }
   }, [errorUserLogin]);
+
+  useEffect(() => {
+    if (!DoSetLogin) {
+      dispatch({
+        type: 'set',
+        DoSetLogin: true,
+      });
+    }
+  }, []);
 
   return (
     <div className="flex flex-col relative h-full p-8 border border-blue-500 bg-gray-100/50 items-center">

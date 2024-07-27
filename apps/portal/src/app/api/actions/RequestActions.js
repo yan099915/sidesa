@@ -138,3 +138,40 @@ export const getRequestDetails = (param) => async (dispatch) => {
       }
     });
 };
+
+// update request start here
+export const updateRequest = (data) => async (dispatch) => {
+  console.log(data, 'data requestnya');
+  await axios
+    .post('/request-update', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
+      if (response.data) {
+        dispatch({
+          type: 'UPDATE_REQUEST',
+          payload: { data: response.data, errorMessage: false },
+        });
+      } else {
+        dispatch({
+          type: 'UPDATE_REQUEST',
+          payload: { data: response, errorMessage: false },
+        });
+      }
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'UPDATE_REQUEST',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'UPDATE_REQUEST',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};

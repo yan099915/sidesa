@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 const jenisOptions = [
   { value: '', label: 'Semua' },
   { value: '1', label: 'Keterangan Domisili' },
-  { value: '2', label: 'Surat Kelahiran' },
+  // { value: '2', label: 'Surat Kelahiran' },
   { value: '3', label: 'Surat Kematian' },
 ];
 
@@ -60,6 +60,7 @@ export default function DaftarPengajuan() {
 
   const handlePageSizeChange = (event) => {
     const newSize = Number(event.target.value);
+
     setPageSize(newSize);
     setPage(1);
     handleFetchData(newSize, 1);
@@ -127,7 +128,7 @@ export default function DaftarPengajuan() {
 
   useEffect(() => {
     handleFetchData(pageSize, page, jenisFilter, statusFilter);
-  }, [jenisFilter, statusFilter, pageSize, page]);
+  }, [jenisFilter, statusFilter]);
 
   useEffect(() => {
     if (DoGetRequestList) {
@@ -161,7 +162,7 @@ export default function DaftarPengajuan() {
               onKeyDown={(e) => handleSearchEnter(e)}
               onChange={(e) => setSearch(e.target.value)}
               value={search}
-              className="p-2 ring-1 ring-zinc-900/20 rounded-md"
+              className="text-xs sm:text-sm p-2 ring-1 ring-zinc-900/20 rounded-md"
             ></Input>
           </Field>
         </div>
@@ -169,11 +170,11 @@ export default function DaftarPengajuan() {
       <div className="mb-4 flex flex-row space-x-4">
         <div className="w-1/2">
           <Listbox value={jenisFilter} onChange={setJenisFilter}>
-            <Listbox.Label className="text-sm font-medium text-gray-700">
+            <Listbox.Label className="text-xs sm:text-sm font-medium text-gray-700">
               Jenis Pengajuan:
             </Listbox.Label>
             <div className="relative mt-1">
-              <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none">
+              <Listbox.Button className="relative text-xs sm:text-sm w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none">
                 <span className="block truncate">
                   {
                     jenisOptions.find((option) => option.value === jenisFilter)
@@ -187,7 +188,7 @@ export default function DaftarPengajuan() {
                   />
                 </span>
               </Listbox.Button>
-              <Listbox.Options className="absolute z-99 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Listbox.Options className="absolute text-xs sm:text-sm z-99 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {jenisOptions.map((option) => (
                   <Listbox.Option
                     key={option.value}
@@ -225,11 +226,11 @@ export default function DaftarPengajuan() {
         </div>
         <div className="w-1/2">
           <Listbox value={statusFilter} onChange={setStatusFilter}>
-            <Listbox.Label className="text-sm font-medium text-gray-700">
+            <Listbox.Label className="text-xs sm:text-sm font-medium text-gray-700">
               Status:
             </Listbox.Label>
             <div className="relative mt-1">
-              <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none">
+              <Listbox.Button className="relative text-xs sm:text-sm w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none">
                 <span className="block truncate">
                   {
                     statusOptions.find(
@@ -244,7 +245,7 @@ export default function DaftarPengajuan() {
                   />
                 </span>
               </Listbox.Button>
-              <Listbox.Options className="absolute z-99 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Listbox.Options className="absolute text-xs sm:text-sm z-99 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {statusOptions.map((option) => (
                   <Listbox.Option
                     key={option.value}
@@ -281,61 +282,67 @@ export default function DaftarPengajuan() {
           </Listbox>
         </div>
       </div>
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr className="border-t border-b border-zinc-200">
-            <th className="py-2">Kode</th>
-            <th className="py-2">Jenis Pengajuan</th>
-            <th className="py-2">Tanggal</th>
-            <th className="py-2">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {RequestList &&
-          RequestList.data &&
-          RequestList.data.requests &&
-          RequestList.data.requests.length > 0 ? (
-            RequestList.data.requests.map((pengajuan) => (
-              <tr
-                key={pengajuan.id}
-                onClick={() => handleRowClick(pengajuan.id)}
-                className="border-b border-zinc-200 hover:bg-zinc-100 cursor-pointer text-xs sm:text-base text-center"
-              >
-                <td className="py-2">{pengajuan.id}</td>
-                <td className="py-2">{pengajuan.type.nama}</td>
-                <td className="py-2">
-                  {moment(pengajuan.created_at).format('YYYY-MM-DD HH:mm')}
-                </td>
-                <td
-                  className={
-                    (pengajuan.status_pengajuan === 1
-                      ? 'text-yellow-600'
-                      : pengajuan.status_pengajuan === 2
-                      ? 'text-blue-600'
-                      : pengajuan.status_pengajuan === 3
-                      ? 'text-green-600'
-                      : 'text-red-600') + ' py-2'
-                  }
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr className="border-t border-b border-zinc-200 text-xs sm:text-base">
+              <th className="py-2">Kode</th>
+              <th className="py-2">Jenis Pengajuan</th>
+              <th className="py-2">Jenis TTD</th>
+              <th className="py-2">Tanggal</th>
+              <th className="py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RequestList &&
+            RequestList.data &&
+            RequestList.data.requests &&
+            RequestList.data.requests.length > 0 ? (
+              RequestList.data.requests.map((pengajuan) => (
+                <tr
+                  key={pengajuan.id}
+                  onClick={() => handleRowClick(pengajuan.id)}
+                  className="border-b border-zinc-200 hover:bg-zinc-100 cursor-pointer text-xs sm:text-base text-center"
                 >
-                  {pengajuan.status.nama}
+                  <td className="py-2">{pengajuan.id}</td>
+                  <td className="py-2">{pengajuan.type.nama}</td>
+                  <td className="py-2">
+                    {pengajuan.jenis_ttd === 2 ? 'Basah' : 'Digital'}
+                  </td>
+                  <td className="py-2">
+                    {moment(pengajuan.created_at).format('YYYY-MM-DD HH:mm')}
+                  </td>
+                  <td
+                    className={
+                      (pengajuan.status_pengajuan === 1
+                        ? 'text-yellow-600'
+                        : pengajuan.status_pengajuan === 2
+                        ? 'text-blue-600'
+                        : pengajuan.status_pengajuan === 3
+                        ? 'text-green-600'
+                        : 'text-red-600') + ' py-2'
+                    }
+                  >
+                    {pengajuan.status.nama}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="4"
+                  className="py-2 text-center border-b border-zinc-200"
+                >
+                  Tidak ada data
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                colSpan="4"
-                className="py-2 text-center border-b border-zinc-200"
-              >
-                Tidak ada data
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
       <div className="flex flex-row justify-between">
         <div className="flex flex-col content-center justify-center text-center">
-          <div className="flex gap-x-4 items-center">
+          <div className="flex gap-x-4 items-center text-xs sm:text-base">
             <span className="text-sm/6 font-medium">Page Size</span>
             <div className="relative flex items-center ">
               <select
@@ -359,7 +366,7 @@ export default function DaftarPengajuan() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-4 text-xs sm:text-base">
           <IconButton onClick={handlePrevious} disabled={currentPage === 1}>
             <ChevronLeftOutlined />
           </IconButton>

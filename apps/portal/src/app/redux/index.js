@@ -6,6 +6,8 @@ import VerificationReducers from './VerificationReducers';
 import ResidentReducers from './ResidentReducers';
 import FamilyReducers from './FamilyReducers';
 import RequestReducers from './RequestReducers';
+import NotificationReducers from './NotificationReducers';
+import EmergencyReducers from './EmergencyReducers';
 
 // Middleware
 const middleware = [thunk];
@@ -18,6 +20,8 @@ const rootReducer = combineReducers({
   ResidentReducers: ResidentReducers,
   FamilyReducers: FamilyReducers,
   RequestReducers: RequestReducers,
+  NotificationReducers: NotificationReducers,
+  EmergencyReducers: EmergencyReducers,
 });
 
 // Enhancers (jika diperlukan)

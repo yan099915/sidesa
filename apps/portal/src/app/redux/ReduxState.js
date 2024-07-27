@@ -1,11 +1,10 @@
 const initialState = {
-  LoginStatus: false,
   DoDispatch: false,
+  DoSetLogin: false,
   DoGetMenu: false,
   DoCheckSession: false,
   DoVerifySession: false,
   DoCheckVerificationStatus: false,
-  IsAdmin: true,
   DoGetVerificationData: false,
   DoGetVerificationDetails: false,
   DoGetResidents: false,
@@ -14,6 +13,18 @@ const initialState = {
   DoGetRequestHistory: false,
   DoGetRequestList: false,
   DoGetRequestDetails: false,
+  DoGetNotifications: false,
+  DoGetEmergencyList: false,
+  DoGetEmergencyDetails: false,
+  DoConnectSocketIo: false,
+  Emergency: false,
+  // SocketConnection: false,
+
+  // user reducers
+  UserGeolocation: false,
+  DataGeolocation: false,
+  IsAdmin: true,
+  LoginStatus: true,
 };
 
 const ReduxState = (state = initialState, { type, ...rest }) => {

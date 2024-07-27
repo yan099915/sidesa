@@ -6,6 +6,12 @@ import { getMenu, verifySession } from './api/actions/UsersActions';
 import { Toaster } from 'react-hot-toast';
 import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 
+import { io } from 'socket.io-client';
+import SignLetter from './pages/Sign/SignLetter';
+const notificationAudio = new Audio('../assets/audio/notification.wav');
+const isLocalhost = window.location.hostname === 'localhost';
+const URL = isLocalhost ? 'ws://localhost:3000' : 'https://api.sidera.my.id';
+
 const lazyWithDelay = (importFunc, delay) =>
   lazy(() =>
     Promise.all([
@@ -14,6 +20,13 @@ const lazyWithDelay = (importFunc, delay) =>
     ]).then(([moduleExports]) => moduleExports)
   );
 
+const EmergencyDetails = lazy(() =>
+  import('./pages/Emergency/EmergencyDetails')
+);
+const Emergency = lazy(() => import('./pages/Emergency/Emergency'));
+const EmergencyIncidents = lazy(() =>
+  import('./pages/Emergency/EmergencyIncidents')
+);
 const Article = lazy(() => import('./pages/Article/Article'));
 const PageNotFound = lazy(() => import('./pages/PageNotFound'));
 const Pengajuan = lazy(() => import('./pages/Pengajuan/Pengajuan'));
@@ -73,6 +86,7 @@ const ProtectedAdmin = ({ isLoggedIn, isAdmin, children }) => {
 
 export function App() {
   const [progress, setProgress] = useState(0);
+  const [authSocket, setAuthSocket] = useState(null);
   const isLoggedIn = useSelector((state) => state.ReduxState.LoginStatus);
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
   const IsAdmin = useSelector((state) => state.ReduxState.IsAdmin);
@@ -82,6 +96,9 @@ export function App() {
   const DoGetMenu = useSelector((state) => state.ReduxState.DoGetMenu);
   const DoVerifySession = useSelector(
     (state) => state.ReduxState.DoVerifySession
+  );
+  const DoConnectSocketIo = useSelector(
+    (state) => state.ReduxState.DoConnectSocketIo
   );
 
   const dispatch = useDispatch();
@@ -101,7 +118,8 @@ export function App() {
         LoginStatus: true,
       });
       if (UserSession.data && UserSession.data?.role >= '2') {
-        console.log('User is admin');
+        setAuthSocket({ id: UserSession.data.id, role: UserSession.data.role });
+        // console.log('User is admin');
         dispatch({ type: 'set', IsAdmin: true });
       } else {
         dispatch({ type: 'set', IsAdmin: false });
@@ -112,6 +130,7 @@ export function App() {
       // get list menu
       if (DoGetMenu) {
         dispatch(getMenu());
+
         dispatch({ type: 'set', DoGetMenu: false });
       }
       setProgress(100);
@@ -123,15 +142,54 @@ export function App() {
       dispatch({
         type: 'set',
         LoginStatus: false,
-        DoCheckSession: false,
+        // DoCheckSession: false,
       });
     }
   }, [errorUserSession]);
 
   useEffect(() => {
+    if (DoConnectSocketIo && authSocket !== null) {
+      dispatch({ type: 'set', DoConnectSocketIo: false });
+      const socket = io(URL, {
+        auth: authSocket,
+        autoConnect: false,
+      });
+
+      setTimeout(() => {
+        socket.connect();
+      }, 3000);
+
+      socket.on('connect', () => {
+        console.log('Connected to socket.io');
+        dispatch({ type: 'set', SocketConnection: socket });
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Disconnected from socket.io');
+        // dispatch({ type: 'set', SocketConnection: true });
+      });
+
+      socket.on('emergency', (msg) => {
+        dispatch({ type: 'set', Emergency: true });
+      });
+
+      socket.on('notification', (msg) => {
+        notificationAudio.play();
+        dispatch({ type: 'set', DoGetNotifications: true });
+      });
+    }
+  }, [DoConnectSocketIo, authSocket]);
+
+  useEffect(() => {
     if (!DoGetMenu) {
       dispatch({ type: 'set', DoGetMenu: true, DoVerifySession: true });
     }
+
+    if (!DoConnectSocketIo) {
+      console.log('Connect to socket.io');
+      dispatch({ type: 'set', DoConnectSocketIo: true });
+    }
+    // getLocalStream();
   }, []);
 
   return (
@@ -141,6 +199,7 @@ export function App() {
         progress={progress}
         onLoaderFinished={() => setProgress(0)}
       />
+      <EmergencyAlert />
       <Suspense fallback={<LoadingSpinner />}>
         <Toaster
           position="center"
@@ -184,8 +243,22 @@ export function App() {
               </Protected>
             }
           >
-            <Route index element={<RiwayatPengajuan />} />
-            <Route path="form" element={<FormPengajuan />} />
+            <Route
+              index
+              element={
+                <Protected isLoggedIn={isLoggedIn}>
+                  <RiwayatPengajuan />
+                </Protected>
+              }
+            />
+            <Route
+              path="form"
+              element={
+                <Protected isLoggedIn={isLoggedIn}>
+                  <FormPengajuan />
+                </Protected>
+              }
+            />
             <Route
               path="list"
               element={
@@ -231,15 +304,40 @@ export function App() {
             path="emergency"
             element={
               <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
-                <EmergencyAlert />
+                <Emergency />
               </ProtectedAdmin>
             }
-          />
+          >
+            <Route
+              index
+              element={
+                <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                  <EmergencyIncidents />
+                </ProtectedAdmin>
+              }
+            />
+            <Route
+              path="details/:id"
+              element={
+                <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                  <EmergencyDetails />
+                </ProtectedAdmin>
+              }
+            />
+          </Route>
           <Route
             path="article"
             element={
               <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
                 <Article />
+              </ProtectedAdmin>
+            }
+          />
+          <Route
+            path="sign"
+            element={
+              <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                <SignLetter />
               </ProtectedAdmin>
             }
           />

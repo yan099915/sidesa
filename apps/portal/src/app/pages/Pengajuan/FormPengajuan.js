@@ -92,18 +92,13 @@ const FormPengajuan = () => {
     reqData.nomor_ktp = UserSession.data.nik;
     reqData.nomor_kk = UserSession.data.nkk;
 
-    if (
-      pengajuan.name === 'surat_kematian' ||
-      pengajuan.name === 'surat_kelahiran'
-    ) {
-      reqData.anggota_keluarga = formData.anggota_keluarga.value;
-    }
-
     if (validateForm()) {
-      console.log(formData, 'ISIANNN');
+      reqData.anggota_keluarga = formData.anggota_keluarga?.value;
+      reqData.jenis_ttd = formData.jenis_ttd?.value;
       toast.loading('Membuat pengajuan...', {
         id: 'create-request',
       });
+      console.log(reqData, 'reqData');
       setDisabled(true);
       dispatch(createRequest(reqData));
     }
@@ -169,8 +164,8 @@ const FormPengajuan = () => {
             ResidentDetails.data.status_perkawinan || 'belum kawin',
           golongan_darah: ResidentDetails.data.golongan_darah || '',
           job: ResidentDetails.data.pekerjaan || '',
-          rt: ResidentDetails.data.rt || '',
-          rw: ResidentDetails.data.rw || '',
+          rt: ResidentDetails.data.rt || '0',
+          rw: ResidentDetails.data.rw || '0',
         }));
       }
     }
@@ -195,8 +190,6 @@ const FormPengajuan = () => {
       }));
 
       setFamilyMember(options); // Isi variabel FamilyMember
-      // setNewOptions(false);
-      console.log(pengajuan.form, 'FORMNYA');
     }
   }, [pengajuan, FamilyInfo]);
 

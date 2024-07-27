@@ -47,8 +47,8 @@ export default function ConfirmResident() {
 
   const handleSubmitModal = (e) => {
     setSubmitVerification(e);
-    if (e === 'confirm') setStatus(true);
-    if (e === 'reject') setStatus(false);
+    if (e === 'confirm') setStatus(2);
+    if (e === 'reject') setStatus(3);
   };
 
   const closeSubmitModal = () => {
@@ -166,6 +166,7 @@ export default function ConfirmResident() {
                           'id',
                           'agent_id',
                           'notes',
+                          'verification_status',
                         ].includes(key)
                     )
                     .map((key) => (
@@ -244,8 +245,7 @@ export default function ConfirmResident() {
         </div>
         <form>
           {VerificationRequestDetails &&
-            !VerificationRequestDetails.data.status &&
-            !VerificationRequestDetails.data.notes && (
+            VerificationRequestDetails.data.verification_status.id === 1 && (
               <div className="my-4">
                 <label className="block text-gray-700">Catatan*</label>
                 <textarea
@@ -258,8 +258,7 @@ export default function ConfirmResident() {
             )}
           <div className="flex justify-between">
             {VerificationRequestDetails &&
-              !VerificationRequestDetails.data.status &&
-              !VerificationRequestDetails.data.notes && (
+              VerificationRequestDetails.data.verification_status.id === 1 && (
                 <div className="inline-flex space-x-4">
                   <button
                     onClick={() => handleSubmitModal('confirm')}
@@ -267,7 +266,7 @@ export default function ConfirmResident() {
                       (status !== null && notes === '') || notes.length < 10
                     }
                     type="button"
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                   >
                     Confirm
                   </button>
@@ -277,7 +276,7 @@ export default function ConfirmResident() {
                       (status !== null && notes === '') || notes.length < 10
                     }
                     type="button"
-                    className="px-4 py-2 bg-red-500 text-white rounded"
+                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
                   >
                     Reject
                   </button>

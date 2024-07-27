@@ -12,9 +12,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../api/actions/UsersActions';
 import { useEffect, useState } from 'react';
 
+const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+
 export default function DropDownUser() {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
   const UserLogout = useSelector((state) => state.UsersReducers.UserLogout);
+  const ResidentDetails = useSelector(
+    (state) => state.ResidentReducers.ResidentDetails
+  );
   const [disabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
 
@@ -38,15 +43,27 @@ export default function DropDownUser() {
   }, [UserLogout]);
 
   return (
-    <div className="flex relative active:opacity-80 ">
+    <div className="flex active:opacity-80 ">
       {/* <div className="absolute w-3 h-3 rounded-full bg-red-600 right-0 animate-pulse"></div> */}
-      <div className="absolute w-3 h-3 rounded-full bg-zinc-600/10 right-0 bottom-1 ring-2 ring-white bg-zinc-200">
-        <ChevronDownIcon className="w-3 h-3 !stroke-[20px] text-black font-extrabold" />
-      </div>
       <Menu>
-        <MenuButton className="inline-flex items-center rounded-full font-semibold text-white shadow-inner shadow-white/10 border-[0.5px] border-stroke">
-          <div className="h-12 w-12 rounded-full overflow-hidden ">
-            <img src={UserOne} alt="User" />
+        <MenuButton className="relative inline-flex items-center rounded-full font-semibold text-white shadow-inner shadow-white/10 border-[0.5px] border-stroke">
+          <div className="absolute w-3 h-3 rounded-full right-0 bottom-1 ring-1 ring-white bg-zinc-200">
+            <ChevronDownIcon className="w-3 h-3 !stroke-[20px] text-black font-extrabold" />
+          </div>
+          <div className="h-12 w-12 rounded-full overflow-hidden background">
+            {ResidentDetails.data && ResidentDetails.data.foto_diri ? (
+              <img
+                className="rounded-full w-full h-full object-cover"
+                src={`${DOMAIN}/assets/files/foto_diri/${ResidentDetails.data.foto_diri}`}
+                alt="User"
+              />
+            ) : (
+              <img
+                className="rounded-full w-full h-full object-cover"
+                src={UserOne}
+                alt="User"
+              />
+            )}
           </div>
         </MenuButton>
         <Transition
