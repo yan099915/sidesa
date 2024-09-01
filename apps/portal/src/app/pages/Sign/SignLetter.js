@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Fragment } from 'react';
 import DefaultLayout from '../../layout/defaultLayout';
 import ReactPDF, {
   pdf,
@@ -6,27 +6,48 @@ import ReactPDF, {
   PDFDownloadLink,
   BlobProvider,
 } from '@react-pdf/renderer';
-import MyDocument from '../../js/docs';
-import { Button } from '@headlessui/react';
+import SuratDomisili from '../../js/docs/SuratDomisili';
+import {
+  Button,
+  Dialog,
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getRequestDetails,
   getRequestList,
+  updateRequest,
 } from '../../api/actions/RequestActions';
 import toast from 'react-hot-toast';
+import { BeatLoader, SyncLoader } from 'react-spinners';
+import { DialogTitle } from '@mui/material';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import SuratKematian from '../../js/docs/SuratKematian';
+import { verifySession } from '../../api/actions/UsersActions';
 
 export default function WelcomePage() {
   const [page, setPage] = useState(1);
-
+  const [loading, setLoading] = useState(true);
   const [doSetCurrentData, setDoSetCurrentData] = useState(true);
   const [search, setSearch] = useState('');
   const [prevSearch, setPrevSearch] = useState('');
   const [currentData, setCurrentData] = useState(false);
   const [count, setCount] = useState(0);
   const [disabled, setDisabled] = useState(true);
-
+  const [waitingPrevRequestList, setwaitingPrevRequestList] = useState(false);
+  const [waitingNextRequestList, setwaitingNextRequestList] = useState(false);
+  const [doGetDetailsAfterUpdate, setDoGetDetailsAfterUpdate] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    id: '',
+    status_pengajuan: '',
+    surat: '',
+  });
+  const [buttonClicked, setButtonClicked] = useState(null);
   const DoGetRequestList = useSelector(
     (state) => state.ReduxState.DoGetRequestList
   );
@@ -36,6 +57,12 @@ export default function WelcomePage() {
   );
   const errorRequestDetails = useSelector(
     (state) => state.RequestReducers.errorRequestDetails
+  );
+  const UpdateRequest = useSelector(
+    (state) => state.RequestReducers.UpdateRequest
+  );
+  const errorUpdateRequest = useSelector(
+    (state) => state.RequestReducers.errorUpdateRequest
   );
 
   const dispatch = useDispatch();
@@ -50,18 +77,35 @@ export default function WelcomePage() {
     'surat_kematian',
   ];
 
-  const tombol = async () => {
-    // const blob = await pdf(<MyDocument />).toBlob();
+  const handleModalButton = (button) => {
+    if (button === 1) {
+      // sign
+      setDisabled(true);
+      dispatch(updateRequest(formData));
+      toast.loading('Signing document', {
+        id: 'update-request',
+      });
+    } else {
+      console.log('cancel', buttonClicked);
+      setIsOpen(false);
+      setButtonClicked(null);
+    }
+  };
 
-    // // Create FormData
-    // let formData = new FormData();
-    // formData.append('file', blob, 'document.pdf');
-    // // Log FormData entries
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0] + ': ' + pair[1]);
-    // }
-
-    setCurrentData((prev) => prev + 1);
+  const handleButton = async (button, data) => {
+    setButtonClicked(button);
+    if (button === 1) {
+      const blob = await pdf(getTemplateSurat(data)).toBlob();
+      // Create FormData
+      formData.surat = new File([blob], 'document.pdf');
+      formData.id = data.id;
+      formData.status_pengajuan = 3;
+    } else {
+      formData.id = data.id;
+      formData.status_pengajuan = 4;
+      formData.surat = null;
+    }
+    setIsOpen(true);
   };
 
   const handleFetchData = (paginationPage = page) => {
@@ -88,20 +132,27 @@ export default function WelcomePage() {
   };
 
   const handleNext = () => {
+    //
+    if (count < RequestList.data.requests.length - 1) {
+      setCurrentData(RequestList.data.requests[count + 1].id);
+      setCount((prev) => prev + 1);
+      handleFetchRequestDetails(RequestList.data.requests[count + 1].id);
+    }
+
     // reseting count to 0 because data only have 9 per page
     if (count === 9 && count <= RequestList.data.requests.length) {
       setCount((prev) => prev - 9);
       if (page < totalPages) {
         setPage((prev) => prev + 1);
         handleFetchData(page + 1);
-        handleFetchRequestDetails(RequestList.data.requests[0].id);
+        // console.log(RequestList.data.requests[0].id, 'data yang diambil');
+        dispatch({
+          type: 'REQUEST_LIST',
+          payload: { data: false, errorMessage: false },
+        });
+        // handleFetchRequestDetails(RequestList.data.requests[0].id);
+        setwaitingNextRequestList(true);
       }
-    }
-    //
-    if (count < RequestList.data.requests.length - 1) {
-      setCurrentData(RequestList.data.requests[count + 1].id);
-      setCount((prev) => prev + 1);
-      handleFetchRequestDetails(RequestList.data.requests[count + 1].id);
     }
 
     // clean redux data first
@@ -116,22 +167,35 @@ export default function WelcomePage() {
   };
 
   const handlePrev = () => {
-    // set current page
     // jika page nya lebih dari 1 atau page nya sama dengan total page
-    // maka kurangi page nya lalu reset count nya ke 9
-
     if (count > 0 || count >= RequestList.data.requests.length) {
       setCurrentData(RequestList.data.requests[count - 1].id);
       setCount((prev) => prev - 1);
       handleFetchRequestDetails(RequestList.data.requests[count - 1].id);
     }
 
+    // maka kurangi page nya lalu reset count nya ke 9
     if (count === 0) {
       setCount((prev) => prev + 9);
       if (page > 1 || page === totalPages) {
         setPage((prev) => prev - 1);
         handleFetchData(page - 1);
-        handleFetchRequestDetails(RequestList.data.requests[9].id);
+
+        dispatch({
+          type: 'REQUEST_LIST',
+          payload: { data: false, errorMessage: false },
+        });
+        // setTimeout(() => {
+        // if (
+        //   RequestList.data &&
+        //   RequestList.data.requests &&
+        //   RequestList.data.requests[9].id
+        // ) {
+        //   handleFetchRequestDetails(RequestList.data.requests[9].id);
+        // } else {
+        setwaitingPrevRequestList(true);
+        // }
+        // }, 1000);
       }
     }
 
@@ -147,12 +211,69 @@ export default function WelcomePage() {
   };
 
   useEffect(() => {
+    if (UpdateRequest) {
+      toast.success(UpdateRequest.message, { id: 'update-request' });
+      setDoGetDetailsAfterUpdate(true);
+      dispatch({
+        type: 'REQUEST_LIST',
+        payload: { data: false, errorMessage: false },
+      });
+      dispatch({ type: 'set', DoGetRequestList: true });
+      // window.location.reload();
+    }
+    if (errorUpdateRequest) {
+      toast.error(errorUpdateRequest, { id: 'update-request' });
+    }
+    setTimeout(() => {
+      setIsOpen(false);
+      setDisabled(false);
+      dispatch({
+        type: 'UPDATE_REQUEST',
+        payload: { data: false, errorMessage: false },
+      });
+    }, 1000);
+  }, [UpdateRequest, errorUpdateRequest]);
+
+  useEffect(() => {
     if (RequestList && RequestList.data && RequestList.data.requests) {
-      console.log(RequestList.data.requests[0].id, 'RequestList');
+      // console.log(RequestList.data.requests[0].id, 'RequestList');
       if (doSetCurrentData) {
-        setCurrentData(RequestList.data.requests[0].id);
-        setDoSetCurrentData(false);
+        if (RequestList.data && RequestList.data.requests.length > 0) {
+          setCurrentData(RequestList.data.requests[0].id);
+          setDoSetCurrentData(false);
+          handleFetchRequestDetails(RequestList.data.requests[0].id);
+        }
+      }
+
+      if (RequestList.data.requests.length === 0) {
+        dispatch({
+          type: 'REQUEST_LIST',
+          payload: { data: false, errorMessage: false },
+        });
+        dispatch({
+          type: 'REQUEST_DETAILS',
+          payload: { data: false, errorMessage: false },
+        });
+      }
+
+      if (doGetDetailsAfterUpdate) {
+        if (RequestList.data && RequestList.data.requests.length) {
+          const validIndex =
+            count > RequestList.data.requests.length
+              ? RequestList.data.requests.length - 1
+              : count;
+          handleFetchRequestDetails(RequestList.data.requests[validIndex].id);
+        }
+        setDoGetDetailsAfterUpdate(false);
+      }
+      if (waitingPrevRequestList) {
+        handleFetchRequestDetails(RequestList.data.requests[9].id);
+        setwaitingPrevRequestList(false);
+      }
+
+      if (waitingNextRequestList) {
         handleFetchRequestDetails(RequestList.data.requests[0].id);
+        setwaitingNextRequestList(false);
       }
     }
   }, [RequestList]);
@@ -163,7 +284,7 @@ export default function WelcomePage() {
       toast.success(RequestDetails.message, {
         id: 'request-details',
       });
-
+      setCurrentData(RequestDetails.data.id);
       setTimeout(() => {
         setDisabled(false);
         toast.dismiss('request-details');
@@ -184,129 +305,234 @@ export default function WelcomePage() {
 
   useEffect(() => {
     if (DoGetRequestList) {
+      dispatch(verifySession());
       dispatch({ type: 'set', DoGetRequestList: false });
       handleFetchData();
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   }, [DoGetRequestList]);
 
   useEffect(() => {
     if (!DoGetRequestList) {
-      dispatch({ type: 'set', DoGetRequestList: true });
+      setTimeout(() => {
+        dispatch({ type: 'set', DoGetRequestList: true });
+      }, 1000);
     }
   }, []);
 
   // console.log(DoGetRequestList, 'DoGetRequestList');
+  const getTemplateSurat = (data) => {
+    switch (data.jenis_pengajuan) {
+      case 1:
+        return <SuratDomisili data={data[jenisSurat[data.jenis_pengajuan]]} />;
+      case 2:
+        // return <SuratKelahiran data={data} />;
+        break;
+      case 3:
+        return <SuratKematian data={data[jenisSurat[data.jenis_pengajuan]]} />;
+
+      default:
+        return <SuratDomisili data={data} />;
+    }
+  };
 
   return (
     <DefaultLayout>
-      <div className="flex flex-col p-6 bg-white ring-1 ring-zinc-200 shadow-sm h-full text-center">
-        <div className="flex flex-row h-full sm:screen w-full">
-          {RequestDetails && RequestDetails.data ? (
-            <PDFViewer
-              showToolbar={false}
-              className="w-full h-80 sm:h-screen md:grow"
-            >
-              <MyDocument
-                data={
-                  RequestDetails.data[
-                    jenisSurat[RequestDetails.data.jenis_pengajuan]
-                  ]
-                }
-              />
-            </PDFViewer>
-          ) : errorRequestDetails ? (
-            'Error'
-          ) : (
-            <div className="flex flex-col w-full h-screen justify-center items-center ">
-              <svg
-                aria-hidden="true"
-                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+      {/* confirmation dialog */}
+      <Transition show={isOpen} as={Fragment}>
+        <Dialog
+          open={isOpen}
+          as="div"
+          className="relative z-9999"
+          onClose={() => null}
+        >
+          <TransitionChild
+            as={Fragment}
+            enter="transition ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </TransitionChild>
+          <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <TransitionChild
+                as={Fragment}
+                enter="transition ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="transition ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
               >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-              <p className="text-zinc-300">Loading</p>
-            </div>
-          )}
-        </div>
-        <div className="">
-          <div className="flex py-4 justify-between">
-            <div className="flex text-center items-center">
-              <Link
-                to={`/request/process/${currentData}`}
-                className="text-blue-500 hover:underline text-xs sm:text-base"
-              >
-                Lihat Detail
-              </Link>
-            </div>
-            <div className="flex gap-2 sm:gap-4 text-xs sm:text-base">
-              <p>Page: {page}</p>
-              <p>Current Data: {currentData}</p>
-              <p>Total Pages: {totalPages}</p>
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <DialogTitle
+                    as="h2"
+                    className="text-lg text-start font-medium leading-6 text-gray-900 !px-0"
+                  >
+                    {buttonClicked === 1
+                      ? 'Menandatangani Surat'
+                      : 'Tolak Surat'}
+                  </DialogTitle>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      {buttonClicked === 1
+                        ? 'Apakah anda yakin ingin menandatangani surat ini?'
+                        : 'Apakah anda yakin ingin menolak surat ini?'}
+                    </p>
+                  </div>
+                  <div className="flex mt-4 justify-between">
+                    <button
+                      disabled={disabled}
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={() => handleModalButton(1)}
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      disabled={disabled}
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                      onClick={() => handleModalButton(0)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
-          <div className="flex justify-evenly">
-            <div className="w-1/4">
-              {RequestList && RequestList.data ? (
-                <div>
-                  {page >= totalPages || count > 0 ? (
-                    <Button
-                      onClick={() => handlePrev()}
-                      disabled={disabled}
-                      className="text-zinc-900 bg-white bg-zinc-200 hover:bg-zinc-300 active:bg-zinc-400 rounded-xl px-2 py-2"
-                    >
-                      <ChevronLeft className="text-zinc-900 " />
-                    </Button>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-            <div className="flex w-1/2 ">
-              {RequestDetails && RequestDetails.data ? (
-                <div className="flex w-full justify-evenly">
-                  <Button
-                    onClick={(e) => tombol}
-                    disabled={disabled}
-                    className="text-white bg-zinc-900 hover:bg-zinc-700 active:bg-zinc-800 font-semibold text-xs sm:text-base rounded-xl px-2 py-2"
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    disabled={disabled}
-                    className="text-zinc-900 bg-white border hover:bg-zinc-200 active:bg-zinc-300 border-zinc-900 font-semibold text-xs sm:text-base rounded-xl px-2 py-2"
-                  >
-                    Reject
-                  </Button>
-                </div>
-              ) : null}
-            </div>
-            <div className="w-1/4">
-              {RequestList && RequestList.data ? (
-                <div>
-                  {page < totalPages || count < totalData - 1 ? (
-                    <Button
-                      onClick={() => handleNext()}
-                      disabled={disabled}
-                      className="text-zinc-900 bg-white bg-zinc-200 hover:bg-zinc-300 active:bg-zinc-400 rounded-xl px-2 py-2"
-                    >
-                      <ChevronRight className="text-zinc-900" />
-                    </Button>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
+        </Dialog>
+      </Transition>
+      {/* end of confirmation dialog */}
+      {loading ? (
+        <div className="flex flex-col p-6 justify-center bg-white ring-1 ring-zinc-200 shadow-sm h-screen text-center">
+          <div>
+            <SyncLoader color="#848484" margin={3} size={6} />
+            <p className="text-zinc-500 animate-pulse">Loading</p>
           </div>
         </div>
-        {/* <PDFDownloadLink
+      ) : (
+        <div className="flex flex-col p-6 bg-white ring-1 ring-zinc-200 shadow-sm h-full text-center">
+          <div className="flex flex-row h-full sm:screen w-full">
+            {RequestDetails && RequestDetails.data ? (
+              <PDFViewer
+                showToolbar={false}
+                className="w-full h-80 sm:h-screen md:grow"
+              >
+                {getTemplateSurat(RequestDetails.data)}
+              </PDFViewer>
+            ) : errorRequestDetails ? (
+              'Error'
+            ) : (
+              <div className="flex flex-col w-full h-screen justify-center items-center ">
+                {RequestList && RequestList.data.requests.length > 0 ? (
+                  <div>
+                    <SyncLoader color="#848484" margin={3} size={6} />
+                    <p className="text-zinc-500 animate-pulse">Loading</p>
+                  </div>
+                ) : (
+                  <p className="text-zinc-500">
+                    Tidak ada surat yang perlu di tandatangani
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="">
+            <div className="flex py-4 justify-between">
+              <div className="flex text-center items-center">
+                {RequestDetails && RequestDetails.data ? (
+                  <Link
+                    to={`/request/process/${currentData}`}
+                    className="text-blue-500 hover:underline text-xs sm:text-base"
+                  >
+                    Lihat Detail
+                  </Link>
+                ) : null}
+              </div>
+              <div className="flex gap-2 sm:gap-4 text-xs sm:text-base">
+                <p>Page: {page}</p>
+                {/* <p>Current Data: {currentData}</p> */}
+                <p>Total Pages: {totalPages}</p>
+                <p>Count: {count}</p>
+              </div>
+            </div>
+            <div className="flex justify-evenly">
+              <div className="w-1/4">
+                {RequestList && RequestList.data ? (
+                  <div>
+                    {page >= totalPages && count > 0 ? (
+                      <Button
+                        onClick={() => handlePrev()}
+                        disabled={disabled}
+                        className="text-zinc-900 bg-white bg-zinc-200 hover:bg-zinc-300 active:bg-zinc-400 rounded-xl px-2 py-2"
+                      >
+                        <ChevronLeft className="text-zinc-900 " />
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+              <div className="flex w-1/2 ">
+                {RequestDetails && RequestDetails.data ? (
+                  <div className="flex w-full justify-evenly">
+                    <Button
+                      onClick={(e) => handleButton(1, RequestDetails.data)}
+                      disabled={disabled}
+                      className="inline-flex text-center items-center justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    >
+                      {disabled ? (
+                        <BeatLoader color="#848484" margin={3} size={6} />
+                      ) : (
+                        <>
+                          <CheckIcon className="block sm:hidden h-5 w-5" />{' '}
+                          <p className="hidden sm:block">Approve</p>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={(e) => handleButton(0, RequestDetails.data)}
+                      disabled={disabled}
+                      className="inline-flex text-center items-center justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                    >
+                      {disabled ? (
+                        <BeatLoader color="#848484" margin={3} size={6} />
+                      ) : (
+                        <>
+                          <XMarkIcon className="block sm:hidden h-5 w-5" />{' '}
+                          <p className="hidden sm:block">Reject</p>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+              <div className="w-1/4">
+                {RequestList && RequestList.data ? (
+                  <div>
+                    {page < totalPages || count < totalData - 1 ? (
+                      <Button
+                        onClick={() => handleNext()}
+                        disabled={disabled}
+                        className="text-zinc-900 bg-white bg-zinc-200 hover:bg-zinc-300 active:bg-zinc-400 rounded-xl px-2 py-2"
+                      >
+                        <ChevronRight className="text-zinc-900" />
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          {/* <PDFDownloadLink
             document={<MyDocument data={data} />}
             fileName="test.pdf"
           >
@@ -314,7 +540,7 @@ export default function WelcomePage() {
               loading ? 'Loading document...' : 'Download now!'
             }
           </PDFDownloadLink> */}
-        {/* <BlobProvider document={<MyDocument data={data} />}>
+          {/* <BlobProvider document={<MyDocument data={data} />}>
             {({ blob, url, loading, error }) => {
               // Do whatever you need with blob here
               return loading ? (
@@ -334,7 +560,8 @@ export default function WelcomePage() {
               );
             }}
           </BlobProvider> */}
-      </div>
+        </div>
+      )}
     </DefaultLayout>
   );
 }

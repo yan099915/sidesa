@@ -30,8 +30,8 @@ const AddResident = () => {
     status_perkawinan: '',
     golongan_darah: '',
     pekerjaan: '',
-    rt: '',
-    rw: '',
+    rt: 0,
+    rw: 0,
   });
 
   const jenis_kelamin = [
@@ -42,10 +42,44 @@ const AddResident = () => {
 
   const maritalStatusOptions = [
     { value: '', label: 'Pilih Status Perkawinan' },
-    { value: 'belum kawin', label: 'Belum Kawin' },
-    { value: 'kawin', label: 'Kawin' },
-    { value: 'cerai hidup', label: 'Cerai Hidup' },
-    { value: 'cerai mati', label: 'Cerai Mati' },
+    { value: 'Belum Kawin', label: 'Belum Kawin' },
+    { value: 'Kawin', label: 'Kawin' },
+    { value: 'Cerai Hidup', label: 'Cerai Hidup' },
+    { value: 'Cerai Mati', label: 'Cerai Mati' },
+  ];
+
+  const hubunganKeluarga = [
+    { value: '', label: 'Pilih Hubungan' },
+    { value: 'lainnya', label: 'Lainnya' },
+    { value: 'kepala', label: 'Kepala Keluarga' },
+    { value: 'suami', label: 'Suami' },
+    { value: 'istri', label: 'istri' },
+    { value: 'anak', label: 'Anak' },
+    { value: 'menantu', label: 'Menantu' },
+    { value: 'cucu', label: 'Cucu' },
+    { value: 'orangtua', label: 'Orangtua' },
+    { value: 'mertua', label: 'Mertua' },
+    { value: 'famili', label: 'Famili Lain' },
+    { value: 'pembantu', label: 'Pembantu' },
+  ];
+
+  const golonganDarah = [
+    { value: '', label: 'Pilih Golongan Darah' },
+    { value: 'tidak tahu', label: 'Tidak Tahu' },
+    { value: 'A', label: 'A' },
+    { value: 'B', label: 'B' },
+    { value: 'AB', label: 'AB' },
+    { value: 'O', label: 'O' },
+  ];
+
+  const agama = [
+    { value: '', label: 'Pilih Agama' },
+    { value: 'islam', label: 'Islam' },
+    { value: 'protestan', label: 'Protestan' },
+    { value: 'katolik', label: 'Katolik' },
+    { value: 'budha', label: 'Budha' },
+    { value: 'hindu', label: 'Hindu' },
+    { value: 'khonghucu', label: 'Khonghucu' },
   ];
 
   const dispatch = useDispatch();
@@ -144,8 +178,8 @@ const AddResident = () => {
         status_perkawinan: { value: 'belum kawin', label: 'Belum Kawin' },
         golongan_darah: '',
         pekerjaan: 'Belum / Tidak Bekerja',
-        rt: '',
-        rw: '',
+        rt: 0,
+        rw: 0,
       });
 
       setTimeout(() => {
@@ -176,37 +210,41 @@ const AddResident = () => {
     <div className="w-full">
       <h2 className="text-xl font-semibold mb-4">Add Resident Data</h2>
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {fields.map((field) => (
-          <Field key={field.name} className="mb-4">
-            <Label
-              htmlFor={field.name}
-              className="text-sm font-medium leading-normal text-gray-900"
-            >
-              {field.label}
-            </Label>
-            {field.type === 'textarea' ? (
-              <textarea
-                id={field.name}
-                name={field.name}
-                value={formData[field.name]}
-                disabled={disableFields}
-                onChange={field.handleChange || handleChange}
-                className="disabled:bg-zinc-900/20 mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
+        {fields
+          .filter((field) => !['rt', 'rw'].includes(field.name))
+          .map((field) => (
+            <Field key={field.name} className="mb-4">
+              <Label
+                htmlFor={field.name}
+                className="text-sm font-medium leading-normal text-gray-900"
+              >
+                {field.label}
+              </Label>
+              {field.type === 'textarea' ? (
+                <textarea
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name]}
+                  disabled={disableFields}
+                  onChange={field.handleChange || handleChange}
+                  className="disabled:bg-zinc-900/20 mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
           focus:ring-0  data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900 outline-zinc-900"
-              />
-            ) : (
-              <Input
-                id={field.name}
-                name={field.name}
-                type={field.type}
-                disabled={disableFields}
-                value={field.type === 'file' ? undefined : formData[field.name]}
-                onChange={field.handleChange || handleChange}
-                className="disabled:bg-zinc-900/20 mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6 focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
-              />
-            )}
-          </Field>
-        ))}
+                />
+              ) : (
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type={field.type}
+                  disabled={disableFields}
+                  value={
+                    field.type === 'file' ? undefined : formData[field.name]
+                  }
+                  onChange={field.handleChange || handleChange}
+                  className="disabled:bg-zinc-900/20 mt-3 block w-full rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6 focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
+                />
+              )}
+            </Field>
+          ))}
         <Field className="mb-4">
           <Label
             htmlFor="maritalStatus"
@@ -218,7 +256,7 @@ const AddResident = () => {
             <Select
               id="jenis_kelamin"
               name="jenis_kelamin"
-              value={jenis_kelamin.maritalStatus}
+              value={formData.jenis_kelamin}
               disabled={disableFields}
               onChange={(e) =>
                 setFormData({
@@ -228,7 +266,34 @@ const AddResident = () => {
               }
               className="disabled:bg-zinc-900/20 mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
             >
-              {maritalStatusOptions.map((option) => (
+              {jenis_kelamin.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+            <ChevronDownIcon
+              className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+              aria-hidden="true"
+            />
+          </div>
+        </Field>
+        <Field className="mb-4">
+          <Label className="text-sm font-medium leading-normal text-gray-900">
+            Agama
+          </Label>
+          <div className="relative">
+            <Select
+              value={formData.religion}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  religion: e.target.value,
+                })
+              }
+              className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+            >
+              {agama.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>

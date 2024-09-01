@@ -419,7 +419,9 @@ export default function PengajuanProcess() {
                       key="detailsSurat"
                       className="rounded-xl bg-zinc-900/5 p-3"
                     >
-                      {RequestDetails && RequestDetails.data ? (
+                      {RequestDetails &&
+                      RequestDetails.data &&
+                      RequestDetails.data.jenis_pengajuan ? (
                         <div className="grid grid-cols-1 gap-2">
                           {Object.entries(
                             RequestDetails.data[
@@ -586,8 +588,7 @@ export default function PengajuanProcess() {
                 <div className="w-full">
                   {((RequestDetails.data.status_pengajuan === 1 &&
                     RequestDetails.data.jenis_ttd === 1) ||
-                    RequestDetails.data.jenis_ttd === 2 ||
-                    (RequestDetails.data.status_pengajuan === 2 &&
+                    (RequestDetails.data.status_pengajuan < 3 &&
                       RequestDetails.data.jenis_ttd === 2)) && (
                     <div className="flex mx-4 justify-between">
                       <button
@@ -597,11 +598,15 @@ export default function PengajuanProcess() {
                             RequestDetails.data.jenis_ttd
                           )
                         }
+                        disabled={disabled}
                         className="text-white bg-blue-500 rounded-md px-4 py-2"
                       >
                         Process
                       </button>
-                      <button className="text-white bg-red-500 rounded-md px-4 py-2">
+                      <button
+                        disabled={disabled}
+                        className="text-white bg-red-500 rounded-md px-4 py-2"
+                      >
                         Reject
                       </button>
                     </div>

@@ -7,8 +7,15 @@ import {
   TabPanel,
   TabPanels,
 } from '@headlessui/react';
-
+import { useNavigate } from 'react-router-dom';
+const PORTAL_DOMAIN = process.env.NX_PUBLIC_PORTAL_DOMAIN;
 export default function Services() {
+  const navigate = useNavigate();
+  // handle click event
+  const redirectToPortal = () => {
+    // redirect to DOMAIN
+    window.location.href = PORTAL_DOMAIN;
+  };
   return (
     <div className="container mx-auto p-6 ">
       <div>
@@ -16,7 +23,10 @@ export default function Services() {
           Pelayanan Desa Rawang
         </h3>
         <div className="w-full flex justify-center my-4">
-          <Button className="inline-flex items-center gap-2 rounded-md bg-zinc-900 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-600 data-[open]:bg-zinc-700 data-[focus]:outline-1 data-[focus]:outline-white">
+          <Button
+            onClick={(e) => redirectToPortal()}
+            className="inline-flex items-center gap-2 rounded-md bg-zinc-900 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-600 data-[open]:bg-zinc-700 data-[focus]:outline-1 data-[focus]:outline-white"
+          >
             Masuk ke portal layanan desa
           </Button>
         </div>
@@ -43,7 +53,7 @@ export default function Services() {
           </ul>
           {/* layananan desa */}
         </p>
-        <TabGroup>
+        {/* <TabGroup>
           <TabList>
             <Tab className="rounded-full py-1 px-3 text-sm/6 font-semibold text-zinc-900 focus:outline-none data-[selected]:bg-zinc-900/10 data-[hover]:bg-zinc-900/5 data-[selected]:data-[hover]:bg-zinc-900/10 data-[focus]:outline-1 data-[focus]:outline-zinc-900">
               Tab 1
@@ -56,7 +66,7 @@ export default function Services() {
             <TabPanel>Content 2</TabPanel>
             <TabPanel>Content 3</TabPanel>
           </TabPanels>
-        </TabGroup>
+        </TabGroup> */}
       </div>
     </div>
   );

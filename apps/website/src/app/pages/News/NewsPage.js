@@ -7,9 +7,10 @@ export default function News() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
   return (
     <div>
-      <NewsGrid count={9} />
+      <NewsGrid count={10} />
     </div>
   );
 }

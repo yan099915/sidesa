@@ -71,7 +71,7 @@ const Register = () => {
               alt=""
               className="w-24"
             />
-            <h2 className="text-4xl font-semibold ">Register</h2>
+            <h2 className="text-4xl font-semibold ">Daftar</h2>
             <p className="text-xs lg:text-base">Portal Layanan Desa Rawang</p>
           </div>
           <Field>
@@ -88,7 +88,7 @@ const Register = () => {
           </Field>
           <Field>
             <Label className="text-sm font-medium leading-normal text-gray-900">
-              Password
+              Sandi
             </Label>
             <Input
               type="password"
@@ -100,7 +100,7 @@ const Register = () => {
           </Field>
           <Field>
             <Label className="text-sm font-medium leading-normal text-gray-900">
-              Confirm Password
+              Ulangi Sandi
             </Label>
             <Input
               type="password"
@@ -116,13 +116,13 @@ const Register = () => {
             disabled={registering}
             className="rounded bg-zinc-900 py-2 px-4 text-sm text-white data-[hover]:bg-zinc-900/80 data-[active]:bg-zinc-900/50"
           >
-            {registering ? 'Registering...' : 'Register'}
+            {registering ? 'Mendaftarkan...' : 'Daftar'}
           </Button>
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-700">
               Sudah punya akun?{' '}
               <Link to="/login" className="text-blue-500 hover:underline">
-                Login
+                Masuk
               </Link>
             </p>
           </div>

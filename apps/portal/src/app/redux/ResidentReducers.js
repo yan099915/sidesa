@@ -5,6 +5,8 @@ const initialState = {
   errorResidentDetails: false,
   AddResident: false,
   errorAddResident: false,
+  DeleteResident: false,
+  errorDeleteResident: false,
 };
 
 const ResidentReducers = (state = initialState, action) => {
@@ -26,6 +28,12 @@ const ResidentReducers = (state = initialState, action) => {
         ...state,
         AddResident: action.payload.data,
         errorAddResident: action.payload.errorMessage,
+      };
+    case 'DELETE_RESIDENT':
+      return {
+        ...state,
+        DeleteResident: action.payload.data,
+        errorDeleteResident: action.payload.errorMessage,
       };
     default:
       return state;

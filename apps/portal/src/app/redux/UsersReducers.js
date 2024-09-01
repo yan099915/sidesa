@@ -17,6 +17,8 @@ const initialState = {
   errorRequestVerification: false,
   RequestVerificationStatus: false,
   errorRequestVerificationStatus: false,
+  ProfileDetails: false,
+  errorProfileDetails: false,
 };
 
 const UsersReducers = (state = initialState, action) => {
@@ -62,6 +64,12 @@ const UsersReducers = (state = initialState, action) => {
         ...state,
         UserMenu: action.payload.data,
         errorUserMenu: action.payload.errorMessage,
+      };
+    case 'GET_PROFILE_DETAILS':
+      return {
+        ...state,
+        ProfileDetails: action.payload.data,
+        errorProfileDetails: action.payload.errorMessage,
       };
     default:
       return state;

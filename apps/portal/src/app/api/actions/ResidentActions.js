@@ -99,3 +99,35 @@ export const addResident = (data) => async (dispatch) => {
       }
     });
 };
+
+// delete resident start here
+export const deleteResident = (nik) => async (dispatch) => {
+  await axios
+    .delete(`/resident/${nik}`)
+    .then((response) => {
+      if (response.data) {
+        dispatch({
+          type: 'DELETE_RESIDENT',
+          payload: { data: response.data, errorMessage: false },
+        });
+      } else {
+        dispatch({
+          type: 'DELETE_RESIDENT',
+          payload: { data: response, errorMessage: 'Data not found' },
+        });
+      }
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'DELETE_RESIDENT',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'DELETE_RESIDENT',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};

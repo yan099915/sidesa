@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigateNext } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAnnouncements } from '../actions/AnnouncementsActions';
 
 const informasi = [
   {
@@ -173,15 +175,23 @@ export default function Announcement({ option }) {
   const handleShowMore = () => {
     setVisibleInfoCount((prevCount) => prevCount + 5); // Menambah 5 informasi lagi saat tombol diklik
   };
+  const DoGetAnnouncements = useSelector(
+    (state) => state.ReduxState.DoGetAnnouncements
+  );
+  const Announcements = useSelector(
+    (state) => state.AnnouncementReducers.GetAnnouncements
+  );
+
+  const dispatch = useDispatch();
 
   const renderBadge = (type) => {
-    if (type === 'agenda') {
+    if (type === 2) {
       return (
         <span className="border border-blue-500 text-blue-500 font-semibold text-xs px-2 py-1 rounded w-24 text-center">
           Agenda
         </span>
       );
-    } else if (type === 'pengumuman') {
+    } else if (type === 1) {
       return (
         <span className="border border-red-500 text-red-500 text-xs px-2 py-1 rounded w-24 text-center">
           Pengumuman
@@ -190,42 +200,75 @@ export default function Announcement({ option }) {
     }
   };
 
+  useEffect(() => {
+    if (DoGetAnnouncements) {
+      dispatch({ type: 'set', DoGetAnnouncements: false });
+      dispatch(getAnnouncements());
+    }
+  }, [DoGetAnnouncements]);
+
+  useEffect(() => {
+    if (!DoGetAnnouncements) {
+      dispatch({ type: 'set', DoGetAnnouncements: true });
+    }
+  }, [dispatch]);
+
+  console.log(
+    Announcements && Announcements.data && Announcements.data.totalItems > 0,
+    'Announcements'
+  );
+
   return (
     <div className="container mx-auto px-4 py-2">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">INFORMASI RESMI</h1>
-        {visibleInfoCount <= 5 ? (
-          <Link
-            to="/announcement"
-            className="text-xs sm:text-md text-white bg-zinc-900 rounded-md py-1 px-4 flex items-center"
-          >
-            Lihat Semua Informasi
-            <NavigateNext fontSize="xs" />
-          </Link>
-        ) : null}
+        {Announcements &&
+          Announcements.data &&
+          Announcements.data.totalItems > 0 && (
+            <div>
+              {visibleInfoCount <= 5 ? (
+                <Link
+                  to="/announcement"
+                  className="text-xs sm:text-md text-white bg-zinc-900 rounded-md py-1 px-4 flex items-center"
+                >
+                  Lihat Semua Informasi
+                  <NavigateNext fontSize="xs" />
+                </Link>
+              ) : null}
+            </div>
+          )}
       </div>
+
       <div className="space-y-2">
-        {informasi.slice(0, visibleInfoCount).map((info, index) => (
-          <div key={index} className="flex items-center space-x-4 rounded">
-            {renderBadge(info.type)}
-            <Link to={`/announcement/${info.id}`} className="flex-grow">
-              <h2 className="text-xs font-semibold">{info.title}</h2>
-              <p className="text-xs text-gray-600">{info.date}</p>
-            </Link>
-          </div>
-        ))}
+        {Announcements &&
+          Announcements.data &&
+          Announcements.data.totalItems > 0 &&
+          Announcements.data.announcements
+            .slice(0, visibleInfoCount)
+            .map((info, index) => (
+              <div key={index} className="flex items-center space-x-4 rounded">
+                {renderBadge(info.announcement_type.id)}
+                <Link to={`/announcement/${info.id}`} className="flex-grow">
+                  <h2 className="text-xs font-semibold">{info.title}</h2>
+                  <p className="text-xs text-gray-600">{info.date}</p>
+                </Link>
+              </div>
+            ))}
       </div>
-      {visibleInfoCount < informasi.length && initialCount > 6 && (
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handleShowMore}
-            className="text-xs sm:text-md text-white bg-zinc-900 rounded-md py-1 px-4 flex items-center"
-          >
-            Lihat Lebih Banyak Informasi
-            <NavigateNext fontSize="xs" />
-          </button>
-        </div>
-      )}
+      {Announcements &&
+        Announcements.data &&
+        visibleInfoCount < Announcements.data.totalItems &&
+        initialCount > 6 && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={handleShowMore}
+              className="text-xs sm:text-md text-white bg-zinc-900 rounded-md py-1 px-4 flex items-center"
+            >
+              Lihat Lebih Banyak Informasi
+              <NavigateNext fontSize="xs" />
+            </button>
+          </div>
+        )}
     </div>
   );
 }

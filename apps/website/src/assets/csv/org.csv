@@ -1,11 +1,11 @@
 name,imageUrl,area,profileUrl,office,isLoggedUser,positionName,id,parentId,size
-Kepala Desa,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Kepala Desa,1,,
-Sekertaris Desa,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Sekertaris Desa,2,1,
-Kasi Pemerintahan,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,a,http://example.com/employee/profile,Desa,FALSE,Kasi Pemerintahan,3,1,
-Kasi EKBANG,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,a,http://example.com/employee/profile,Desa,FALSE,Kasi EKBANG,4,1,
-Kasi KESSOS,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,b,http://example.com/employee/profile,Desa,FALSE,Kasi KESSOS,5,1,2
-Kaur Keuangan,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,b,http://example.com/employee/profile,Desa,FALSE,Kaur Keuangan,6,2,
-Kaur Umum,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Kaur Umum,7,2,
-KADUS Sukajaya,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,KADUS Sukajaya,8,1,
-KADUS SIDAJAYA,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,KADUS SIDAJAYA,9,1,
-KADUS Jagabaya,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,KADUS Jagabaya,10,1,
+Sukri Heriadi Can,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Kepala Desa,1,,
+"Yudi Ikhsan, SE",https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Sekertaris Desa,2,1,
+Fatma Yulia,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,a,http://example.com/employee/profile,Desa,FALSE,Kasi Pemerintahan,3,1,
+Yesi Yulia,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,a,http://example.com/employee/profile,Desa,FALSE,Kasi Kesejahteraan,4,1,
+Nola Romasta,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,b,http://example.com/employee/profile,Desa,FALSE,Kasi Pelayanan,5,1,4
+Ema,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,b,http://example.com/employee/profile,Desa,FALSE,Kepala Tu & Umum,6,1,
+Reno Sintia Rini,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Kepala Keuangan,7,1,
+Eko Wahyudi,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Kepala Keuangan,8,1,
+Satria,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Dusun Utara,9,1,
+Amril M,https://raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/general.jpg,Desa,http://example.com/employee/profile,Desa,FALSE,Dusun Selatan,10,1,

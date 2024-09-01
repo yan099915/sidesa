@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { NavigateNext } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getArticle } from '../actions/ArticleActions';
 
 const newsData = [
   {
@@ -82,20 +84,23 @@ const newsData = [
   },
 ];
 
+const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 const NewsCard = ({ id, title, image, description, index }) => {
   const animationDirection = index % 2 === 0 ? 100 : -100;
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+
   const navigate = useNavigate();
 
   const navigateToNews = (id) => {
     navigate(`/news/${id}`);
   };
+
   return (
     <motion.div
       key={id}
       ref={ref}
-      className="bg-white rounded-lg shadow-md overflow-hidden"
+      className="flex flex-col justify-between bg-white rounded-lg shadow-md overflow-hidden"
       variants={{
         hidden: { opacity: 0, x: animationDirection },
         visible: { opacity: 1, x: 0 },
@@ -104,13 +109,21 @@ const NewsCard = ({ id, title, image, description, index }) => {
       animate={isInView ? 'visible' : 'hidden'}
       transition={{ delay: 0.5, duration: 0.5 }}
     >
-      <img className="w-full h-48 object-cover" src={image} alt={title} />
-      <div className="p-4">
-        <h2 className="font-bold text-lg mb-2">{title}</h2>
-        <p className="text-gray-700 text-sm">{description}</p>
+      <div className="w-full h-48  relative">
+        <img
+          className="absolute top-0 left-0 w-full h-full object-contain sm:object-cover"
+          src={`${DOMAIN}/assets/files/article_thumbnails/${image}`}
+          alt={title}
+        />
+      </div>
+      <div className="flex flex-col h-1/2 justify-between p-4">
+        <div>
+          <h2 className="font-bold text-lg mb-2">{title}</h2>
+          <p className="text-gray-700 text-sm">{description}</p>
+        </div>
         <button
           onClick={(e) => navigateToNews(id)}
-          className="flex   bg-zinc-900 text-white text-xs sm:text-md p-1 rounded-md leading-none"
+          className="flex bg-zinc-900 text-white text-xs sm:text-md p-2 rounded-md leading-none w-fit"
         >
           Selengkapnya
           <NavigateNext fontSize="xs" />
@@ -122,54 +135,89 @@ const NewsCard = ({ id, title, image, description, index }) => {
 
 export default function NewsGrid(option) {
   const [visibleNewsCount, setVisibleNewsCount] = useState(6);
+  const dispatch = useDispatch();
+  const DoGetArticles = useSelector((state) => state.ReduxState.DoGetArticles);
+  const ArticleList = useSelector(
+    (state) => state.ArticlesReducers.GetArticles
+  );
+  const errorGetArticles = useSelector(
+    (state) => state.ArticlesReducers.errorGetArticles
+  );
+
+  const handleFetchArticles = (page, limit) => {
+    dispatch(getArticle({ page: page, limit: limit }));
+  };
 
   const handleShowMore = () => {
     setVisibleNewsCount((prevCount) => prevCount + 6);
+    handleFetchArticles(1, visibleNewsCount + 6);
   };
 
   useEffect(() => {
+    // Set initial count from option
     setVisibleNewsCount(option.count);
   }, [option.count]);
 
-  // console.log(option.count);
+  useEffect(() => {
+    if (DoGetArticles) {
+      handleFetchArticles(1, 10);
+      dispatch({ type: 'set', DoGetArticles: false });
+    }
+  }, [DoGetArticles, dispatch]);
+
+  useEffect(() => {
+    if (!DoGetArticles) {
+      dispatch({ type: 'set', DoGetArticles: true });
+    }
+  }, [dispatch]);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">BERITA TERKINI</h1>
-        {visibleNewsCount < newsData.length && option.count <= 6 && (
-          <Link
-            to="/news"
-            className=" text-xs sm:text-md text-white bg-zinc-900 rounded-md  py-1 px-4"
-          >
-            Lihat Semua Berita
-            <NavigateNext fontSize="xs" />
-          </Link>
-        )}
+        {ArticleList &&
+          visibleNewsCount < ArticleList.data.totalItems &&
+          option.count <= 6 && (
+            <Link
+              to="/news"
+              className=" text-xs sm:text-md text-white bg-zinc-900 rounded-md  py-1 px-4"
+            >
+              Semua Berita
+              <NavigateNext fontSize="xs" />
+            </Link>
+          )}
       </div>
       <div
         className={`grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6`}
       >
-        {newsData.slice(0, visibleNewsCount).map((news, index) => (
-          <NewsCard
-            key={news.id}
-            id={news.id}
-            title={news.title}
-            image={news.image}
-            description={news.description}
-            index={index}
-          />
-        ))}
+        {ArticleList && ArticleList.data && ArticleList.data.totalItems > 0
+          ? ArticleList.data.articles
+              .slice(0, visibleNewsCount)
+              .map((article, index) => (
+                <NewsCard
+                  key={article.id}
+                  id={article.id}
+                  title={article.title}
+                  image={article.article_thumbnail.name}
+                  // image={'1722799787818.png'}
+                  // description={article.content}
+                  index={index}
+                />
+              ))
+          : ''}
       </div>
-      {visibleNewsCount < newsData.length && option.count > 6 && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={handleShowMore}
-            className="bg-zinc-900 text-white py-2 px-4 rounded-full"
-          >
-            Lihat Berita Lain
-          </button>
-        </div>
-      )}
+      {ArticleList &&
+        visibleNewsCount < ArticleList.data.totalItems &&
+        option.count > 6 && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={handleShowMore}
+              className="bg-zinc-900 text-white py-2 px-4 rounded-md"
+            >
+              Lihat Berita Lain
+            </button>
+          </div>
+        )}
     </div>
   );
 }

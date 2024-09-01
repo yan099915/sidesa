@@ -7,6 +7,10 @@ module.exports = {
       satoshi: ['Satoshi', 'sans-serif'],
     },
     extend: {
+      transitionProperty: {
+        height: 'height',
+        spacing: 'margin, padding',
+      },
       colors: {
         current: 'currentColor',
         transparent: 'transparent',

@@ -167,6 +167,12 @@ export default function ConfirmResident() {
                           'agent_id',
                           'notes',
                           'verification_status',
+                          'rt',
+                          'rw',
+                          'createdAt',
+                          'updatedAt',
+                          'lat',
+                          'lng',
                         ].includes(key)
                     )
                     .map((key) => (

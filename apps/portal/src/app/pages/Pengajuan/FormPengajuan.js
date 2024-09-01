@@ -126,12 +126,11 @@ const FormPengajuan = () => {
       payload: { data: false, errorMessage: false },
     });
 
-    setDisabled(false);
-
     setTimeout(() => {
+      setDisabled(false);
       toast.dismiss('create-request');
     }, 2000);
-  }, [CreateRequest]);
+  }, [CreateRequest, errorCreateRequest]);
 
   useEffect(() => {
     if (DoGetRequestRequiredData) {

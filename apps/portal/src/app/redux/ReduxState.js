@@ -16,7 +16,13 @@ const initialState = {
   DoGetNotifications: false,
   DoGetEmergencyList: false,
   DoGetEmergencyDetails: false,
+  DoGetArticles: false,
+  DoGetArticleDetails: false,
+  DoGetAnnouncements: false,
+  DoGetAnnouncementDetails: false,
+  DoGetFeaturedArticles: false,
   DoConnectSocketIo: false,
+  DoGetReport: false,
   Emergency: false,
   // SocketConnection: false,
 
@@ -24,6 +30,7 @@ const initialState = {
   UserGeolocation: false,
   DataGeolocation: false,
   IsAdmin: true,
+  IsSuperAdmin: true,
   LoginStatus: true,
 };
 

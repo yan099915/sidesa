@@ -9,12 +9,12 @@ import encryptData from '../../js/encryptData';
 import { getMenu, verifySession } from '../../api/actions/UsersActions';
 
 export default function Login() {
-  const [enabled, setEnabled] = useState(true);
   const emailId = useId();
   const passwordId = useId();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [logining, setLogining] = useState(false);
+  const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
   const isFormValid = email !== '' && password !== '';
 
@@ -31,6 +31,7 @@ export default function Login() {
     const loginData = {
       email: email,
       password: password,
+      remember: remember,
     };
 
     setLogining(true);
@@ -94,16 +95,16 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="flex flex-col relative h-full p-8 border border-blue-500 bg-gray-100/50 items-center">
-      <div className="flex flex-col h-full w-full py-24 sm:w-3/4 lg:w-2/5 gap-y-10 border bg-white items-center border-zinc-400/20">
-        <div className="flex flex-col text-center content-center items-center gap-4">
+    <div className="flex flex-row relative py-4 h-full bg-gray-100/50 items-center">
+      <div className="flex flex-col mx-auto h-full w-full py-6 lg:py-12 sm:w-3/4 lg:w-2/5 gap-y-4 border bg-white items-center border-zinc-400/20">
+        <div className="flex flex-col text-center content-center items-center gap-2">
           <img
             src="https://sidera.my.id/assets/img/logo_sidera_large.png"
             alt=""
             className="w-24"
           />
-          <h2 className="text-4xl font-semibold">Sign In</h2>
           <p className="text-xs lg:text-base">Sistem Informasi Desa Rawang</p>
+          <h2 className="sm:text-2xl leading-none font-semibold">Masuk</h2>
         </div>
         <Field className="flex flex-col gap-4 px-8 w-full md:w-3/4 lg:w-3/4">
           <div>
@@ -128,7 +129,7 @@ export default function Login() {
               htmlFor={passwordId}
               className="text-sm font-medium leading-normal text-gray-900"
             >
-              Password
+              Sandi
             </Label>
             <Input
               id={passwordId}
@@ -142,8 +143,11 @@ export default function Login() {
           </div>
           <div className="flex gap-x-2">
             <Checkbox
-              checked={enabled}
-              onChange={() => setEnabled(!enabled)}
+              checked={remember}
+              onChange={(e) => {
+                console.log('onChange', e);
+                setRemember(!remember);
+              }}
               className="flex group w-6 h-6 rounded-md bg-white p-1 ring-1 ring-zinc-900/40 ring-inset data-[checked]:bg-black"
             >
               <Check
@@ -152,7 +156,7 @@ export default function Login() {
               />
             </Checkbox>
             <p className="text-sm font-medium leading-normal text-gray-900">
-              Remember me
+              Ingat saya
             </p>
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
@@ -165,9 +169,9 @@ export default function Login() {
                 : 'bg-zinc-400 cursor-not-allowed'
             }`}
           >
-            Sign In
+            Masuk
           </Button>
-          <div className="mt-4 text-center">
+          <div className=" text-center">
             <p className="text-sm text-gray-700">
               Belum punya akun?{' '}
               <Link to="/register" className="text-blue-500 hover:underline">

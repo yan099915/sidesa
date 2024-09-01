@@ -1,10 +1,11 @@
 import axios from 'axios';
 import errorHandler from './errorHandler';
+const API_URL = process.env.NX_PUBLIC_API_URL;
 
 // Fungsi untuk menentukan baseURL
 const getBaseURL = () => {
   const isLocalhost = window.location.hostname === 'localhost';
-  return isLocalhost ? 'http://localhost:3000' : 'https://api.sidera.my.id';
+  return isLocalhost ? 'http://localhost:3000' : API_URL;
 };
 
 // Membuat instance Axios dengan konfigurasi dasar

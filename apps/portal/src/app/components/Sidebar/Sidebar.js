@@ -12,6 +12,7 @@ import {
   HomeOutlined,
   ArticleOutlined,
   HistoryEduOutlined,
+  CampaignOutlined,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -24,32 +25,36 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const UserMenu = useSelector((state) => state.UsersReducers.UserMenu);
 
   const menuMap = {
-    home: { path: '/', icon: <HomeOutlined className="h-5 w-5" /> },
-    request: {
+    beranda: { path: '/', icon: <HomeOutlined className="h-5 w-5" /> },
+    pengajuan: {
       path: '/request',
       icon: <RequestQuoteOutlined className="h-5 w-5" />,
     },
-    profile: {
+    profil: {
       path: '/profile',
       icon: <PersonOutlineOutlined className="h-5 w-5" />,
     },
-    report: {
+    laporan: {
       path: '/report',
       icon: <AssessmentOutlined className="h-5 w-5" />,
     },
-    emergency: {
+    darurat: {
       path: '/emergency',
       icon: <EmergencyShareOutlined className="h-5 w-5" />,
     },
-    resident: {
+    penduduk: {
       path: '/resident',
       icon: <Groups2Outlined className="h-5 w-5" />,
     },
-    article: {
+    artikel: {
       path: '/article',
       icon: <ArticleOutlined className="h-5 w-5" />,
     },
-    sign: {
+    pengumuman: {
+      path: '/announcement',
+      icon: <CampaignOutlined className="h-5 w-5" />,
+    },
+    'tanda tangan': {
       path: '/sign',
       icon: <HistoryEduOutlined className="h-5 w-5" />,
     },
@@ -64,7 +69,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   useEffect(() => {
     if (UserMenu) {
-      console.log('wakwoak');
       setLoading(false);
     }
   }, [UserMenu]);

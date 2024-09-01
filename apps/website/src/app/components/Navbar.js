@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import RawaingIcon from '../../assets/img/output-onlinepngtools.png';
+import RawaingIcon from '../../assets/img/Lambang_Kota_Pariaman.png';
 import {
+  Button,
   Menu,
   MenuButton,
   MenuItem,
@@ -15,8 +16,10 @@ import {
   HomeOutlined,
   SupportAgentOutlined,
   InfoOutlined,
+  NewspaperOutlined,
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+const PORTAL_DOMAIN = process.env.NX_PUBLIC_PORTAL_DOMAIN;
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -26,6 +29,11 @@ const Navbar = () => {
     return location.pathname;
   };
   const activeRoute = useActiveRoute();
+
+  const handleEmergencyButton = () => {
+    // redirect to DOMAIN
+    window.location.href = PORTAL_DOMAIN;
+  };
 
   const handleScroll = () => {
     // if (window.scrollY > lastScrollY) {
@@ -75,15 +83,15 @@ const Navbar = () => {
         to="/"
         className="flex text-sm gap-x-1 cursor-pointer"
       >
-        <img src={RawaingIcon} alt="" className="w-6 h-8" />
-        <div className="flex flex-col ">
+        <img src={RawaingIcon} alt="" className="w-10 h-10" />
+        <div className="flex flex-col justify-center">
           <span className="leading-none font-bold">Desa Rawang</span>
           <span className="leading-none">Kota Pariaman</span>
         </div>
       </Link>
       <div
         id="navbar"
-        className="absolute bg-white left-0 right-0 w-fit py-2 px-6 ring-1 ring-zinc-900/5 rounded-full shadow-lg shadow-zinc-800/5 hidden text-sm sm:block sm:mx-auto"
+        className="absolute bg-white left-0 right-0 w-fit py-2 px-6 ring-1 ring-zinc-900/5 rounded-full shadow-lg shadow-zinc-800/5 hidden text-sm md:block sm:mx-auto"
       >
         <div className="flex gap-x-4">
           <Link
@@ -124,12 +132,22 @@ const Navbar = () => {
           >
             Berita
           </Link>
+          <Link
+            to="/announcement"
+            className={
+              activeRoute === '/announcement'
+                ? 'text-cyan-500 transition duration-500'
+                : ''
+            }
+          >
+            Pengumuman
+          </Link>
         </div>
       </div>
       <div className="absolute gap-x-4 flex top-0 right-0 px-4">
         <div className="py-2 my-auto">
           <Menu>
-            <MenuButton className="ring-1 bg-white ring-zinc-900/5 shadow-lg shadow-zinc-800/5 rounded-full py-3 px-4 flex leading-none text-xs font-medium text-zinc-800 text-center items-center sm:hidden">
+            <MenuButton className="ring-1 bg-white ring-zinc-900/5 shadow-lg shadow-zinc-800/5 rounded-full py-3 px-4 flex leading-none text-xs font-medium text-zinc-800 text-center items-center md:hidden">
               Menu
               <ExpandMore fontSize="xs" />
             </MenuButton>
@@ -178,7 +196,7 @@ const Navbar = () => {
                     className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
                     to="/news"
                   >
-                    <InfoOutlined fontSize="small" />
+                    <NewspaperOutlined fontSize="small" />
                     Berita
                   </Link>
                 </MenuItem>
@@ -188,7 +206,10 @@ const Navbar = () => {
         </div>
         <div className="text-center  text-red-500 hover:animate-pulse ">
           <p className="text-[9px]">Tombol</p>
-          <button className="flex shadow-lg bg-white shadow-zinc-800/5 mx-auto text-red-400 ring-2 ring-red-500  w-7 h-7 rounded-full justify-center items-center">
+          <Button
+            onClick={(e) => handleEmergencyButton()}
+            className="flex shadow-lg bg-white shadow-zinc-800/5 mx-auto text-red-400 ring-2 ring-red-500  w-7 h-7 rounded-full justify-center items-center"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="18px"
@@ -198,7 +219,7 @@ const Navbar = () => {
             >
               <path d="M200-160v-80h64l79-263q8-26 29.5-41.5T420-560h120q26 0 47.5 15.5T617-503l79 263h64v80H200Zm148-80h264l-72-240H420l-72 240Zm92-400v-200h80v200h-80Zm238 99-57-57 142-141 56 56-141 142Zm42 181v-80h200v80H720ZM282-541 141-683l56-56 142 141-57 57ZM40-360v-80h200v80H40Zm440 120Z" />
             </svg>
-          </button>
+          </Button>
           <p className="text-[9px] ">Darurat</p>
         </div>
       </div>

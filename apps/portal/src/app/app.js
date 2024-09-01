@@ -8,6 +8,11 @@ import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 
 import { io } from 'socket.io-client';
 import SignLetter from './pages/Sign/SignLetter';
+import ArticleList from './pages/Article/ArticleList';
+import EditArticle from './pages/Article/EditArticle';
+import Announcement from './pages/Announcement/Announcement';
+import AnnouncementList from './pages/Announcement/AnnouncementList';
+import EditAnnouncement from './pages/Announcement/EditAnnouncement';
 const notificationAudio = new Audio('../assets/audio/notification.wav');
 const isLocalhost = window.location.hostname === 'localhost';
 const URL = isLocalhost ? 'ws://localhost:3000' : 'https://api.sidera.my.id';
@@ -84,12 +89,23 @@ const ProtectedAdmin = ({ isLoggedIn, isAdmin, children }) => {
   return children;
 };
 
+const ProtectedSuperAdmin = ({ isLoggedIn, isSuperAdmin, children }) => {
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+  if (!isSuperAdmin) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
 export function App() {
   const [progress, setProgress] = useState(0);
   const [authSocket, setAuthSocket] = useState(null);
   const isLoggedIn = useSelector((state) => state.ReduxState.LoginStatus);
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
   const IsAdmin = useSelector((state) => state.ReduxState.IsAdmin);
+  const IsSuperAdmin = useSelector((state) => state.ReduxState.IsSuperAdmin);
   const errorUserSession = useSelector(
     (state) => state.UsersReducers.errorUserSession
   );
@@ -117,10 +133,16 @@ export function App() {
         type: 'set',
         LoginStatus: true,
       });
-      if (UserSession.data && UserSession.data?.role >= '2') {
+      if (UserSession.data && UserSession.data?.role >= 2) {
         setAuthSocket({ id: UserSession.data.id, role: UserSession.data.role });
         // console.log('User is admin');
         dispatch({ type: 'set', IsAdmin: true });
+        console.log(typeof UserSession.data.role, 'super admin');
+        if (UserSession.data.role > 2) {
+          dispatch({ type: 'set', IsSuperAdmin: true });
+        } else {
+          dispatch({ type: 'set', IsSuperAdmin: false });
+        }
       } else {
         dispatch({ type: 'set', IsAdmin: false });
       }
@@ -190,7 +212,7 @@ export function App() {
       dispatch({ type: 'set', DoConnectSocketIo: true });
     }
     // getLocalStream();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="relative flex flex-col h-screen h-min-screen">
@@ -332,13 +354,58 @@ export function App() {
                 <Article />
               </ProtectedAdmin>
             }
-          />
+          >
+            <Route
+              index
+              element={
+                <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                  <ArticleList />
+                </ProtectedAdmin>
+              }
+            />
+            <Route
+              path="edit/:id"
+              element={
+                <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                  <EditArticle />
+                </ProtectedAdmin>
+              }
+            />
+          </Route>
+          <Route
+            path="announcement"
+            element={
+              <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                <Announcement />
+              </ProtectedAdmin>
+            }
+          >
+            <Route
+              index
+              element={
+                <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                  <AnnouncementList />
+                </ProtectedAdmin>
+              }
+            />
+            <Route
+              path="edit/:id"
+              element={
+                <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+                  <EditAnnouncement />
+                </ProtectedAdmin>
+              }
+            />
+          </Route>
           <Route
             path="sign"
             element={
-              <ProtectedAdmin isLoggedIn={isLoggedIn} isAdmin={IsAdmin}>
+              <ProtectedSuperAdmin
+                isLoggedIn={isLoggedIn}
+                isSuperAdmin={IsSuperAdmin}
+              >
                 <SignLetter />
-              </ProtectedAdmin>
+              </ProtectedSuperAdmin>
             }
           />
           <Route

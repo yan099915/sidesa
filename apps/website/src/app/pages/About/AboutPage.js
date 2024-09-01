@@ -5,6 +5,7 @@ import {
 } from '@mui/icons-material';
 import React, { useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import Greetings from '../../components/Greetings';
 
 const About = () => {
   // Scroll to top on initial render
@@ -14,6 +15,7 @@ const About = () => {
 
   return (
     <div className="container mx-auto p-6 ">
+      <Greetings />
       <div>
         <h3 className="text-2xl text-zinc-700 font-bold mb-6 text-center">
           Profil Desa Rawang

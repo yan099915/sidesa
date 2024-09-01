@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media print {
+  body {
+    margin: 0 !important;
+  }
+}
+
+.main-container {
+  font-family: 'Lato';
+  width: fit-content;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+}
+
+.ck-content {
+  font-family: 'Lato';
+  line-height: 1.6 !important;
+  word-break: break-word !important;
+  /* border: 1px solid #a01818 !important; */
+  /* padding: 10px !important; */
+  overflow-wrap: break-word; /* Memastikan kata-kata panjang dipecah */
+}
+
+.editor-container_classic-editor .editor-container__editor {
+  word-wrap: break-word;
+  white-space: normal;
+  width: 100%;
+  /* padding: 10px; */
+  /* min-width: 795px;
+  max-width: 795px; */
+}
+
+/* Gaya CSS untuk CKEditor headings */
+.ck-content h1 {
+  @apply text-4xl font-bold mt-6 mb-4;
+}
+
+.ck-content h2 {
+  @apply text-3xl font-semibold mt-5 mb-3;
+}
+
+.ck-content h3 {
+  @apply text-2xl font-medium mt-4 mb-3;
+}
+
+.ck-content h4 {
+  @apply text-xl font-medium mt-3 mb-2;
+}
+
+.ck-content h5 {
+  @apply text-lg font-medium mt-2 mb-2;
+}
+
+.ck-content h6 {
+  @apply text-base font-medium mt-2 mb-1;
+}
+
+/* .ck-editor__editable_inline {
+  padding: 0 20px !important;
+} */
+.ck-content ol {
+  padding: 0 20px !important;
+}
+
+.ck-powered-by {
+  display: none !important;
+}

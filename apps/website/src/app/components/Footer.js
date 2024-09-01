@@ -37,7 +37,7 @@ export default function Footer() {
 
   return (
     <>
-      <div className="relative flex overlow-hidden flex sm:flex-row flex-col content-center justify-center justify-self-end sm:gap-20 w-full bottom-0 border-t border-zinc-900/10 p-2">
+      <div className="relative flex overlow-hidden flex-col lg:flex-row content-center justify-center justify-self-end sm:gap-4 w-full bottom-0 border-t border-zinc-900/10 p-2">
         <motion.div
           ref={ref}
           variants={{
@@ -47,18 +47,28 @@ export default function Footer() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="flex flex-col gap-2 w-full sm:w-2/4 sm:p-4 items-center sm:items-start mx-auto sm:mx-0"
+          className="flex sm:flex-col  gap-2 w-full lg:py-4 justify-start sm:mx-0"
         >
-          <div className="flex text-sm  gap-x-1">
-            <img
-              src="../../assets/img/output-onlinepngtools.png"
-              alt=""
-              className="w-6 h-8"
-            />
-            <div className="flex flex-col">
-              <span className="leading-none font-semibold">Desa Rawang</span>
-              <span className="leading-none font-light">Kota Pariaman</span>
+          <div className="flex flex-col lg:flex-row  w-full justify-center text-sm lg:w-fit gap-2 ">
+            <div className="flex text-sm justify-center lg:justify-start gap-x-1">
+              <img
+                src="../../assets/img/Lambang_Kota_Pariaman.png"
+                alt=""
+                className="w-12 h-14"
+              />
+              <div className="flex flex-col justify-center md:justify-start">
+                <span className="leading-none font-semibold">Desa Rawang</span>
+                <span className="leading-none font-light">Kota Pariaman</span>
+              </div>
             </div>
+            <iframe
+              className="w-full lg:w-1/2 h-40"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7979.170921010412!2d100.1147866312886!3d-0.6190282626934481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4e2f7e99bc585%3A0xcca54e98320cd9c4!2sRawang%2C%20Pariaman%20Tengah%2C%20Pariaman%20City%2C%20West%20Sumatra!5e0!3m2!1sen!2sid!4v1722805564581!5m2!1sen!2sid"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </motion.div>
         <motion.div
@@ -70,7 +80,7 @@ export default function Footer() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
           transition={{ delay: 1, duration: 0.5 }}
-          className="flex flex-row w-full gap-16 p-4 items-center sm:items-start items-stretch"
+          className="flex flex-row w-full gap-6 p-4 items-center sm:items-start items-stretch"
         >
           <div className="flex flex-col gap-y-2">
             <h2 className="font-bold ">Tautan</h2>

@@ -13,7 +13,7 @@ import {
   requestDataVerification,
 } from '../../api/actions/VerificationsActions';
 import { verifySession } from '../../api/actions/UsersActions';
-import { getResidentDetails } from '../../api/actions/ResidentActions';
+import { getProfileDetails } from '../../api/actions/UsersActions';
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
 
 const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
@@ -31,8 +31,8 @@ const Profile = () => {
   const errorRequestVerification = useSelector(
     (state) => state.VerificationReducers.errorRequestVerification
   );
-  const ResidentDetails = useSelector(
-    (state) => state.ResidentReducers.ResidentDetails
+  const ProfileDetails = useSelector(
+    (state) => state.UsersReducers.ProfileDetails
   );
   const DoCheckVerificationStatus = useSelector(
     (state) => state.ReduxState.DoCheckVerificationStatus
@@ -56,12 +56,13 @@ const Profile = () => {
     birthDate: '',
     birthPlace: '',
     address: '',
+    dusun: 0,
     religion: '',
     maritalStatus: '',
     gdarah: '',
     job: '',
-    rt: '',
-    rw: '',
+    rt: '0',
+    rw: '0',
     lat: '',
     lng: '',
     hubungan: '',
@@ -76,26 +77,34 @@ const Profile = () => {
 
   const maritalStatusOptions = [
     { value: '', label: 'Pilih Status Perkawinan' },
-    { value: 'belum kawin', label: 'Belum Kawin' },
-    { value: 'kawin', label: 'Kawin' },
-    { value: 'cerai hidup', label: 'Cerai Hidup' },
-    { value: 'cerai mati', label: 'Cerai Mati' },
+    { value: 'Belum Kawin', label: 'Belum Kawin' },
+    { value: 'Kawin', label: 'Kawin' },
+    { value: 'Cerai Hidup', label: 'Cerai Hidup' },
+    { value: 'Cerai Mati', label: 'Cerai Mati' },
   ];
 
   const hubunganKeluarga = [
     { value: '', label: 'Pilih Hubungan' },
+    { value: 'lainnya', label: 'Lainnya' },
     { value: 'kepala', label: 'Kepala Keluarga' },
-    { value: 'isteri', label: 'isteri' },
+    { value: 'suami', label: 'Suami' },
+    { value: 'istri', label: 'istri' },
     { value: 'anak', label: 'Anak' },
+    { value: 'menantu', label: 'Menantu' },
+    { value: 'cucu', label: 'Cucu' },
+    { value: 'orangtua', label: 'Orangtua' },
+    { value: 'mertua', label: 'Mertua' },
+    { value: 'famili', label: 'Famili Lain' },
+    { value: 'pembantu', label: 'Pembantu' },
   ];
 
   const golonganDarah = [
     { value: '', label: 'Pilih Golongan Darah' },
+    { value: 'tidak tahu', label: 'Tidak Tahu' },
     { value: 'A', label: 'A' },
     { value: 'B', label: 'B' },
     { value: 'AB', label: 'AB' },
     { value: 'O', label: 'O' },
-    { value: 'tidak tahu', label: 'Tidak Tahu' },
   ];
 
   const agama = [
@@ -108,10 +117,16 @@ const Profile = () => {
     { value: 'khonghucu', label: 'Khonghucu' },
   ];
 
+  const dusun = [
+    { value: '', label: 'Pilih Dusun' },
+    { value: 'UTARA', label: 'Utara' },
+    { value: 'SELATAN', label: 'Selatan' },
+  ];
+
   const jenisPendidikan = [
     { value: '', label: 'Pilih Pendidikan' },
-    { value: 'tidak_tamat_sd', label: 'Tidak tamat SD/sederajat' },
     { value: 'tidak_pernah_sekolah', label: 'Tidak pernah sekolah' },
+    { value: 'tidak_tamat_sd', label: 'Tidak tamat SD/sederajat' },
     { value: 'tamat_sltp', label: 'Tamat SLTP/sederajat' },
     { value: 'tamat_slta', label: 'Tamat SLTA/sederajat' },
     { value: 'tamat_slb_a', label: 'Tamat SLB A/sederajat' },
@@ -243,7 +258,7 @@ const Profile = () => {
         dispatch(verifySession());
         dispatch({ type: 'set', DoCheckVerificationStatus: false });
         if (UserSession.data.verified) {
-          dispatch(getResidentDetails(UserSession.data.nik));
+          dispatch(getProfileDetails(UserSession.data.nik));
         }
       }
     }
@@ -251,8 +266,8 @@ const Profile = () => {
 
   useEffect(() => {
     if (
-      ResidentDetails &&
-      ResidentDetails.data &&
+      ProfileDetails &&
+      ProfileDetails.data &&
       RequestVerificationStatus.data &&
       !RequestVerificationStatus.data.verifiedStatus
     ) {
@@ -263,21 +278,21 @@ const Profile = () => {
 
       setFormData((prevData) => ({
         ...prevData,
-        ktpNumber: ResidentDetails.data.nomor_ktp || '',
-        kkNumber: ResidentDetails.data.nomor_kk || '',
-        name: ResidentDetails.data.nama || '',
-        birthDate: ResidentDetails.data.tanggal_lahir || '',
-        birthPlace: ResidentDetails.data.tempat_lahir || '',
-        address: ResidentDetails.data.alamat || '',
-        religion: ResidentDetails.data.agama || '',
-        maritalStatus: ResidentDetails.data.status_perkawinan || 'belum kawin',
-        gdarah: ResidentDetails.data.golongan_darah || '',
-        job: ResidentDetails.data.pekerjaan || '',
-        rt: ResidentDetails.data.rt || '0',
-        rw: ResidentDetails.data.rw || '0',
+        ktpNumber: ProfileDetails.data.nomor_ktp || '',
+        kkNumber: ProfileDetails.data.nomor_kk || '',
+        name: ProfileDetails.data.nama || '',
+        birthDate: ProfileDetails.data.tanggal_lahir || '',
+        birthPlace: ProfileDetails.data.tempat_lahir || '',
+        address: ProfileDetails.data.alamat || '',
+        religion: ProfileDetails.data.agama || '',
+        maritalStatus: ProfileDetails.data.status_perkawinan || 'belum kawin',
+        gdarah: ProfileDetails.data.golongan_darah || '',
+        job: ProfileDetails.data.pekerjaan || '',
+        rt: ProfileDetails.data.rt || '0',
+        rw: ProfileDetails.data.rw || '0',
       }));
     }
-  }, [ResidentDetails]);
+  }, [ProfileDetails]);
 
   useEffect(() => {
     dispatch({ type: 'set', DoCheckVerificationStatus: true });
@@ -343,12 +358,14 @@ const Profile = () => {
   ];
 
   const filteredFields =
-    ResidentDetails &&
-    ResidentDetails.data &&
+    ProfileDetails &&
+    ProfileDetails.data &&
     RequestVerificationStatus.data &&
     !RequestVerificationStatus.data.verifiedStatus
-      ? fields.filter((field) => !['foto_ktp', 'foto_kk'].includes(field.name))
-      : fields;
+      ? fields.filter(
+          (field) => !['foto_ktp', 'foto_kk', 'rw', 'rt'].includes(field.name)
+        )
+      : fields.filter((field) => !['rw', 'rt'].includes(field.name));
 
   console.log(RequestVerificationStatus, 'RequestVerificationStatus');
   return (
@@ -388,16 +405,14 @@ const Profile = () => {
           {/* Profile Photo */}
           <div className="relative flex justify-center">
             <div className="absolute -top-16 w-32 h-32 rounded-full border-2 bg-white border-blue-500">
-              {ResidentDetails.data && ResidentDetails.data.foto_diri ? (
+              {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
                 <img
-                  src={`${DOMAIN}/assets/files/foto_diri/${ResidentDetails.data.foto_diri}`}
-                  alt="Profile"
+                  src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
                   className="rounded-full w-full h-full object-cover"
                 />
               ) : (
                 <img
                   src={ProfilePic}
-                  alt="Profile"
                   className="rounded-full w-full h-full object-cover"
                 />
               )}
@@ -438,13 +453,13 @@ const Profile = () => {
           ) : (
             <div className="p-10 mt-10">
               <h1 className="text-2xl font-semibold text-center">
-                {ResidentDetails &&
-                  ResidentDetails.data &&
-                  ResidentDetails.data.nama}
+                {ProfileDetails &&
+                  ProfileDetails.data &&
+                  ProfileDetails.data.nama}
               </h1>
               <div className="text-center overflow-x-auto">
                 {/* Tabel Data */}
-                {ResidentDetails && ResidentDetails.data && (
+                {ProfileDetails && ProfileDetails.data && (
                   <table
                     className={
                       showForm
@@ -453,7 +468,7 @@ const Profile = () => {
                     }
                   >
                     <tbody>
-                      {Object.entries(ResidentDetails.data).map(
+                      {Object.entries(ProfileDetails.data).map(
                         ([key, value]) =>
                           key !== 'id' &&
                           key !== 'nama' &&
@@ -461,6 +476,10 @@ const Profile = () => {
                           key !== 'foto_diri' &&
                           key !== 'foto_ktp' &&
                           key !== 'foto_kk' &&
+                          key !== 'rt' &&
+                          key !== 'rw' &&
+                          key !== 'lat' &&
+                          key !== 'lng' &&
                           key !== 'createdAt' &&
                           key !== 'updatedAt' && (
                             <tr key={key} className="">
@@ -516,8 +535,8 @@ const Profile = () => {
                       name={field.name}
                       type={field.type}
                       disabled={
-                        ResidentDetails &&
-                        ResidentDetails.data &&
+                        ProfileDetails &&
+                        ProfileDetails.data &&
                         [
                           'ktpNumber',
                           'kkNumber',
@@ -535,6 +554,33 @@ const Profile = () => {
                   )}
                 </Field>
               ))}
+              <Field className="mb-4">
+                <Label className="text-sm font-medium leading-normal text-gray-900">
+                  Dusun
+                </Label>
+                <div className="relative">
+                  <Select
+                    value={formData.dusun}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        dusun: e.target.value,
+                      })
+                    }
+                    className="mt-3 block w-full appearance-none rounded-lg ring-1 ring-gray-900/20 border-none bg-white/5 py-1.5 px-3 text-sm/6 text-gray-900 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-900 *:text-black"
+                  >
+                    {dusun.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                  <ChevronDownIcon
+                    className="pointer-events-none absolute top-2.5 right-2.5 w-4 fill-gray-900/60"
+                    aria-hidden="true"
+                  />
+                </div>
+              </Field>
               <Field className="mb-4">
                 <Label className="text-sm font-medium leading-normal text-gray-900">
                   Agama

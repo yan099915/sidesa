@@ -3,6 +3,7 @@ import Slideshow from '../components/Slideshow';
 import NewsGrid from '../components/NewsGrid';
 import Information from '../components/Information';
 import Announcement from '../components/Announcement';
+import Greetings from '../components/Greetings';
 
 const Home = () => {
   const [count, setCount] = useState(4);
@@ -24,8 +25,8 @@ const Home = () => {
 
   return (
     <div className="flex relative flex-col">
+      {/* <Greetings /> */}
       <Slideshow />
-      <Information />
       <Announcement count={5} />
       <NewsGrid count={count} />
     </div>

@@ -70,10 +70,10 @@ export default function DropDownNotification() {
   // }, [SocketConnection]);
 
   useEffect(() => {
-    dispatch({ type: 'set', DoGetNotifications: false });
     if (DoGetNotifications) {
-      console.log('Get Notification');
-      console.log('Get Notification');
+      dispatch({ type: 'set', DoGetNotifications: false });
+      console.log(DoGetNotifications, 'Get Notification');
+      // console.log('Get Notification');
       handleGetNotification();
     }
   }, [DoGetNotifications, dispatch]);
@@ -82,7 +82,7 @@ export default function DropDownNotification() {
     if (!DoGetNotifications) {
       dispatch({ type: 'set', DoGetNotifications: true });
     }
-  }, [UserSession]);
+  }, [dispatch]);
 
   return (
     <div className="flex relative active:opacity-80 ">

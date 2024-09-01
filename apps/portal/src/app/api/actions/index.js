@@ -3,4 +3,5 @@ export {
   verifyEmail,
   registerUser,
   loginUser,
+  logoutUser,
 } from './UsersActions';

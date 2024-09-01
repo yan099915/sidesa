@@ -3,8 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getResidentDetails } from '../../api/actions/ResidentActions';
 import { OpenInNew, Close } from '@mui/icons-material';
+import { Field, Label } from '@headlessui/react';
+import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
 
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
+const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
 export default function ResidentDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,6 +62,11 @@ export default function ResidentDetails() {
     setSelectedImage(null);
   };
 
+  console.log({
+    lat: ResidentDetails?.data?.lat,
+    lng: ResidentDetails?.data?.lng,
+  });
+
   return (
     <div>
       <div>
@@ -88,9 +97,17 @@ export default function ResidentDetails() {
                   {Object.keys(ResidentDetails.data)
                     .filter(
                       (key) =>
-                        !['id_pengguna', 'status', 'id', 'agent_id'].includes(
-                          key
-                        )
+                        ![
+                          'id_pengguna',
+                          'status',
+                          'id',
+                          'agent_id',
+                          'keluarga',
+                          'lat',
+                          'lng',
+                          'rt',
+                          'rw',
+                        ].includes(key)
                     )
                     .map((key) => (
                       <tr key={key} className="border-b border-zinc-900/20">
@@ -122,6 +139,37 @@ export default function ResidentDetails() {
                     ))}
                 </tbody>
               </table>
+              <Field className="flex flex-col gap-4 my-6 w-full">
+                <Label className="text-sm  font-bold leading-normal text-gray-900">
+                  Lokasi Rumah
+                </Label>
+                {ResidentDetails && ResidentDetails.data && (
+                  <APIProvider apiKey={GMAPS_APIKEY} libraries={['marker']}>
+                    <div className="flex w-full h-[300px]">
+                      <Map
+                        mapId={GMAPS_ID}
+                        defaultZoom={18}
+                        defaultCenter={{
+                          lat: Number(ResidentDetails?.data?.lat),
+                          lng: Number(ResidentDetails?.data?.lng),
+                        }}
+                        gestureHandling={'greedy'}
+                        // onDblclick={(e) => handleDoubleClickMap(e)}
+                      >
+                        {/* advanced marker with html-content */}
+                        <AdvancedMarker
+                          position={{
+                            lat: Number(ResidentDetails?.data?.lat),
+                            lng: Number(ResidentDetails?.data?.lng),
+                          }}
+                          // onDragEnd={(e) => handleChangeLocation(e)}
+                          // draggable={true}
+                        ></AdvancedMarker>
+                      </Map>
+                    </div>
+                  </APIProvider>
+                )}
+              </Field>
             </div>
           ) : (
             ''

@@ -17,8 +17,8 @@ const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 export default function DropDownUser() {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
   const UserLogout = useSelector((state) => state.UsersReducers.UserLogout);
-  const ResidentDetails = useSelector(
-    (state) => state.ResidentReducers.ResidentDetails
+  const ProfileDetails = useSelector(
+    (state) => state.UsersReducers.ProfileDetails
   );
   const [disabled, setDisabled] = useState(false);
   const dispatch = useDispatch();
@@ -51,17 +51,15 @@ export default function DropDownUser() {
             <ChevronDownIcon className="w-3 h-3 !stroke-[20px] text-black font-extrabold" />
           </div>
           <div className="h-12 w-12 rounded-full overflow-hidden background">
-            {ResidentDetails.data && ResidentDetails.data.foto_diri ? (
+            {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
               <img
                 className="rounded-full w-full h-full object-cover"
-                src={`${DOMAIN}/assets/files/foto_diri/${ResidentDetails.data.foto_diri}`}
-                alt="User"
+                src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
               />
             ) : (
               <img
                 className="rounded-full w-full h-full object-cover"
                 src={UserOne}
-                alt="User"
               />
             )}
           </div>

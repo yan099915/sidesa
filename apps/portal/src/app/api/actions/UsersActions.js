@@ -201,3 +201,36 @@ export const getMenu = () => async (dispatch) => {
     });
 };
 // get menu end here
+
+// get resident details start here
+export const getProfileDetails = (nik) => async (dispatch) => {
+  await axios
+    .get(`/resident/${nik}`)
+    .then((response) => {
+      if (response.data) {
+        dispatch({
+          type: 'GET_PROFILE_DETAILS',
+          payload: { data: response.data, errorMessage: false },
+        });
+      } else {
+        dispatch({
+          type: 'GET_PROFILE_DETAILS',
+          payload: { data: response, errorMessage: 'Data not found' },
+        });
+      }
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'GET_PROFILE_DETAILS',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'GET_PROFILE_DETAILS',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};
+// get resident details end here
