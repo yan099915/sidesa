@@ -2,6 +2,12 @@ import React, { useEffect } from 'react';
 import NewsGrid from '../../components/NewsGrid';
 import { CalendarMonthSharp, Person } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getArticleDetails } from '../../actions/ArticleActions';
+import { SyncLoader } from 'react-spinners';
+import moment from 'moment';
+import DOMPurify from 'dompurify';
+
 const newsData = [
   {
     id: 1,
@@ -80,43 +86,106 @@ const newsData = [
     author: 'Yan SB',
   },
 ];
-
+const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 export default function NewsDetails() {
-  const param = useParams();
+  const { id } = useParams();
   const date = new Date();
+
+  const DoGetArticleDetails = useSelector(
+    (state) => state.ReduxState.DoGetArticleDetails
+  );
+  const ArticleDetails = useSelector(
+    (state) => state.ArticlesReducers.GetArticleDetails
+  );
+  const errorGetArticleDetails = useSelector(
+    (state) => state.ArticlesReducers.errorGetArticleDetails
+  );
+
+  const dispatch = useDispatch();
+
+  const handleFetchArticleDetails = () => {
+    dispatch(getArticleDetails(id));
+  };
 
   // Scroll to top on initial render
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [param]);
+    dispatch({
+      type: 'ARTICLE_DETAILS_RESET',
+      payload: { data: false, errorMessage: false },
+    });
+    handleFetchArticleDetails();
+  }, [id]);
+
+  useEffect(() => {
+    if (DoGetArticleDetails) {
+      handleFetchArticleDetails();
+      dispatch({ type: 'set', DoGetArticleDetails: false });
+      console.log('fetching articles details');
+    }
+  }, [DoGetArticleDetails, dispatch]);
+
+  useEffect(() => {
+    dispatch({ type: 'set', DoGetArticleDetails: true });
+  }, [dispatch]);
   return (
     <div className="flex flex-col px-4 py-8 ">
       {/* news title */}
-      <div className="w-full border border-b-0  border-zinc-900/5 px-4 py-8">
-        <h1 className="text-2xl font-bold">{newsData[param.id - 1].title}</h1>
-        <div className="flex items-center ">
-          <CalendarMonthSharp fontSize="sm" />
-          <p className="text-xs leading-none align-middle">{date.toString()}</p>
+      {ArticleDetails && ArticleDetails.data ? (
+        <div>
+          <div className="w-full border border-b-0  border-zinc-900/5 px-4 py-8">
+            <h1 className="text-2xl font-bold">{ArticleDetails.data.title}</h1>
+            <div className="flex gap-x-4 ">
+              <div className="flex items-center gap-x-1">
+                <Person fontSize="sm" />
+                <p className="text-xs leading-none align-middle">
+                  {/* {newsData[param.id - 1].author} */}
+                  admin
+                </p>
+              </div>
+              <div className="flex items-center gap-x-1">
+                <CalendarMonthSharp fontSize="sm" />
+                <p className="text-xs leading-none align-middle">
+                  {moment(ArticleDetails.data.createdAt).format(
+                    'DD MMMM YYYY hh:mm'
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+          {/* news body */}
+          <div className="px-4 border border-t-0  border-zinc-900/5">
+            <img
+              src={`${DOMAIN}/assets/files/article_thumbnails/${ArticleDetails.data.article_thumbnail.name}`}
+              alt={ArticleDetails.data.title}
+              className="w-full h-96 object-scale-down sm:object-contain"
+            />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(ArticleDetails.data.content),
+              }}
+              className="py-10"
+            ></div>
+          </div>
+          {/* news footer */}
         </div>
-        <div className="flex items-center">
-          <Person fontSize="sm" />
-          <p className="text-xs leading-none align-middle">
-            {newsData[param.id - 1].author}
-          </p>
+      ) : (
+        <div className="w-full border border-b-0  border-zinc-900/5 px-4 py-8">
+          {!errorGetArticleDetails && !ArticleDetails ? (
+            <div className="flex  justify-center">
+              <div className="flex flex-col items-center">
+                <SyncLoader color="#848484" margin={3} size={6} />
+                <p className="text-zinc-500 animate-pulse">Loading</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex  justify-center">
+              <h1>Halaman atau berita yang anda cari tidak ditemukan</h1>
+            </div>
+          )}
         </div>
-      </div>
-      {/* news body */}
-      <div className="px-4 border border-t-0  border-zinc-900/5">
-        <img
-          src={newsData[param.id - 1].image}
-          alt={newsData[param.id - 1].title}
-          className="w-full h-96 object-cover"
-        />
-        <p className="text-sm leading-relaxed mt-4 text-justify">
-          {newsData[param.id - 1].content}
-        </p>
-      </div>
-      {/* news footer */}
+      )}
+
       <div>
         <NewsGrid count={4} />
       </div>
