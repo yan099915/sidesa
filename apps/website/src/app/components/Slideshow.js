@@ -93,7 +93,7 @@ export default function Slideshow() {
               >
                 <img
                   className="h-full w-full object-scale-down"
-                  src={`${DOMAIN}/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
+                  src={`${DOMAIN}/files/article_thumbnails/${article.article_thumbnail.name}`}
                   // alt={`Slideshow Image ${index}`}
                 />
               </motion.div>

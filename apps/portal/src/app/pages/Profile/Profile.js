@@ -19,6 +19,8 @@ import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
 const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
 const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const isLocalhost = window.location.hostname === 'localhost';
+const URL = isLocalhost ? 'http://localhost:3000' : 'https://api.sidera.my.id';
 
 const Profile = () => {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
@@ -367,7 +369,11 @@ const Profile = () => {
         )
       : fields.filter((field) => !['rw', 'rt'].includes(field.name));
 
-  console.log(RequestVerificationStatus, 'RequestVerificationStatus');
+  console.log(
+    RequestVerificationStatus,
+    'RequestVerificationStatus',
+    GMAPS_APIKEY
+  );
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center bg-gray-100 p-6">
@@ -407,7 +413,7 @@ const Profile = () => {
             <div className="absolute -top-16 w-32 h-32 rounded-full border-2 bg-white border-blue-500">
               {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
                 <img
-                  src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
+                  src={`${DOMAIN}/files/foto_diri/${ProfileDetails.data.foto_diri}`}
                   className="rounded-full w-full h-full object-cover"
                 />
               ) : (

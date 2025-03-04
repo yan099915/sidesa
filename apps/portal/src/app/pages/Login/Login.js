@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../api/actions';
 import encryptData from '../../js/encryptData';
 import { getMenu, verifySession } from '../../api/actions/UsersActions';
+import Logo from '../../../assets/images/logo_sidera_large.png';
 
 export default function Login() {
   const emailId = useId();
@@ -99,7 +100,8 @@ export default function Login() {
       <div className="flex flex-col mx-auto h-full w-full py-6 lg:py-12 sm:w-3/4 lg:w-2/5 gap-y-4 border bg-white items-center border-zinc-400/20">
         <div className="flex flex-col text-center content-center items-center gap-2">
           <img
-            src="https://sidera.my.id/assets/img/logo_sidera_large.png"
+            // src="https://sidera.my.id/assets/img/logo_sidera_large.png"
+            src={Logo}
             alt=""
             className="w-24"
           />

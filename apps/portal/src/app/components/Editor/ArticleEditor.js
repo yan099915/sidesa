@@ -92,6 +92,8 @@ import {
 } from '../../api/actions/ArticleActions';
 import toast from 'react-hot-toast';
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const isLocalhost = window.location.hostname === 'localhost';
+const URL = isLocalhost ? 'http://localhost:3000' : DOMAIN;
 export default function ArticleEditor() {
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
@@ -263,7 +265,7 @@ export default function ArticleEditor() {
                 })
                 .then((response) => {
                   if (response.data) {
-                    const imageUrl = `${DOMAIN}/assets/files/article_image/${response.data.url}`;
+                    const imageUrl = `${URL}/files/article_image/${response.data.url}`;
                     setImageUrls((prevUrls) => [...prevUrls, imageUrl]);
                     resolve({
                       default: imageUrl,
@@ -568,7 +570,7 @@ export default function ArticleEditor() {
     },
   };
 
-  console.log(formData, 'formData');
+  console.log(formData, 'formData', URL);
 
   return (
     <div className="flex flex-col gap-4">
@@ -663,7 +665,7 @@ export default function ArticleEditor() {
                               />
                             )}
                             <img
-                              src={`https://sidera.my.id/assets/files/article_thumbnails/${thumbnail.name}`}
+                              src={`${URL}/files/article_thumbnails/${thumbnail.name}`}
                               className={
                                 (thumbnail.id === selectedThumbnail
                                   ? 'border-2 border-blue-500'

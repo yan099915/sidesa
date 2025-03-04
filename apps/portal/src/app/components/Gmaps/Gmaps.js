@@ -32,6 +32,7 @@ const Gmaps = (setting) => {
   }, [DataGeolocation]);
 
   useEffect(() => {
+    console.log('gmaps', GMAPS_APIKEY, GMAPS_ID);
     if (setting.drag !== undefined) {
       setDragAble(setting.draggable);
     }

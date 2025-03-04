@@ -105,12 +105,10 @@ export default function PengajuanDetails() {
                     className="text-blue-500 hover:underline"
                     onClick={() => {
                       key === 'dokumen'
-                        ? handleViewImage(
-                            `${DOMAIN}/assets/files/surat_rs/${value}`
-                          )
+                        ? handleViewImage(`${DOMAIN}/files/surat_rs/${value}`)
                         : //  open new window to view surat
                           window.open(
-                            `${DOMAIN}/assets/files/surat/${value}`,
+                            `${DOMAIN}/files/surat/${value}`,
                             '_blank'
                           );
                     }}

@@ -212,7 +212,7 @@ export default function () {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <DialogPanel className="flex flex-col items-center w-full transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <DialogPanel className="flex flex-col items-center w-full lg:w-1/2 transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <DialogTitle
                     as="h2"
                     className="text-lg text-start font-medium leading-6 text-gray-900 !px-0"

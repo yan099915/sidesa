@@ -108,7 +108,7 @@ export default function PengajuanProcess() {
     switch (RequestDetails.data.jenis_pengajuan) {
       case 1:
         window.open(
-          `${DOMAIN}/assets/files/surat/${RequestDetails.data.surat_domisili.surat}`,
+          `${DOMAIN}/files/surat/${RequestDetails.data.surat_domisili.surat}`,
           '_blank'
         );
         break;
@@ -117,7 +117,7 @@ export default function PengajuanProcess() {
         break;
       case 3:
         window.open(
-          `${DOMAIN}/assets/files/surat/${RequestDetails.data.surat_kematian.surat}`,
+          `${DOMAIN}/files/surat/${RequestDetails.data.surat_kematian.surat}`,
           '_blank'
         );
         break;
@@ -386,7 +386,7 @@ export default function PengajuanProcess() {
                                                   className="text-blue-500 hover:underline"
                                                   onClick={() =>
                                                     handleViewImage(
-                                                      `${DOMAIN}/assets/files/${key}/${value}`
+                                                      `${DOMAIN}/files/${key}/${value}`
                                                     )
                                                   }
                                                 >
@@ -471,11 +471,11 @@ export default function PengajuanProcess() {
                                           onClick={() => {
                                             key === 'dokumen'
                                               ? handleViewImage(
-                                                  `${DOMAIN}/assets/files/surat_rs/${value}`
+                                                  `${DOMAIN}/files/surat_rs/${value}`
                                                 )
                                               : //  open new window to view surat
                                                 window.open(
-                                                  `${DOMAIN}/assets/files/surat/${value}`,
+                                                  `${DOMAIN}/files/surat/${value}`,
                                                   '_blank'
                                                 );
                                           }}
@@ -541,7 +541,7 @@ export default function PengajuanProcess() {
                                                     className="text-blue-500 hover:underline"
                                                     onClick={() =>
                                                       handleViewImage(
-                                                        `${DOMAIN}/assets/files/${key}/${value}`
+                                                        `${DOMAIN}/files/${key}/${value}`
                                                       )
                                                     }
                                                   >

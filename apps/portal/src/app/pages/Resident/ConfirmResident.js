@@ -9,6 +9,9 @@ import { Cancel, CheckCircle, OpenInNew, Close } from '@mui/icons-material';
 import { getResidentDetails } from '../../api/actions/ResidentActions';
 import toast from 'react-hot-toast';
 
+const isLocalhost = window.location.hostname === 'localhost';
+const URL = isLocalhost ? 'http://localhost:3000' : 'https://api.sidera.my.id';
+
 export default function ConfirmResident() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [submitVerification, setSubmitVerification] = useState(null);
@@ -184,7 +187,7 @@ export default function ConfirmResident() {
                               className="text-blue-500 hover:underline"
                               onClick={() =>
                                 handleViewImage(
-                                  `https://sidera.my.id/assets/files/${key}/${VerificationRequestDetails.data[key]}`
+                                  `${URL}/files/${key}/${VerificationRequestDetails.data[key]}`
                                 )
                               }
                             >
@@ -201,7 +204,7 @@ export default function ConfirmResident() {
                                 className="text-blue-500 hover:underline"
                                 onClick={() =>
                                   handleViewImage(
-                                    `https://sidera.my.id/assets/files/${key}/${ResidentDetails.data[key]}`
+                                    `${URL}/files/${key}/${ResidentDetails.data[key]}`
                                   )
                                 }
                               >
