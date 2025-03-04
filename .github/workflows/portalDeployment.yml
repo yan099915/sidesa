@@ -5,23 +5,29 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v4
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
           node-version: '20.18.0'
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.server }}
-        username: ${{ secrets.username }}
-        password: ${{ secrets.password }}
-        local-dir: dist/apps/portal/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          fileToExclude.txt
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: npm run build portal
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.server }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          local-dir: ./dist/apps/portal/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            fileToExclude.txt
