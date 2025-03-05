@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Button, Field, Input, Label } from '@headlessui/react';
 import { verifySession } from '../../api/actions/UsersActions';
-import DefaultLayout from '../../layout/defaultLayout';
+
 import {
   getEmergencyList,
   writeEmergencyViewLog,
