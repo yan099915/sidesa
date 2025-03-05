@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import DefaultLayout from '../../layout/defaultLayout';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 const Resident = () => {
   const location = useLocation();

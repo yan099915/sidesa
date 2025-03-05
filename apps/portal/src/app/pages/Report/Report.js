@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import DefaultLayout from '../../layout/defaultLayout';
 import LineChart from '../../components/Charts/LineChart';
-import BarChart from '../../components/Charts/BarChart';
 import PieChart from '../../components/Charts/PieChart';
-import MultiLineChart from '../../components/Charts/MultiLineChart';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Listbox } from '@headlessui/react';
-import { get } from 'http';
+
 import {
   getPortalReport,
   getResidentReport,
@@ -15,6 +12,7 @@ import {
 import HorizontalBarChart from '../../components/Charts/HorizontalBarChart';
 import moment from 'moment';
 import { SyncLoader } from 'react-spinners';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 export default function Report() {
   const [filterDusun, setFilterDusun] = useState('');

@@ -1,6 +1,6 @@
 import React from 'react';
-import DefaultLayout from '../../layout/defaultLayout';
 import { Outlet } from 'react-router-dom';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 export default function Emergency() {
   return (

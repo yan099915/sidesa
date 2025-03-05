@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
-import DefaultLayout from '../../layout/defaultLayout';
-import ReactPDF, { PDFViewer } from '@react-pdf/renderer';
-import SuratKematian from '../../js/docs/SuratKematian';
 import { useDispatch } from 'react-redux';
-import { verifySession } from '../../api/actions/UsersActions';
 import Slideshow from '../../components/Slideshow/Slideshow';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 export default function WelcomePage() {
   const dispatch = useDispatch();

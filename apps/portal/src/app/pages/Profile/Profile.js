@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProfilePic from '../../../assets/images/users.jpeg'; // Ganti dengan path gambar profil Anda
 import BatikImage from '../../../assets/images/batik.jpg'; // Ganti dengan path gambar batik
 import { CheckCircleSharp, CancelSharp } from '@mui/icons-material';
-import DefaultLayout from '../../layout/defaultLayout';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { Label, Input, Field, Select } from '@headlessui/react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -15,6 +15,7 @@ import {
 import { verifySession } from '../../api/actions/UsersActions';
 import { getProfileDetails } from '../../api/actions/UsersActions';
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
 const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
@@ -369,11 +370,6 @@ const Profile = () => {
         )
       : fields.filter((field) => !['rw', 'rt'].includes(field.name));
 
-  console.log(
-    RequestVerificationStatus,
-    'RequestVerificationStatus',
-    GMAPS_APIKEY
-  );
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center bg-gray-100 p-6">

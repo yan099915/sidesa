@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import DefaultLayout from '../../layout/defaultLayout';
+
 import { useSelector } from 'react-redux';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 const Pengajuan = () => {
   const location = useLocation();

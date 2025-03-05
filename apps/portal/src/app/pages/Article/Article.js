@@ -1,7 +1,6 @@
 import React from 'react';
-import DefaultLayout from '../../layout/defaultLayout';
-import EditArticle from './EditArticle';
 import { Outlet } from 'react-router-dom';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 export default function Article() {
   return (

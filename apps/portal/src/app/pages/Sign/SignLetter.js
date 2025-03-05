@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, Fragment } from 'react';
-import DefaultLayout from '../../layout/defaultLayout';
+import React, { useEffect, useState, Fragment } from 'react';
+
 import ReactPDF, {
   pdf,
   PDFViewer,
@@ -28,6 +28,7 @@ import { DialogTitle } from '@mui/material';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import SuratKematian from '../../js/docs/SuratKematian';
 import { verifySession } from '../../api/actions/UsersActions';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 export default function WelcomePage() {
   const [page, setPage] = useState(1);
