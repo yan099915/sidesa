@@ -26,6 +26,7 @@ jobs:
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
           local-dir: ./dist/apps/portal/
+          server-dir: /public_html/portal/
           exclude: |
             **/.git*
             **/.git*/**
