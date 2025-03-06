@@ -56,5 +56,17 @@
       }
     }
   },
-  "nxCloudAccessToken": "OTc1NmQ0NmItNDRlOS00MGVlLWFkODktNDgwZWQ1MGMyZjE0fHJlYWQtd3JpdGU="
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e"
+        ]
+      }
+    }
+  }
 }
