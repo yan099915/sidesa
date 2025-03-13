@@ -1,7 +1,7 @@
 import axios from 'axios';
 import errorHandler from './errorHandler';
 const API_URL = process.env.NX_PUBLIC_API_URL;
-
+// test commit
 // Fungsi untuk menentukan baseURL
 const getBaseURL = () => {
   const isLocalhost = window.location.hostname === 'localhost';
