@@ -10,7 +10,9 @@ import { getResidentDetails } from '../../api/actions/ResidentActions';
 import toast from 'react-hot-toast';
 
 const isLocalhost = window.location.hostname === 'localhost';
-const URL = isLocalhost ? 'http://localhost:3000' : 'https://api.sidera.my.id';
+const URL = isLocalhost
+  ? 'http://localhost:3000'
+  : 'https://api.desarawang.com';
 
 export default function ConfirmResident() {
   const [selectedImage, setSelectedImage] = useState(null);

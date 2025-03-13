@@ -15,7 +15,7 @@ import AnnouncementList from './pages/Announcement/AnnouncementList';
 import EditAnnouncement from './pages/Announcement/EditAnnouncement';
 const notificationAudio = new Audio('../assets/audio/notification.wav');
 const isLocalhost = window.location.hostname === 'localhost';
-const URL = isLocalhost ? 'ws://localhost:3000' : 'https://api.sidera.my.id';
+const URL = isLocalhost ? 'ws://localhost:3000' : 'https://api.desarawang.com';
 
 const lazyWithDelay = (importFunc, delay) =>
   lazy(() =>

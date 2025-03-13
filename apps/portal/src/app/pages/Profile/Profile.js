@@ -21,7 +21,9 @@ const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
 const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 const isLocalhost = window.location.hostname === 'localhost';
-const URL = isLocalhost ? 'http://localhost:3000' : 'https://api.sidera.my.id';
+const URL = isLocalhost
+  ? 'http://localhost:3000'
+  : 'https://api.desarawang.com';
 
 const Profile = () => {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);

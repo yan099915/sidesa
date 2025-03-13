@@ -67,7 +67,7 @@ const Register = () => {
         <div className="flex flex-col gap-4 px-8 w-full md:w-3/4 lg:w-3/4">
           <div className="flex flex-col text-center items-center gap-4">
             <img
-              src="https://sidera.my.id/assets/img/logo_sidera_large.png"
+              src="https://desarawang.com/assets/img/logo_sidera_large.png"
               alt=""
               className="w-24"
             />
