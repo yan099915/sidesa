@@ -16,6 +16,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create .env file
+        run: |
+          echo "NX_PUBLIC_API_URL=${{ secrets.NX_PUBLIC_API_URL }}" >> .env
+
       - name: Build app
         run: npm run build portal
 
