@@ -5,6 +5,7 @@ const API_URL = process.env.NX_PUBLIC_API_URL;
 // Fungsi untuk menentukan baseURL
 const getBaseURL = () => {
   const isLocalhost = window.location.hostname === 'localhost';
+  console.log('API_URL', API_URL, isLocalhost);
   return isLocalhost ? 'http://localhost:3000' : API_URL;
 };
 
