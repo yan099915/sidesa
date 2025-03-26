@@ -93,7 +93,7 @@ import {
 import toast from 'react-hot-toast';
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 const isLocalhost = window.location.hostname === 'localhost';
-const URL = isLocalhost ? 'http://localhost:3000' : DOMAIN;
+const URL = isLocalhost ? 'http://localhost:3000' : `${DOMAIN}/assets`;
 export default function ArticleEditor() {
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
