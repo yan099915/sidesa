@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const isLocalhost = window.location.hostname === 'localhost';
 const URL = isLocalhost
   ? 'http://localhost:3000'
-  : 'https://api.desarawang.com';
+  : 'https://portal.desarawang.com/assets';
 
 export default function ConfirmResident() {
   const [selectedImage, setSelectedImage] = useState(null);

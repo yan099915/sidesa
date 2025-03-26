@@ -411,7 +411,7 @@ const Profile = () => {
             <div className="absolute -top-16 w-32 h-32 rounded-full border-2 bg-white border-blue-500">
               {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
                 <img
-                  src={`${DOMAIN}/files/foto_diri/${ProfileDetails.data.foto_diri}`}
+                  src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
                   className="rounded-full w-full h-full object-cover"
                 />
               ) : (
