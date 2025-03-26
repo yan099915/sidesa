@@ -19,6 +19,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "NX_PUBLIC_API_URL=${{ secrets.NX_PUBLIC_API_URL }}" >> .env
+          echo "NX_PUBLIC_GMAPS_ID=${{ secrets.NX_PUBLIC_GMAPS_ID }}" >> .env
+          echo "NX_PUBLIC_GMAPS_API_KEY=${{ secrets.NX_PUBLIC_GMAPS_API_KEY }}" >> .env
 
       - name: Build app
         run: npm run build portal
