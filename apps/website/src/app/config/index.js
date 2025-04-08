@@ -1,5 +1,5 @@
 import axios from 'axios';
-import errorHandler from './errorHandler';
+import useErrorHandler from './errorHandler';
 const API_URL = process.env.NX_PUBLIC_API_URL;
 
 // Fungsi untuk menentukan baseURL
@@ -19,6 +19,9 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-axiosInstance.interceptors.response.use((response) => response, errorHandler);
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  useErrorHandler
+);
 
 export default axiosInstance;

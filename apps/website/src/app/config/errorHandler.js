@@ -1,10 +1,8 @@
-// if request result is not success and contains error message
-// check message if it token expired redirect to login page
-
 export default function errorHandler(error) {
   // console.log(error.message);
   if (error) {
     let message;
+
     if (error.response) {
       // console.log(error, "Error response")
       console.log(error?.response?.data?.message, 'Error response');

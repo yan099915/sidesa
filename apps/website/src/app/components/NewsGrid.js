@@ -112,7 +112,7 @@ const NewsCard = ({ id, title, image, description, index }) => {
       <div className="w-full h-48  relative">
         <img
           className="absolute top-0 left-0 w-full h-full object-contain sm:object-cover"
-          src={`${DOMAIN}/files/article_thumbnails/${image}`}
+          src={`${DOMAIN}/assets/files/article_thumbnails/${image}`}
           alt={title}
         />
       </div>

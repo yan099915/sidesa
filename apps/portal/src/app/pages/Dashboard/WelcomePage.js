@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Slideshow from '../../components/Slideshow/Slideshow';
 import DefaultLayout from '../../layout/DefaultLayout';
+import { verifySession } from '../../api/actions/UsersActions';
 
 export default function WelcomePage() {
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(verifySession());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(verifySession());
+  }, [dispatch]);
 
   return (
     <DefaultLayout>

@@ -161,6 +161,7 @@ export function App() {
 
   useEffect(() => {
     if (errorUserSession) {
+      console.log('errorUserSession', errorUserSession);
       dispatch({
         type: 'set',
         LoginStatus: false,
@@ -168,6 +169,16 @@ export function App() {
       });
     }
   }, [errorUserSession]);
+
+  // Check if session expired
+  useEffect(() => {
+    const isSessionExpired = sessionStorage.getItem('session_expired');
+    if (isSessionExpired) {
+      console.log('Session expired');
+      sessionStorage.removeItem('session_expired');
+      dispatch({ type: 'set', LoginStatus: false });
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (DoConnectSocketIo && authSocket !== null) {
