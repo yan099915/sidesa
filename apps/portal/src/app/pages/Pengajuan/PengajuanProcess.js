@@ -471,11 +471,11 @@ export default function PengajuanProcess() {
                                           onClick={() => {
                                             key === 'dokumen'
                                               ? handleViewImage(
-                                                  `${DOMAIN}/files/surat_rs/${value}`
+                                                  `${DOMAIN}/assets/files/surat_rs/${value}`
                                                 )
                                               : //  open new window to view surat
                                                 window.open(
-                                                  `${DOMAIN}/files/surat/${value}`,
+                                                  `${DOMAIN}/assets/files/surat/${value}`,
                                                   '_blank'
                                                 );
                                           }}
