@@ -30,7 +30,7 @@ import { OpenInNew, Close, CrisisAlertOutlined } from '@mui/icons-material';
 import FormatSuratDomisili from '../../js/FormatSuratDomisili';
 import FormatSuratKematian from '../../js/FormatSuratKetMD';
 
-const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const PORTAL_DOMAIN = process.env.NX_PUBLIC_PORTAL_DOMAIN;
 moment.locale('id');
 
 export default function PengajuanProcess() {
@@ -42,6 +42,7 @@ export default function PengajuanProcess() {
   const [filePdf, setFilePdf] = useState('');
   const [disabled, setDisabled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [newPengajuanData, setNewPengajuanData] = useState(false);
 
   const DoGetRequestDetails = useSelector(
@@ -108,7 +109,7 @@ export default function PengajuanProcess() {
     switch (RequestDetails.data.jenis_pengajuan) {
       case 1:
         window.open(
-          `${DOMAIN}/files/surat/${RequestDetails.data.surat_domisili.surat}`,
+          `${PORTAL_DOMAIN}/files/surat/${RequestDetails.data.surat_domisili.surat}`,
           '_blank'
         );
         break;
@@ -117,7 +118,7 @@ export default function PengajuanProcess() {
         break;
       case 3:
         window.open(
-          `${DOMAIN}/files/surat/${RequestDetails.data.surat_kematian.surat}`,
+          `${PORTAL_DOMAIN}/files/surat/${RequestDetails.data.surat_kematian.surat}`,
           '_blank'
         );
         break;
@@ -206,6 +207,16 @@ export default function PengajuanProcess() {
     }
   };
 
+  const handleRejectPengajuan = () => {
+    // jika status pengajuan 1 dan jenis ttd 1 maka open modal untuk menolak pengajuan
+    const data = {
+      id: id,
+      status_pengajuan: 4, // 4 adalah value pengajuan ditolak
+    };
+    setDisabled(true);
+    dispatch(updateRequest(data));
+  };
+
   useEffect(() => {
     if (DoGetRequestDetails) {
       const params = { id: id };
@@ -246,6 +257,8 @@ export default function PengajuanProcess() {
       });
     }, 1000);
   }, [UpdateRequest, errorUpdateRequest]);
+
+  console.log(disabled, 'disabled');
 
   return (
     <div className="container">
@@ -386,7 +399,7 @@ export default function PengajuanProcess() {
                                                   className="text-blue-500 hover:underline"
                                                   onClick={() =>
                                                     handleViewImage(
-                                                      `${DOMAIN}/files/${key}/${value}`
+                                                      `${PORTAL_DOMAIN}/assets/files/${key}/${value}`
                                                     )
                                                   }
                                                 >
@@ -471,11 +484,11 @@ export default function PengajuanProcess() {
                                           onClick={() => {
                                             key === 'dokumen'
                                               ? handleViewImage(
-                                                  `${DOMAIN}/assets/files/surat_rs/${value}`
+                                                  `${PORTAL_DOMAIN}/assets/files/surat_rs/${value}`
                                                 )
                                               : //  open new window to view surat
                                                 window.open(
-                                                  `${DOMAIN}/assets/files/surat/${value}`,
+                                                  `${PORTAL_DOMAIN}/assets/files/surat/${value}`,
                                                   '_blank'
                                                 );
                                           }}
@@ -541,7 +554,7 @@ export default function PengajuanProcess() {
                                                     className="text-blue-500 hover:underline"
                                                     onClick={() =>
                                                       handleViewImage(
-                                                        `${DOMAIN}/files/${key}/${value}`
+                                                        `${PORTAL_DOMAIN}/assets/files/${key}/${value}`
                                                       )
                                                     }
                                                   >
@@ -604,6 +617,7 @@ export default function PengajuanProcess() {
                         Process
                       </button>
                       <button
+                        onClick={(e) => setIsRejectOpen(true)}
                         disabled={disabled}
                         className="text-white bg-red-500 rounded-md px-4 py-2"
                       >
@@ -642,6 +656,46 @@ export default function PengajuanProcess() {
           </div>
         </div>
       )}
+      <Dialog
+        open={isRejectOpen}
+        as="div"
+        className="relative z-9999 focus:outline-none"
+        onClose={() => setIsRejectOpen(false)} // Memperbaiki pemanggilan fungsi di sini
+      >
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-zinc-900/40">
+          <div className="flex min-h-full items-center justify-center p-4 ">
+            <DialogPanel className="max-w-lg space-y-6 bg-white p-12 data-[closed]:scale-95 data-[closed]:opacity-0">
+              <DialogTitle
+                as="h3"
+                className="text-xl text-red-500 font-bold text-center"
+              >
+                Menolak Pengajuan
+              </DialogTitle>
+              <div className="flex flex-col text-justify items-center gap-4">
+                <p className="text-sm text-gray-500">
+                  Apakah anda ingin menolak pengajuan ini?
+                </p>
+              </div>
+              <div className="flex justify-between">
+                <Button
+                  disabled={disabled}
+                  onClick={handleUpdateWithFile} // Menambahkan aksi pada tombol
+                  className="inline-flex items-center gap-2 rounded-md bg-blue-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-blue-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-blue-700"
+                >
+                  Submit
+                </Button>
+                <Button
+                  disabled={disabled}
+                  onClick={handleCloseDialog} // Menambahkan aksi pada tombol
+                  className="inline-flex items-center gap-2 rounded-md bg-zinc-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-zinc-700"
+                >
+                  Close
+                </Button>
+              </div>
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
       <Dialog
         open={isOpen}
         as="div"

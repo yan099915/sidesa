@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { getFeaturedArticles } from '../../api/actions/ArticleActions';
 
-const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const PORTAL_DOMAIN = process.env.NX_PORTAL_DOMAIN;
+const WEBSITE_DOMAIN = process.env.NX_PUBLIC_WEBSITE_DOMAIN;
 
 export default function Slideshow() {
   const [imageIndex, setImageIndex] = useState(0);
@@ -37,7 +38,7 @@ export default function Slideshow() {
   };
 
   const navigateToNews = (id) => {
-    const url = `${DOMAIN}/#/news/${id}`;
+    const url = `${WEBSITE_DOMAIN}/#/news/${id}`;
     window.open(url, '_blank');
   };
 
@@ -96,7 +97,7 @@ export default function Slideshow() {
               >
                 <img
                   className="h-full w-full object-cover"
-                  src={`${DOMAIN}/files/article_thumbnails/${article.article_thumbnail.name}`}
+                  src={`${PORTAL_DOMAIN}/portal/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
                 />
               </motion.div>
             ))
@@ -116,7 +117,7 @@ export default function Slideshow() {
               >
                 <img
                   className="h-full w-full object-cover"
-                  src={`${DOMAIN}/files/article_thumbnails/${article.article_thumbnail.name}`}
+                  src={`${PORTAL_DOMAIN}/portal/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
                 />
               </motion.div>
             ))
