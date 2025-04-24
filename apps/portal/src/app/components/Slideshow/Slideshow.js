@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { getFeaturedArticles } from '../../api/actions/ArticleActions';
 
-const PORTAL_DOMAIN = process.env.NX_PORTAL_DOMAIN;
+const PORTAL_DOMAIN = process.env.NX_PUBLIC_PORTAL_DOMAIN;
 const WEBSITE_DOMAIN = process.env.NX_PUBLIC_WEBSITE_DOMAIN;
 
 export default function Slideshow() {

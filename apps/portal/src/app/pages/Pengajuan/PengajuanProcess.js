@@ -250,6 +250,7 @@ export default function PengajuanProcess() {
     }
     setTimeout(() => {
       setIsOpen(false);
+      setIsRejectOpen(false);
       setDisabled(false);
       dispatch({
         type: 'UPDATE_REQUEST',
@@ -257,8 +258,6 @@ export default function PengajuanProcess() {
       });
     }, 1000);
   }, [UpdateRequest, errorUpdateRequest]);
-
-  console.log(disabled, 'disabled');
 
   return (
     <div className="container">
@@ -679,17 +678,17 @@ export default function PengajuanProcess() {
               <div className="flex justify-between">
                 <Button
                   disabled={disabled}
-                  onClick={handleUpdateWithFile} // Menambahkan aksi pada tombol
-                  className="inline-flex items-center gap-2 rounded-md bg-blue-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-blue-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-blue-700"
+                  onClick={handleRejectPengajuan} // Menambahkan aksi pada tombol
+                  className="inline-flex items-center gap-2 rounded-md bg-red-500 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-blue-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-blue-700"
                 >
-                  Submit
+                  Reject
                 </Button>
                 <Button
                   disabled={disabled}
-                  onClick={handleCloseDialog} // Menambahkan aksi pada tombol
+                  onClick={() => setIsRejectOpen(false)} // Menambahkan aksi pada tombol
                   className="inline-flex items-center gap-2 rounded-md bg-zinc-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-zinc-700"
                 >
-                  Close
+                  Cancel
                 </Button>
               </div>
             </DialogPanel>
@@ -740,7 +739,7 @@ export default function PengajuanProcess() {
                   onClick={handleCloseDialog} // Menambahkan aksi pada tombol
                   className="inline-flex items-center gap-2 rounded-md bg-zinc-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-zinc-700"
                 >
-                  Close
+                  Cancel
                 </Button>
               </div>
             </DialogPanel>
