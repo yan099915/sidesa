@@ -327,7 +327,15 @@ export default function WelcomePage() {
   const getTemplateSurat = (data) => {
     switch (data.jenis_pengajuan) {
       case 1:
-        return <SuratDomisili data={data[jenisSurat[data.jenis_pengajuan]]} />;
+        console.log(data[jenisSurat[data.jenis_pengajuan]], 'datanya');
+        return (
+          <SuratDomisili
+            data={{
+              ...data[jenisSurat[data.jenis_pengajuan]],
+              keterangan: data.keterangan,
+            }}
+          />
+        );
       case 2:
         // return <SuratKelahiran data={data} />;
         break;

@@ -280,6 +280,15 @@ const SuratDomisili = ({ data }) => (
             Kota Pariaman.
           </Text>
         </View>
+        <View
+          style={{
+            marginTop: -20,
+          }}
+        >
+          <Text>
+            Surat ini dibuat sebagai kelengkapan pengurusan {data.keterangan}.
+          </Text>
+        </View>
         <View style={styles.text}>
           <Text style={styles.textIndent}>
             Demikianlah surat keterangan ini dibuat dan diberikan kepada yang

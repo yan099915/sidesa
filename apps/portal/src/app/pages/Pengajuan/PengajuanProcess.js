@@ -139,6 +139,7 @@ export default function PengajuanProcess() {
       case 1:
         // isi data untuk surat domisili dengan data dari RequestDetails.data.surat_domisili.penduduk tanpa menghapus isian dari data
         data = { ...data, ...RequestDetails.data.surat_domisili.penduduk };
+        data.keterangan = RequestDetails.data.keterangan;
         data.jenis_ttd = RequestDetails.data.surat_domisili.jenis_ttd;
         data.tanggal_lahir = moment(data.tanggal_lahir).format('DD-MM-YYYY');
         FormatSuratDomisili(data);

@@ -73,7 +73,7 @@ export default function Slideshow() {
   }, [dispatch]);
 
   return (
-    <div className="relative flex items-center justify-center w-full h-96 sm:min-h-screen overflow-hidden ">
+    <div className="relative flex items-center justify-center w-full h-96 sm:min-h-screen overflow-hidden">
       <AnimatePresence initial={false}>
         {featuredArticles &&
         featuredArticles.data &&
@@ -92,8 +92,8 @@ export default function Slideshow() {
                 onClick={(e) => navigateToNews(article.id)}
               >
                 <img
-                  className="h-full w-full object-scale-down"
-                  src={`${DOMAIN}/files/article_thumbnails/${article.article_thumbnail.name}`}
+                  className="h-full w-full object-scale-down max-h-[75vh]"
+                  src={`${DOMAIN}/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
                   // alt={`Slideshow Image ${index}`}
                 />
               </motion.div>
@@ -113,7 +113,7 @@ export default function Slideshow() {
                 onClick={(e) => navigateToNews(article.id)}
               >
                 <img
-                  className="h-full w-full object-scale-down"
+                  className="h-full w-full object-scale-down max-h-[75vh]"
                   src={`${DOMAIN}/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
                   // alt={`Slideshow Image ${index}`}
                 />

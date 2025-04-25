@@ -156,7 +156,7 @@ export default function NewsDetails() {
           {/* news body */}
           <div className="px-4 border border-t-0  border-zinc-900/5">
             <img
-              src={`${DOMAIN}/files/article_thumbnails/${ArticleDetails.data.article_thumbnail.name}`}
+              src={`${DOMAIN}/assets/files/article_thumbnails/${ArticleDetails.data.article_thumbnail.name}`}
               alt={ArticleDetails.data.title}
               className="w-full h-96 object-scale-down sm:object-contain"
             />
