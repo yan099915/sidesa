@@ -54,7 +54,7 @@ export default function DropDownUser() {
             {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
               <img
                 className="rounded-full w-full h-full object-cover"
-                src={`${DOMAIN}/files/foto_diri/${ProfileDetails.data.foto_diri}`}
+                src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
               />
             ) : (
               <img

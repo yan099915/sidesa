@@ -131,7 +131,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </nav>
       </div>
       <div className=" px-4 absolute z-99999 bottom-2">
-        <p>Dev v{version}</p>
+        <p>Dev v1.0.0</p>
       </div>
     </aside>
   );

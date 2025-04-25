@@ -97,7 +97,7 @@ export default function Slideshow() {
               >
                 <img
                   className="h-full w-full object-cover"
-                  src={`${PORTAL_DOMAIN}/portal/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
+                  src={`${PORTAL_DOMAIN}/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
                 />
               </motion.div>
             ))
@@ -117,7 +117,7 @@ export default function Slideshow() {
               >
                 <img
                   className="h-full w-full object-cover"
-                  src={`${PORTAL_DOMAIN}/portal/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
+                  src={`${PORTAL_DOMAIN}/assets/files/article_thumbnails/${article.article_thumbnail.name}`}
                 />
               </motion.div>
             ))
