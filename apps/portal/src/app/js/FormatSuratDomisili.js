@@ -24,7 +24,7 @@ const printSuratDomisili = (data) => {
             <h3 class="text-3xl font-bold">DESA RAWANG</h3>
             <p class="font-bold">Jl. R. A. KARTINI, PARIAMAN</p>
             <div class="absolute top-0 flex justify-start w-full p-2">
-              <img src="http://localhost:3000/files/img/Lambang_Kota_Pariaman.png" class="w-20 h-20">
+              <img src="https://portal.desarawang.com/assets/files/images/Lambang_Kota_Pariaman.png" class="w-20 h-20">
             </div>
             <hr class="my-0.5 border-top-4 border-black">
             <hr class="border-top-4 border-black">

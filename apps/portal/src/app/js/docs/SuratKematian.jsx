@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   sign: {
-    width: 150,
-    height: 100,
+    width: 100,
+    height: 110,
   },
   signature: {
     position: 'absolute',
@@ -331,7 +331,7 @@ const SuratKematian = ({ data }) => (
           <Text>Kepala Desa Rawang</Text>
           <Image
             style={styles.sign}
-            src="../../../assets/images/signature.png" // Ganti dengan path ke logo
+            src="../../../assets/images/sign_stample.png" // Ganti dengan path ke logo
           />
           <Text style={{ fontWeight: 'bold' }}>SUKRI HERIADI CAN</Text>
         </View>

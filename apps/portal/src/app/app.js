@@ -63,6 +63,7 @@ const EmailConfirmation = lazy(() =>
 const Login = lazyWithDelay(() => import('./pages/Login/Login'));
 const Register = lazy(() => import('./pages/Register/Register'));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail/VerifyEmail'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
 const WelcomePage = lazy(() => import('./pages/Dashboard/WelcomePage'), 1000);
 
 const Protected = ({ isLoggedIn, children }) => {
@@ -467,6 +468,14 @@ export function App() {
             element={
               <ProtectedLogin isLoggedIn={isLoggedIn}>
                 <Login />
+              </ProtectedLogin>
+            }
+          />
+          <Route
+            path="reset-password/:token"
+            element={
+              <ProtectedLogin isLoggedIn={isLoggedIn}>
+                <ResetPassword />
               </ProtectedLogin>
             }
           />
