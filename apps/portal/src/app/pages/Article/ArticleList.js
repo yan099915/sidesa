@@ -349,7 +349,7 @@ export default function () {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col sm:flex-row justify-between">
         <div className="flex flex-col content-center justify-center text-center">
           <div className="flex gap-x-4 items-center text-xs sm:text-base">
             <span className="text-sm/6 font-medium">Ukuran Halaman</span>

@@ -117,7 +117,7 @@ export default function EmergencyDetails() {
                 type="button"
                 className="py-2 px-4 bg-zinc-900 text-white rounded-lg hover:bg-zinc-600 transition-colors duration-300"
               >
-                Back
+                Kembali
               </button>
             </div>
             {EmergencyDetails && EmergencyDetails.data && (

@@ -164,7 +164,7 @@ export default function RiwayatPengajuan() {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-row justify-between">
+      <div className="fflex flex-col sm:flex-row justify-between">
         <div className="flex flex-col content-center justify-center text-center">
           <div className="flex gap-x-4 items-center text-xs sm:text-base">
             <span className="text-sm/6 font-medium">Page Size</span>

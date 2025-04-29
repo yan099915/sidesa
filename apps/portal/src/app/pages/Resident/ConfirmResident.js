@@ -8,11 +8,9 @@ import {
 import { Cancel, CheckCircle, OpenInNew, Close } from '@mui/icons-material';
 import { getResidentDetails } from '../../api/actions/ResidentActions';
 import toast from 'react-hot-toast';
+import { getFile } from '../../api/actions/FilesActions';
 
-const isLocalhost = window.location.hostname === 'localhost';
-const URL = isLocalhost
-  ? 'http://localhost:3000'
-  : 'https://portal.desarawang.com/assets';
+const API_URL = process.env.NX_PUBLIC_API_URL;
 
 export default function ConfirmResident() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -20,6 +18,7 @@ export default function ConfirmResident() {
   const [notes, setNotes] = useState('');
   const [status, setStatus] = useState(null);
   const [disableSubmit, setDisableSubmit] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -42,11 +41,34 @@ export default function ConfirmResident() {
     (state) => state.VerificationReducers.errorVerificationApproval
   );
 
-  const handleViewImage = (imageUrl, key) => {
-    setSelectedImage(imageUrl);
+  const FileImage = useSelector((state) => state.FileReducers.File);
+
+  const handleViewImage = (key, type) => {
+    setLoadingImage(true);
+    console.log(key, 'key');
+    const param = {
+      type: key,
+      filename:
+        type === 'verification'
+          ? VerificationRequestDetails.data[key]
+          : ResidentDetails.data[key],
+    };
+    dispatch(getFile(param));
+    // setSelectedImage(imageUrl);
+    setSelectedImage(
+      `${API_URL}/file/${key}/${
+        type === 'verification'
+          ? VerificationRequestDetails.data[key]
+          : ResidentDetails.data[key]
+      }`
+    );
   };
 
   const closeImageModal = () => {
+    dispatch({
+      type: 'GET_FILE',
+      payload: { data: false, errorMessage: false },
+    });
     setSelectedImage(null);
   };
 
@@ -75,6 +97,23 @@ export default function ConfirmResident() {
       id: 'verification-data',
     });
   };
+
+  function prettifyLabel(text) {
+    const cleaned = text.replace(/_/g, ' ');
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  }
+
+  useEffect(() => {
+    //    wait until image available
+    if (FileImage) {
+      console.log(FileImage, 'datanya');
+      // setSelectedImage(FileImage);
+    }
+    console.log('set loading image false');
+    setTimeout(() => {
+      setLoadingImage(false);
+    }, 2000);
+  }, [FileImage]);
 
   useEffect(() => {
     if (DoGetVerificationDetails) {
@@ -155,10 +194,10 @@ export default function ConfirmResident() {
               <table className="min-w-full bg-white">
                 <thead>
                   <tr className="border-t border-b border-gray-200">
-                    <th className="py-2 px-4 text-left">Field</th>
+                    <th className="py-2 px-4 text-left">Nama</th>
                     <th className="py-2 px-4 text-left">Data Pemohon</th>
                     <th className="py-2 px-4 text-left">Data Desa</th>
-                    <th className="py-2 px-4 text-left">Match</th>
+                    <th className="py-2 px-4 text-left">Kecocokan</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -182,21 +221,21 @@ export default function ConfirmResident() {
                     )
                     .map((key) => (
                       <tr key={key} className="border-b border-zinc-900/20">
-                        <td className="py-2 px-4 font-bold">{key}</td>
+                        <td className="py-2 px-4 font-bold">
+                          {prettifyLabel(key)}
+                        </td>
                         <td className="py-2 px-4">
                           {key.startsWith('foto') ? (
                             <button
                               className="text-blue-500 hover:underline"
                               onClick={() =>
-                                handleViewImage(
-                                  `${URL}/files/${key}/${VerificationRequestDetails.data[key]}`
-                                )
+                                handleViewImage(key, 'verification')
                               }
                             >
-                              View
+                              Lihat gambar
                             </button>
                           ) : (
-                            VerificationRequestDetails.data[key]
+                            prettifyLabel(VerificationRequestDetails.data[key])
                           )}
                         </td>
                         <td className="py-2 px-4">
@@ -204,19 +243,17 @@ export default function ConfirmResident() {
                             key.startsWith('foto') ? (
                               <button
                                 className="text-blue-500 hover:underline"
-                                onClick={() =>
-                                  handleViewImage(
-                                    `${URL}/files/${key}/${ResidentDetails.data[key]}`
-                                  )
-                                }
+                                onClick={() => handleViewImage(key, 'resident')}
                               >
-                                View
+                                Lihat Gambar
                               </button>
                             ) : (
-                              ResidentDetails.data[key]
+                              prettifyLabel(ResidentDetails.data[key])
                             )
                           ) : (
-                            <Cancel className="text-red-500 w-4" />
+                            <span className="text-gray-500 italic">
+                              Tidak ada gambar
+                            </span>
                           )}
                         </td>
                         <td className="py-2 px-4">
@@ -279,7 +316,7 @@ export default function ConfirmResident() {
                     type="button"
                     className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                   >
-                    Confirm
+                    Konfirmasi
                   </button>
                   <button
                     onClick={() => handleSubmitModal('reject')}
@@ -289,7 +326,7 @@ export default function ConfirmResident() {
                     type="button"
                     className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
                   >
-                    Reject
+                    Tolak
                   </button>
                 </div>
               )}
@@ -299,7 +336,7 @@ export default function ConfirmResident() {
               type="button"
               className="mt-4 px-4 py-2 bg-zinc-900 text-white rounded"
             >
-              Back
+              Kembali
             </button>
           </div>
         </form>
@@ -311,11 +348,37 @@ export default function ConfirmResident() {
               'flex w-1/4 relative justify-center items-center content-center'
             }
           >
-            <img
-              src={selectedImage}
-              alt="Preview"
-              className="z-9999 max-w-full max-h-full"
-            />
+            {loadingImage ? (
+              <div className="z-9999 max-w-full max-h-full p-20">
+                Memuat
+                <svg
+                  className="size-5 animate-spin text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              </div>
+            ) : (
+              <img
+                src={selectedImage}
+                alt="Preview"
+                className="z-9999 max-w-full max-h-full"
+              />
+            )}
             <div className="flex absolute z-99999 top-2 gap-x-4">
               <button
                 onClick={closeImageModal}
@@ -347,14 +410,14 @@ export default function ConfirmResident() {
                 // disabled={disableSubmit}
                 className="  text-white bg-blue-500 rounded-md px-4 py-2"
               >
-                Submit
+                Kirim
               </button>
               <button
                 onClick={closeSubmitModal}
                 // disabled={disableSubmit}
                 className="  text-white bg-red-500 rounded-md px-4 py-2"
               >
-                Cancel
+                Batal
               </button>
             </div>
           </div>

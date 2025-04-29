@@ -11,6 +11,7 @@ import EmergencyReducers from './EmergencyReducers';
 import ArticlesReducers from './ArticlesReducers';
 import AnnouncementReducers from './AnnouncementReducers';
 import ReportReducers from './ReportReducers';
+import FileReducers from './FileReducers';
 
 // Middleware
 const middleware = [thunk];
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   ArticlesReducers: ArticlesReducers,
   AnnouncementReducers: AnnouncementReducers,
   ReportReducers: ReportReducers,
+  FileReducers: FileReducers,
 });
 
 // Enhancers (jika diperlukan)

@@ -262,13 +262,13 @@ export default function ResidentList() {
       </Transition>
       {/* end of confirmation dialog */}
       <div className="flex flex-col sm:flex-row justify-between gap-2 sm:items-center mb-4">
-        <div className="flex gap-x-4 w-1/2">
-          <Field className="relative flex justify-center content-center items-center">
+        <div className="flex flex-col sm:flex-row gap-x-4 w-1/2">
+          <Field className="relative flex sm:justify-center sm:content-center items-center w-fit">
             <Button
               onClick={(e) => handleClearSearch()}
               className={
                 (search === '' ? 'hidden' : 'block') +
-                ' absolute flex right-2 w-5  hover:ring-zinc-900/50 rounded-full justify-center cont items-center'
+                ' absolute flex right-1  w-5  hover:ring-zinc-900/50 rounded-full justify-center items-center '
               }
             >
               <Cancel className="w-3 text-zinc-900/20 hover:text-zinc-900/40 active:text-zinc-900/20" />
@@ -415,10 +415,10 @@ export default function ResidentList() {
             )}
           </tbody>
         </table>
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-col sm:flex-row justify-between">
           <div className="flex flex-col content-center justify-center text-center">
             <div className="flex gap-x-4 items-center">
-              <span className="text-sm/6 font-medium">Page Size</span>
+              <span className="text-sm/6 font-medium">Ukuran Halaman</span>
               <div className="relative flex items-center ">
                 <select
                   className={clsx(

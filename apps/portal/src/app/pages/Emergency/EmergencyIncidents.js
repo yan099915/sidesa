@@ -209,14 +209,16 @@ export default function EmergencyIncidents() {
             )}
           </tbody>
         </table>
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-col sm:flex-row justify-between">
           <div className="flex flex-col content-center justify-center text-center">
             <div className="flex gap-x-4 items-center">
-              <span className="text-sm/6 font-medium">Page Size</span>
+              <span className="text-xs sm:text-sm/6 font-medium">
+                Ukuran Halaman
+              </span>
               <div className="relative flex items-center ">
                 <select
                   className={clsx(
-                    'mt-3 block w-[70px] appearance-none rounded-lg ring-1 ring-zinc-900/20 bg-white/5 py-1.5 px-3 text-sm/6',
+                    'mt-3 block w-[70px] appearance-none rounded-lg ring-1 ring-zinc-900/20 bg-white/5 py-1.5 px-3 text-xs sm:text-sm/6',
                     'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
                     '*:text-black'
                   )}
@@ -239,7 +241,7 @@ export default function EmergencyIncidents() {
             <IconButton onClick={handlePrevious} disabled={currentPage === 1}>
               <ChevronLeftOutlined />
             </IconButton>
-            <span className="mx-2">
+            <span className="mx-2 text-xs/1">
               {currentPage} of {totalPages}
             </span>
             <IconButton

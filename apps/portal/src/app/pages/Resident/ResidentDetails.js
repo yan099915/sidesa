@@ -5,8 +5,9 @@ import { getResidentDetails } from '../../api/actions/ResidentActions';
 import { OpenInNew, Close } from '@mui/icons-material';
 import { Field, Label } from '@headlessui/react';
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
+import { getFile } from '../../api/actions/FilesActions';
 
-const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const API_URL = process.env.NX_PUBLIC_API_URL;
 const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
 const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
 export default function ResidentDetails() {
@@ -25,7 +26,9 @@ export default function ResidentDetails() {
   const ErrorResidentDetails = useSelector(
     (state) => state.ResidentReducers.errorResidentDetails
   );
+  const FileImage = useSelector((state) => state.FileReducers.File);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loadingImage, setLoadingImage] = useState(false);
 
   useEffect(() => {
     if (DoGetVerificationDetails) {
@@ -54,18 +57,41 @@ export default function ResidentDetails() {
     );
   }, [ResidentDetails, ErrorResidentDetails]);
 
-  const handleViewImage = (imageUrl) => {
-    setSelectedImage(imageUrl);
+  useEffect(() => {
+    //    wait until image available
+    if (FileImage) {
+      console.log(FileImage, 'datanya');
+      // setSelectedImage(FileImage);
+    }
+    console.log('set loading image false');
+    setTimeout(() => {
+      setLoadingImage(false);
+    }, 2000);
+  }, [FileImage]);
+
+  const handleViewImage = (key) => {
+    setLoadingImage(true);
+    const param = {
+      type: key,
+      filename: ResidentDetails.data[key],
+    };
+    dispatch(getFile(param));
+    // setSelectedImage(imageUrl);
+    setSelectedImage(`${API_URL}/file/${key}/${ResidentDetails.data[key]}`);
   };
 
   const closeImageModal = () => {
+    dispatch({
+      type: 'GET_FILE',
+      payload: { data: false, errorMessage: false },
+    });
     setSelectedImage(null);
   };
 
-  console.log({
-    lat: ResidentDetails?.data?.lat,
-    lng: ResidentDetails?.data?.lng,
-  });
+  // console.log({
+  //   lat: ResidentDetails?.data?.lat,
+  //   lng: ResidentDetails?.data?.lng,
+  // });
 
   return (
     <div>
@@ -114,16 +140,18 @@ export default function ResidentDetails() {
                         <td className="py-2 px-4 font-bold">{key}</td>
                         <td className="py-2 px-4">
                           {key.startsWith('foto') ? (
-                            <button
-                              className="text-blue-500 hover:underline"
-                              onClick={() =>
-                                handleViewImage(
-                                  `${DOMAIN}/assets/files/${key}/${ResidentDetails.data[key]}`
-                                )
-                              }
-                            >
-                              View
-                            </button>
+                            ResidentDetails.data[key] ? (
+                              <button
+                                className="text-blue-500 hover:underline"
+                                onClick={() => handleViewImage(key)}
+                              >
+                                Lihat gambar
+                              </button>
+                            ) : (
+                              <span className="text-gray-500 italic">
+                                Tidak ada gambar
+                              </span>
+                            )
                           ) : typeof ResidentDetails.data[key] === 'string' ||
                             typeof ResidentDetails.data[key] === 'number' ? (
                             ResidentDetails.data[key]
@@ -183,11 +211,38 @@ export default function ResidentDetails() {
               'flex w-1/4 relative justify-center items-center content-center'
             }
           >
-            <img
-              src={selectedImage}
-              alt="Preview"
-              className="z-9999 max-w-full max-h-full"
-            />
+            {loadingImage ? (
+              <div className="z-9999 max-w-full max-h-full p-20">
+                memuat
+                <svg
+                  className="size-5 animate-spin text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              </div>
+            ) : (
+              <img
+                src={selectedImage}
+                alt="Preview"
+                className="z-9999 max-w-full max-h-full"
+              />
+            )}
+
             <div className="flex absolute z-99999 top-2 gap-x-4">
               <button
                 onClick={closeImageModal}
