@@ -23,6 +23,7 @@ jobs:
           echo "NX_PUBLIC_GMAPS_API_KEY=${{ secrets.NX_PUBLIC_GMAPS_API_KEY }}" >> .env
           echo "NX_PUBLIC_DOMAIN=${{ secrets.NX_PUBLIC_DOMAIN }}" >> .env
           echo "NX_PUBLIC_PORTAL_DOMAIN=${{ secrets.NX_PUBLIC_PORTAL_DOMAIN }}" >> .env
+          echo "NX_PUBLIC_WEBSITE_DOMAIN=${{ secrets.NX_PUBLIC_WEBSITE_DOMAIN }}" >> .env
 
       - name: Build app
         run: npm run build portal

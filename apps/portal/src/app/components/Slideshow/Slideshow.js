@@ -38,7 +38,7 @@ export default function Slideshow() {
   };
 
   const navigateToNews = (id) => {
-    console.log(WEBSITE_DOMAIN, 'DOMAINNYA');
+    // console.log(WEBSITE_DOMAIN, 'DOMAINNYA');
     const url = `${WEBSITE_DOMAIN}/#/news/${id}`;
     window.open(url, '_blank');
   };
