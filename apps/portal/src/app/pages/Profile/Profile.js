@@ -20,10 +20,7 @@ import DefaultLayout from '../../layout/DefaultLayout';
 const GMAPS_APIKEY = process.env.NX_PUBLIC_GMAPS_API_KEY;
 const GMAPS_ID = process.env.NX_PUBLIC_GMAPS_ID;
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
-const isLocalhost = window.location.hostname === 'localhost';
-const URL = isLocalhost
-  ? 'http://localhost:3000'
-  : 'https://api.desarawang.com';
+const API_URL = process.env.NX_PUBLIC_API_URL;
 // test
 const Profile = () => {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
@@ -45,6 +42,11 @@ const Profile = () => {
   const DataGeolocation = useSelector(
     (state) => state.ReduxState.DataGeolocation
   );
+  const ProfilePicture = useSelector(
+    (state) => state.FileReducers.ProfilePicture
+  );
+  const [userProfilePicture, setUserProfilePicture] = useState(false);
+  const [loadingPicture, setLoadingPicture] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState(false);
@@ -300,6 +302,19 @@ const Profile = () => {
   }, [ProfileDetails]);
 
   useEffect(() => {
+    if (ProfilePicture) {
+      setUserProfilePicture(
+        `${API_URL}/profile/${ProfileDetails.data.foto_diri}`
+      );
+      setTimeout(() => {
+        setLoadingPicture(false);
+      }, 1000);
+    } else {
+      setUserProfilePicture(false);
+    }
+  }, [ProfilePicture]);
+
+  useEffect(() => {
     dispatch({ type: 'set', DoCheckVerificationStatus: true });
   }, []);
 
@@ -410,10 +425,14 @@ const Profile = () => {
           <div className="relative flex justify-center">
             <div className="absolute -top-16 w-32 h-32 rounded-full border-2 bg-white border-blue-500">
               {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
-                <img
-                  src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
-                  className="rounded-full w-full h-full object-cover"
-                />
+                loadingPicture ? (
+                  <div className="h-full w-full rounded-full bg-black/10 animate-pulse"></div>
+                ) : (
+                  <img
+                    src={userProfilePicture}
+                    className="rounded-full w-full h-full object-cover"
+                  />
+                )
               ) : (
                 <img
                   src={ProfilePic}

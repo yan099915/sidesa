@@ -11,8 +11,10 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../api/actions/UsersActions';
 import { useEffect, useState } from 'react';
+import { getProfilePicture } from '../../api/actions/FilesActions';
 
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
+const API_URL = process.env.NX_PUBLIC_API_URL;
 
 export default function DropDownUser() {
   const UserSession = useSelector((state) => state.UsersReducers.UserSession);
@@ -20,7 +22,13 @@ export default function DropDownUser() {
   const ProfileDetails = useSelector(
     (state) => state.UsersReducers.ProfileDetails
   );
+  const ProfilePicture = useSelector(
+    (state) => state.FileReducers.ProfilePicture
+  );
   const [disabled, setDisabled] = useState(false);
+  const [userProfilePicture, setUserProfilePicture] = useState(false);
+  const [loadingPicture, setLoadingPicture] = useState(false);
+
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -38,9 +46,34 @@ export default function DropDownUser() {
       setTimeout(() => {
         setDisabled(false);
         window.location.reload();
-      }, 1000);
+      }, 2000);
     }
   }, [UserLogout]);
+
+  useEffect(() => {
+    if (ProfileDetails && ProfileDetails.data) {
+      if (ProfileDetails.data.foto_diri) {
+        setLoadingPicture(true);
+        dispatch(
+          getProfilePicture({ filename: ProfileDetails.data.foto_diri })
+        );
+      }
+    }
+  }, [ProfileDetails]);
+
+  useEffect(() => {
+    if (ProfilePicture) {
+      console.log(ProfilePicture, 'ProfilePicture');
+      setUserProfilePicture(
+        `${API_URL}/profile/${ProfileDetails.data.foto_diri}`
+      );
+      setTimeout(() => {
+        setLoadingPicture(false);
+      }, 1000);
+    } else {
+      setUserProfilePicture(false);
+    }
+  }, [ProfilePicture]);
 
   return (
     <div className="flex active:opacity-80 ">
@@ -52,10 +85,14 @@ export default function DropDownUser() {
           </div>
           <div className="h-12 w-12 rounded-full overflow-hidden background">
             {ProfileDetails.data && ProfileDetails.data.foto_diri ? (
-              <img
-                className="rounded-full w-full h-full object-cover"
-                src={`${DOMAIN}/assets/files/foto_diri/${ProfileDetails.data.foto_diri}`}
-              />
+              loadingPicture ? (
+                <div className="h-full w-full rounded-full bg-black/10 animate-pulse"></div>
+              ) : (
+                <img
+                  className="rounded-full w-full h-full object-cover"
+                  src={userProfilePicture}
+                />
+              )
             ) : (
               <img
                 className="rounded-full w-full h-full object-cover"

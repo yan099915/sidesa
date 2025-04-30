@@ -105,11 +105,11 @@ export default function ConfirmResident() {
 
   useEffect(() => {
     //    wait until image available
-    if (FileImage) {
-      console.log(FileImage, 'datanya');
-      // setSelectedImage(FileImage);
-    }
-    console.log('set loading image false');
+    // if (FileImage) {
+    //   console.log(FileImage, 'datanya');
+    //   // setSelectedImage(FileImage);
+    // }
+    // console.log('set loading image false');
     setTimeout(() => {
       setLoadingImage(false);
     }, 2000);
@@ -134,13 +134,13 @@ export default function ConfirmResident() {
     }
   }, [VerificationRequestDetails, dispatch]);
 
-  useEffect(() => {
-    console.log(
-      ResidentDetails,
-      ErrorResidentDetails,
-      'ResidentDetails,ErrorResidentDetails'
-    );
-  }, [ResidentDetails, ErrorResidentDetails]);
+  // useEffect(() => {
+  //   console.log(
+  //     ResidentDetails,
+  //     ErrorResidentDetails,
+  //     'ResidentDetails,ErrorResidentDetails'
+  //   );
+  // }, [ResidentDetails, ErrorResidentDetails]);
 
   useEffect(() => {
     if (VerificationApproval) {
