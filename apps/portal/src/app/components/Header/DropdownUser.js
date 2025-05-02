@@ -5,13 +5,18 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { ArrowLeftEndOnRectangleIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowLeftEndOnRectangleIcon,
+  Cog8ToothIcon,
+  CogIcon,
+} from '@heroicons/react/24/outline';
 import UserOne from '../../../assets/images/users.jpeg';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../api/actions/UsersActions';
 import { useEffect, useState } from 'react';
 import { getProfilePicture } from '../../api/actions/FilesActions';
+import { useNavigate } from 'react-router-dom';
 
 const DOMAIN = process.env.NX_PUBLIC_DOMAIN;
 const API_URL = process.env.NX_PUBLIC_API_URL;
@@ -30,6 +35,7 @@ export default function DropDownUser() {
   const [loadingPicture, setLoadingPicture] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setDisabled(true);
@@ -121,12 +127,23 @@ export default function DropDownUser() {
             <div className="my-1 h-px bg-zinc-900/5" />
             <MenuItem>
               <button
+                onClick={() => navigate('/account-settings')}
+                disabled={disabled}
+                className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+              >
+                <Cog8ToothIcon className="w-5 text-zinc-500" />
+                Pengaturan
+              </button>
+            </MenuItem>
+            <div className="my-1 h-px bg-zinc-900/5" />
+            <MenuItem>
+              <button
                 onClick={handleLogout}
                 disabled={disabled}
                 className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
               >
                 <ArrowLeftEndOnRectangleIcon className="w-5 text-zinc-500" />
-                Logout
+                Keluar
               </button>
             </MenuItem>
           </MenuItems>

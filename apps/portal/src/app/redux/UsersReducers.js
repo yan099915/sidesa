@@ -19,6 +19,14 @@ const initialState = {
   errorRequestVerificationStatus: false,
   ProfileDetails: false,
   errorProfileDetails: false,
+  RequestForgotPassword: false,
+  errorRequestForgotPassword: false,
+  ResetPasswordCheckToken: false,
+  errorResetPasswordCheckToken: false,
+  ResetPassword: false,
+  errorResetPassword: false,
+  ChangePassword: false,
+  errorChangePassword: false,
 };
 
 const UsersReducers = (state = initialState, action) => {
@@ -70,6 +78,30 @@ const UsersReducers = (state = initialState, action) => {
         ...state,
         ProfileDetails: action.payload.data,
         errorProfileDetails: action.payload.errorMessage,
+      };
+    case 'REQUEST_RESET_PASSWORD':
+      return {
+        ...state,
+        RequestForgotPassword: action.payload.data,
+        errorRequestForgotPassword: action.payload.errorMessage,
+      };
+    case 'RESET_PASSWORD_CHECK_TOKEN':
+      return {
+        ...state,
+        ResetPasswordCheckToken: action.payload.data,
+        errorResetPasswordCheckToken: action.payload.errorMessage,
+      };
+    case 'RESET_PASSWORD':
+      return {
+        ...state,
+        ResetPassword: action.payload.data,
+        errorResetPassword: action.payload.errorMessage,
+      };
+    case 'CHANGE_PASSWORD':
+      return {
+        ...state,
+        ChangePassword: action.payload.data,
+        errorChangePassword: action.payload.errorMessage,
       };
     default:
       return state;

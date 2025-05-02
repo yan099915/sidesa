@@ -38,7 +38,7 @@ export function App() {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="relative flex flex-col h-screen h-min-screen  border-red-500 ">
+        <div className="relative flex flex-col h-screen h-min-screen max-w-screen-xl  border-red-500 mx-auto">
           <Navbar />
           <div className="flex-grow">
             <Routes>

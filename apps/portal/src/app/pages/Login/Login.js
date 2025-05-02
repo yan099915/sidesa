@@ -143,23 +143,31 @@ export default function Login() {
                 focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
             />
           </div>
-          <div className="flex gap-x-2">
-            <Checkbox
-              checked={remember}
-              onChange={(e) => {
-                console.log('onChange', e);
-                setRemember(!remember);
-              }}
-              className="flex group w-6 h-6 rounded-md bg-white p-1 ring-1 ring-zinc-900/40 ring-inset data-[checked]:bg-black"
+          <div className="flex justify-between">
+            <div className="flex gap-x-2">
+              <Checkbox
+                checked={remember}
+                onChange={(e) => {
+                  console.log('onChange', e);
+                  setRemember(!remember);
+                }}
+                className="flex group w-6 h-6 rounded-md bg-white p-1 ring-1 ring-zinc-900/40 ring-inset data-[checked]:bg-black"
+              >
+                <Check
+                  className="opacity-0 group-data-[checked]:opacity-100 text-white font-bold"
+                  fontSize="4px"
+                />
+              </Checkbox>
+              <p className="text-sm font-medium leading-normal text-gray-900">
+                Ingat saya
+              </p>
+            </div>
+            <Link
+              to="/request-reset-password"
+              className="text-sm font-medium leading-normal text-gray-900 text-blue-500 underline"
             >
-              <Check
-                className="opacity-0 group-data-[checked]:opacity-100 text-white font-bold"
-                fontSize="4px"
-              />
-            </Checkbox>
-            <p className="text-sm font-medium leading-normal text-gray-900">
-              Ingat saya
-            </p>
+              Lupa Password
+            </Link>
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
           <Button

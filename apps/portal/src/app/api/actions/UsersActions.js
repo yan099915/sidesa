@@ -234,3 +234,109 @@ export const getProfileDetails = (nik) => async (dispatch) => {
     });
 };
 // get resident details end here
+
+// request reset password start here
+export const requestResetPassword = (email) => async (dispatch) => {
+  await axios
+    .post('/forgot-password', { email })
+    .then((response) => {
+      dispatch({
+        type: 'REQUEST_RESET_PASSWORD',
+        payload: { data: response.data, errorMessage: false },
+      });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'REQUEST_RESET_PASSWORD',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'REQUEST_RESET_PASSWORD',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};
+// request reset password end here
+
+// reset password check token start here
+export const resetPasswordCheckToken = (token) => async (dispatch) => {
+  await axios
+    .get('/forgot-password', {
+      params: { token: token },
+    })
+    .then((response) => {
+      dispatch({
+        type: 'RESET_PASSWORD_CHECK_TOKEN',
+        payload: { data: response.data, errorMessage: false },
+      });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'RESET_PASSWORD_CHECK_TOKEN',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'RESET_PASSWORD_CHECK_TOKEN',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};
+// reset password check token end here
+
+// reset password start here
+export const resetPassword = (data) => async (dispatch) => {
+  await axios
+    .post('/reset-password', data)
+    .then((response) => {
+      dispatch({
+        type: 'RESET_PASSWORD',
+        payload: { data: response.data, errorMessage: false },
+      });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'RESET_PASSWORD',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'RESET_PASSWORD',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};
+// reset password end here
+
+// change password start here
+export const changePassword = (data) => async (dispatch) => {
+  await axios
+    .put('/update-password', data)
+    .then((response) => {
+      dispatch({
+        type: 'CHANGE_PASSWORD',
+        payload: { data: response.data, errorMessage: false },
+      });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        dispatch({
+          type: 'CHANGE_PASSWORD',
+          payload: { data: false, errorMessage: error.response.data.message },
+        });
+      } else {
+        dispatch({
+          type: 'CHANGE_PASSWORD',
+          payload: { data: false, errorMessage: error.message },
+        });
+      }
+    });
+};
+// change password end here

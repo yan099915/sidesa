@@ -13,6 +13,8 @@ import EditArticle from './pages/Article/EditArticle';
 import Announcement from './pages/Announcement/Announcement';
 import AnnouncementList from './pages/Announcement/AnnouncementList';
 import EditAnnouncement from './pages/Announcement/EditAnnouncement';
+import AccountSettings from './pages/AccountSettings/AccountSettings';
+import GeneralAccountSettings from './pages/AccountSettings/GeneralAccountSettings';
 const notificationAudio = new Audio('../assets/audio/notification.wav');
 const isLocalhost = window.location.hostname === 'localhost';
 const URL = isLocalhost ? 'ws://localhost:3000' : 'https://api.desarawang.com';
@@ -65,6 +67,9 @@ const Register = lazy(() => import('./pages/Register/Register'));
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail/VerifyEmail'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword/ResetPassword'));
 const WelcomePage = lazy(() => import('./pages/Dashboard/WelcomePage'), 1000);
+const RequestResetPassword = lazy(() =>
+  import('./pages/ResetPassword/RequestResetPassword')
+);
 
 const Protected = ({ isLoggedIn, children }) => {
   if (!isLoggedIn) {
@@ -162,7 +167,7 @@ export function App() {
 
   useEffect(() => {
     if (errorUserSession) {
-      console.log('errorUserSession', errorUserSession);
+      // console.log('errorUserSession', errorUserSession);
       dispatch({
         type: 'set',
         LoginStatus: false,
@@ -175,7 +180,7 @@ export function App() {
   useEffect(() => {
     const isSessionExpired = sessionStorage.getItem('session_expired');
     if (isSessionExpired) {
-      console.log('Session expired');
+      // console.log('Session expired');
       sessionStorage.removeItem('session_expired');
       dispatch({ type: 'set', LoginStatus: false });
     }
@@ -220,7 +225,7 @@ export function App() {
     }
 
     if (!DoConnectSocketIo) {
-      console.log('Connect to socket.io');
+      // console.log('Connect to socket.io');
       dispatch({ type: 'set', DoConnectSocketIo: true });
     }
     // getLocalStream();
@@ -326,6 +331,23 @@ export function App() {
               </Protected>
             }
           />
+          <Route
+            path="account-settings"
+            element={
+              <Protected isLoggedIn={isLoggedIn}>
+                <AccountSettings />
+              </Protected>
+            }
+          >
+            <Route
+              index
+              element={
+                <Protected isLoggedIn={isLoggedIn}>
+                  <GeneralAccountSettings />
+                </Protected>
+              }
+            />
+          </Route>
           <Route
             path="report"
             element={
@@ -472,13 +494,10 @@ export function App() {
             }
           />
           <Route
-            path="reset-password/:token"
-            element={
-              <ProtectedLogin isLoggedIn={isLoggedIn}>
-                <ResetPassword />
-              </ProtectedLogin>
-            }
+            path="request-reset-password"
+            element={<RequestResetPassword />}
           />
+          <Route path="reset-password/:token" element={<ResetPassword />} />
           <Route
             path="register"
             element={

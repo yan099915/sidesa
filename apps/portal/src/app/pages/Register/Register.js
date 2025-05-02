@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { registerUser } from '../../api/actions';
+import Logo from '../../../assets/images/logo_sidera_large.png';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -62,17 +63,13 @@ const Register = () => {
   }, [errorUserRegisterRedux]);
 
   return (
-    <div className="flex flex-col relative h-full p-8 bg-gray-100/50 items-center">
-      <div className="flex flex-col h-full w-full py-24 sm:w-3/4 lg:w-2/5 gap-y-10 border bg-white items-center border-zinc-400/20">
+    <div className="flex flex-col relative h-full py-4 bg-gray-100/50 items-center">
+      <div className="flex flex-col mx-auto h-full w-full py-6 lg:py-12 sm:w-3/4 lg:w-2/5 gap-y-4 border bg-white items-center border-zinc-400/20">
         <div className="flex flex-col gap-4 px-8 w-full md:w-3/4 lg:w-3/4">
-          <div className="flex flex-col text-center items-center gap-4">
-            <img
-              src="https://desarawang.com/assets/img/logo_sidera_large.png"
-              alt=""
-              className="w-24"
-            />
-            <h2 className="text-4xl font-semibold ">Daftar</h2>
-            <p className="text-xs lg:text-base">Portal Layanan Desa Rawang</p>
+          <div className="flex flex-col text-center items-center gap-2">
+            <img src={Logo} alt="" className="w-24" />
+            <p className="text-xs lg:text-base">Sistem Informasi Desa Rawang</p>
+            <h2 className="sm:text-2xl leading-none font-semibold">Daftar</h2>
           </div>
           <Field>
             <Label className="text-sm font-medium leading-normal text-gray-900">
