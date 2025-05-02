@@ -49,6 +49,7 @@ export default function GeneralAccountSettings() {
     // console.log('error ganti sandi', errorChangePassword);
     if (errorChangePassword) {
       setError('Sandi saat ini salah');
+      setRequestChangePassword(false);
     }
   }, [errorChangePassword]);
 
@@ -99,7 +100,7 @@ export default function GeneralAccountSettings() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   type="password"
-                  className=" block w-full w-60 rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
+                  className=" block w-60 rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
                         focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
                 />
               </div>
@@ -116,7 +117,7 @@ export default function GeneralAccountSettings() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 type="password"
-                className=" block w-full w-60 rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
+                className=" block w-60 rounded-lg ring-1 ring-gray-900/20 py-1.5 px-3 text-sm/6
                         focus:ring-0 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-zinc-900"
               />
             </div>
