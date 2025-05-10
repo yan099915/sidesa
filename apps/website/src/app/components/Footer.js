@@ -102,15 +102,18 @@ export default function Footer() {
           <div className="flex flex-col gap-y-2">
             <h2 className="font-bold">Kontak</h2>
             <ul className="text-xs space-y-2 text-black/80">
-              <li>
+              {/* <li>
                 <p>Telp: 293-1203-1231</p>
-              </li>
+              </li> */}
               <li>
-                <p>Email: cs@desa-rawang.com</p>
+                <p>Email: rawangoke@gmail.com</p>
               </li>
 
               <li>
-                <p>Alamat: Desa Rawang No.123</p>
+                <p>
+                  Alamat: Jl. RA Kartini Desa Rawang Kec. Pariaman Tengah Kota
+                  Pariaman
+                </p>
               </li>
             </ul>
           </div>

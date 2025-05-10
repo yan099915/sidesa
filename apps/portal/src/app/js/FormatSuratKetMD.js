@@ -91,9 +91,9 @@ const printSuratKematian = (data) => {
   }</td>
               </tr>
             </table>
-            <p class="mt-8 text-indent">Demikianlah Surat keterangan ini dibuat dan diberikan kepada yang bersangkutan untuk
+            <p class="mt-4 text-indent">Demikianlah Surat keterangan ini dibuat dan diberikan kepada yang bersangkutan untuk
               dapat dipergunakan sebagaimana mestinya.</p>
-            <div class="flex flex-col items-end mt-12">
+            <div class="flex flex-col items-end mt-8">
               <div class="flex flex-col w-fit text-center">
               <p class="inline-block">Pariaman, ${data.tanggal}</p>
               <p class="inline-block">Kepala Desa Rawang</p>

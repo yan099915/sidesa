@@ -10,7 +10,7 @@ const getBaseURL = () => {
 
 // Membuat instance Axios dengan konfigurasi dasar
 const axiosInstance = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: API_URL,
   // Konfigurasi lain seperti headers dapat ditambahkan di sini
   // timeout: 10000, // Timeout request 10 detik
   headers: {

@@ -37,19 +37,19 @@ export default function Services() {
           permohonan surat-surat administrasi kependudukan dan surat-surat
           lainnya.
           <ul className="list-decimal text-xs sm:text-sm">
-            <li>Pembuatan Surat Keterangan</li>
+            {/* <li>Pembuatan Surat Keterangan</li>
             <li>Pembuatan Surat Keterangan Pindah</li>
             <li>Pembuatan Surat Keterangan Usaha</li>
             <li>Pembuatan Surat Keterangan Tidak Mampu</li>
-            <li>Pembuatan Surat Keterangan Kelahiran</li>
+            <li>Pembuatan Surat Keterangan Kelahiran</li> */}
             <li>Pembuatan Surat Keterangan Kematian</li>
             <li>Pembuatan Surat Keterangan Domisili</li>
-            <li>Pembuatan Surat Keterangan Nikah</li>
+            {/* <li>Pembuatan Surat Keterangan Nikah</li>
             <li>Pembuatan Surat Keterangan Cerai</li>
             <li>Pembuatan Surat Keterangan Kehilangan</li>
             <li>Pembuatan Surat Keterangan Kepolisian</li>
             <li>Pembuatan Surat Keterangan Bepergian</li>
-            <li>Pembuatan Surat Keterangan Lainnya</li>
+            <li>Pembuatan Surat Keterangan Lainnya</li> */}
           </ul>
           {/* layananan desa */}
         </p>

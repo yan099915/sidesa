@@ -87,9 +87,9 @@ const printSuratDomisili = (data) => {
             <p class="mt-2">Surat ini dibuat sebagai kelengkapan pengurusan ${
               data.keterangan
             }.</p>
-            <p class="mt-8 text-indent">Demikianlah surat keterangan ini dibuat dan diberikan kepada yang bersangkutan
+            <p class="mt-4 text-indent">Demikianlah surat keterangan ini dibuat dan diberikan kepada yang bersangkutan
               agar dapat dipergunakan sebagaimana mestinya.</p>
-            <div class="flex flex-col items-end mt-12">
+            <div class="flex flex-col items-end mt-8">
               <div class="flex flex-col w-fit text-center">
                 <p class="inline-block">Pariaman, ${data.tanggal}</p>
                 <p class="inline-block">Kepala Desa Rawang</p>
