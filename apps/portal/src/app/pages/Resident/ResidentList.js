@@ -60,6 +60,7 @@ export default function ResidentList() {
     { value: '', label: 'Semua' },
     { value: 'UTARA', label: 'Utara' },
     { value: 'SELATAN', label: 'Selatan' },
+    { value: 'Data tidak ditemukan', label: 'Tidak diketahui' },
   ];
 
   const dispatch = useDispatch();
