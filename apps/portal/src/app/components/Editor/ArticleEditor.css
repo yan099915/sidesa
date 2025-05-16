@@ -59,10 +59,16 @@
 /* .ck-editor__editable_inline {
   padding: 0 20px !important;
 } */
-.ck-content ol {
-  padding: 0 20px !important;
+
+.ck-content ul {
+  padding-left: 2rem !important;
+  list-style-type: disc !important;
 }
 
+.ck-content ol {
+  padding-left: 2rem !important;
+  list-style-type: decimal !important;
+}
 .ck-powered-by {
   display: none !important;
 }

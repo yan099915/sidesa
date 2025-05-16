@@ -33,6 +33,7 @@ export default function Report() {
     { value: '', label: 'Semua' },
     { value: 'UTARA', label: 'Utara' },
     { value: 'SELATAN', label: 'Selatan' },
+    { value: 'Data tidak ditemukan', label: 'Tidak diketahui' },
   ];
   // Tahun awal tetap dimulai dari 2024
   const tahunMulai = 2024;
@@ -49,7 +50,9 @@ export default function Report() {
     })
   );
 
-  const [filterTahun, setFilterTahun] = useState(tahunOption[0].value); // Default tahun adalah 2024
+  const [filterTahun, setFilterTahun] = useState(
+    tahunOption[tahunOption.length - 1].value
+  ); // Default tahun adalah 2024
 
   const handleFetchDataResident = (dusun) => {
     // fetching data
@@ -66,7 +69,7 @@ export default function Report() {
   const handlePortalData = (year) => {
     // fetching data
     const param = {
-      year: year || filterYear !== '' ? filterYear : null,
+      year: year,
     };
 
     console.log(param, 'param');
@@ -88,10 +91,12 @@ export default function Report() {
       handleFetchDataResident(filterDusun);
     }
 
-    if (prevFilterYear !== filterYear) {
-      handlePortalData(filterYear);
+    console.log('filterDusun', filterDusun);
+    console.log('prevFilterDusun', prevFilterDusun);
+    if (prevFilterYear !== filterTahun) {
+      handlePortalData(filterTahun);
     }
-  }, [filterDusun, filterYear]);
+  }, [filterDusun, filterTahun]);
 
   useEffect(() => {
     if (
@@ -111,7 +116,9 @@ export default function Report() {
     if (DoGetReport) {
       dispatch({ type: 'set', DoGetReport: false });
       handleFetchDataResident(filterDusun);
-      handlePortalData(filterYear);
+      //get current year
+      const currentYear = moment().year();
+      handlePortalData(currentYear);
     }
   }, [DoGetReport, dispatch]);
 

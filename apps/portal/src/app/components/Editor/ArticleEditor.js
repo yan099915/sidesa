@@ -550,7 +550,7 @@ export default function ArticleEditor() {
     },
     list: {
       properties: {
-        styles: true,
+        styles: false,
         startIndex: true,
         reversed: true,
       },

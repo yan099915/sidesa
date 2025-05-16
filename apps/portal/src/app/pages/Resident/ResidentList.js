@@ -10,6 +10,7 @@ import {
   Cancel,
   EditNoteOutlined,
   DeleteForever,
+  CheckCircle,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -352,6 +353,7 @@ export default function ResidentList() {
           <thead>
             <tr className="border-t border-b text-xs border-zinc-200">
               <th className="py-2">ID</th>
+              <th className="py-2">Verified</th>
               <th className="py-2">NIK</th>
               <th className="py-2">Nama</th>
               <th className="py-2">KK</th>
@@ -369,6 +371,13 @@ export default function ResidentList() {
                   className="border-b border-zinc-200  hover:bg-zinc-100 cursor-pointer text-xs text-center"
                 >
                   <td className="py-2">{resident.id}</td>
+                  <td className="py-2">
+                    {resident.verified === 1 ? (
+                      <CheckCircle className="text-green-500 w-4" />
+                    ) : (
+                      <Cancel className="text-red-500 w-4" />
+                    )}
+                  </td>
                   <td
                     className="py-2"
                     onClick={() => handleRowClick(resident.nomor_ktp)}
@@ -382,7 +391,6 @@ export default function ResidentList() {
                     {resident.nama}
                   </td>
                   <td className="py-2">{resident.nomor_kk}</td>
-                  <td className="py-2">{resident.dusun}</td>
                   <td className="py-2">{resident.dusun}</td>
                   <td className="flex py-2 justify-center items-center gap-x-2">
                     {/* <Button

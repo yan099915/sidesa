@@ -50,3 +50,34 @@
 .prev {
   left: 10px;
 }
+
+.ck-content table {
+  border-collapse: collapse;
+  border: 1px solid #d1d5db; /* gray-300 */
+  width: 100%;
+}
+
+.ck-content th,
+.ck-content td {
+  border: 1px solid #d1d5db; /* gray-300 */
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.ck-content figure.table {
+  margin: 1rem 0;
+}
+
+.ck-content iframe {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose.ck-content ul,
+.prose.ck-content ol {
+  margin-left: 1.5rem;
+}
