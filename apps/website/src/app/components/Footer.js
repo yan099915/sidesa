@@ -144,13 +144,16 @@ export default function Footer() {
           transition={{ delay: 1, duration: 0.5 }}
           className="flex flex-row text-[10px] sm:text-xs font-semibold text-black/80 text-center justify-center items-center gap-x-2"
         >
-          <a href="https://www.facebook.com">
+          <a
+            target="_blank"
+            href="https://www.facebook.com/profile.php?id=100064025294870"
+          >
             <Facebook />
           </a>
-          <a href="https://www.instagram.com">
+          <a target="_blank" href="https://www.instagram.com/desa.rawang/">
             <Instagram />
           </a>
-          <a href="https://www.youtube.com">
+          <a target="_blank" href="https://www.youtube.com/@desarawang9305">
             <YouTube />
           </a>
         </motion.div>
