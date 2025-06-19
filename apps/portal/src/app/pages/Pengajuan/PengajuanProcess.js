@@ -133,21 +133,24 @@ export default function PengajuanProcess() {
     data.bulan = bulanRomawi(moment().month() + 1);
     data.tahun = moment().format('YYYY');
     data.kepala_desa = 'SUKRI HERIADI CAN';
-
+    // console.log(RequestDetails.data, 'data request details');
     // get data from RequestDetails.data where
     switch (RequestDetails.data.jenis_pengajuan) {
       case 1:
         // isi data untuk surat domisili dengan data dari RequestDetails.data.surat_domisili.penduduk tanpa menghapus isian dari data
         data = { ...data, ...RequestDetails.data.surat_domisili.penduduk };
+        data.id = RequestDetails.data.id;
         data.keterangan = RequestDetails.data.keterangan;
         data.jenis_ttd = RequestDetails.data.surat_domisili.jenis_ttd;
         data.tanggal_lahir = moment(data.tanggal_lahir).format('DD-MM-YYYY');
+
         FormatSuratDomisili(data);
         break;
       case 2:
         break;
       case 3:
         data = { ...data, ...RequestDetails.data.surat_kematian.penduduk };
+        data.id = RequestDetails.data.id;
         data.hari_kematian = moment(
           RequestDetails.data.surat_kematian.tanggal_kematian
         ).format('dddd');
@@ -192,7 +195,7 @@ export default function PengajuanProcess() {
   };
 
   const handleUpdatePengajuan = (status, jenis_ttd) => {
-    console.log(status, jenis_ttd, 'status dan jenis ttd');
+    // console.log(status, jenis_ttd, 'status dan jenis ttd');
     // check apakah jenis ttd dan status pengajuan
     if (status >= 2 && jenis_ttd === 2) {
       setIsOpen(true);

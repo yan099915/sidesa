@@ -87,7 +87,7 @@ export default function WelcomePage() {
         id: 'update-request',
       });
     } else {
-      console.log('cancel', buttonClicked);
+      // console.log('cancel', buttonClicked);
       setIsOpen(false);
       setButtonClicked(null);
     }
@@ -281,7 +281,7 @@ export default function WelcomePage() {
 
   useEffect(() => {
     if (RequestDetails && RequestDetails.data) {
-      console.log(RequestDetails.data, 'RequestDetails');
+      // console.log(RequestDetails.data, 'RequestDetails');
       toast.success(RequestDetails.message, {
         id: 'request-details',
       });
@@ -325,22 +325,26 @@ export default function WelcomePage() {
 
   // console.log(DoGetRequestList, 'DoGetRequestList');
   const getTemplateSurat = (data) => {
+    let payload = {};
     switch (data.jenis_pengajuan) {
       case 1:
-        console.log(data[jenisSurat[data.jenis_pengajuan]], 'datanya');
-        return (
-          <SuratDomisili
-            data={{
-              ...data[jenisSurat[data.jenis_pengajuan]],
-              keterangan: data.keterangan,
-            }}
-          />
-        );
+        // console.log(data[jenisSurat[data.jenis_pengajuan]], 'datanya');
+        payload = {
+          ...data[jenisSurat[data.jenis_pengajuan]],
+        };
+        payload.id = data.id.length > 1 ? data.id : `0${data.id}`;
+        payload.keterangan = data.keterangan;
+        return <SuratDomisili data={payload} />;
       case 2:
         // return <SuratKelahiran data={data} />;
         break;
       case 3:
-        return <SuratKematian data={data[jenisSurat[data.jenis_pengajuan]]} />;
+        payload = {
+          ...data[jenisSurat[data.jenis_pengajuan]],
+        };
+        payload.id = data.id.length > 1 ? data.id : `0${data.id}`;
+        payload.keterangan = data.keterangan;
+        return <SuratKematian data={payload} />;
 
       default:
         return <SuratDomisili data={data} />;
